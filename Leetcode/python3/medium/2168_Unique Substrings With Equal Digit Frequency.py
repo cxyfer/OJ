@@ -83,7 +83,6 @@ class Solution4:
         n = len(s)
         MOD = 1070777777
         BASE = randint(int(1e8), int(1e9))
-        ans = 0
         st = set()
         for i in range(n):
             cnt = [0] * 10
