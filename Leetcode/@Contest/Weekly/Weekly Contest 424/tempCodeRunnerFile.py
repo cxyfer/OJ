@@ -1,0 +1,1 @@
+print(sol.minDifference([14,-1,-1,46]))  # 11
