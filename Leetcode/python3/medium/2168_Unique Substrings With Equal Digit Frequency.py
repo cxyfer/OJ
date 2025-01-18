@@ -13,6 +13,7 @@ from preImport import *
 1. Brute Force: O(n^2*(D+n))
 2. Optimized Brute Force: O(n^3)
 3. Trie: O(n^2*D)
+4. Rolling Hash: O(n^2)
 """
 # @lc code=start
 class Solution1:
