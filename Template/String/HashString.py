@@ -1,5 +1,3 @@
-from random import randint
-
 """
     HashString 模板
 
@@ -14,8 +12,8 @@ from random import randint
     - https://leetcode.cn/problems/minimum-number-of-valid-strings-to-form-target-ii/solutions/2917834/liang-chong-jie-fa-tan-xin-ac-zi-dong-ji-u6wc
 """
 
-# MOD = int(1e18) + random.randint(0, int(1e9))
-# BASE = 233 + random.randint(0, 1000)
+from random import randint
+
 MOD = 1070777777
 BASE = randint(int(1e8), int(1e9))
 class HashString:
