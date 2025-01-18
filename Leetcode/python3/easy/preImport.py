@@ -1,15 +1,15 @@
+import sys
 import math
-from math import *
+import heapq
 from typing import *
 from collections import *
-from functools import lru_cache
-import heapq
+from functools import *
+from operator import *
+
 from heapq import *
 from bisect import *
 from itertools import *
-
-def cache(user_function):
-    return lru_cache(maxsize=None)(user_function)
+from random import *
 
 class ListNode:
     def __init__(self, val=0, next=None):
@@ -20,7 +20,7 @@ class TreeNode:
         self.val = val
         self.left = left
         self.right = right
-class Node:
+class SegmentTreeNode:
     def __init__(self, val=None, children=None):
         self.val = val
         self.children = children

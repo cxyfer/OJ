@@ -1,3 +1,4 @@
+import sys
 import math
 import heapq
 from typing import *
@@ -8,7 +9,7 @@ from operator import *
 from heapq import *
 from bisect import *
 from itertools import *
-import sys
+from random import *
 
 class ListNode:
     def __init__(self, val=0, next=None):

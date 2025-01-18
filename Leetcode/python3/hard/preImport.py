@@ -1,16 +1,15 @@
+import sys
 import math
+import heapq
 from typing import *
 from collections import *
-from sortedcontainers import *
-from functools import lru_cache
+from functools import *
+from operator import *
+
 from heapq import *
 from bisect import *
 from itertools import *
-from atcoder.fenwicktree import FenwickTree
-from atcoder.segtree import SegTree
-
-def cache(user_function):
-    return lru_cache(maxsize=None)(user_function)
+from random import *
 
 class ListNode:
     def __init__(self, val=0, next=None):
@@ -21,3 +20,7 @@ class TreeNode:
         self.val = val
         self.left = left
         self.right = right
+class SegmentTreeNode:
+    def __init__(self, val=None, children=None):
+        self.val = val
+        self.children = children
