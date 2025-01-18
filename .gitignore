@@ -1,0 +1,7 @@
+.cph/
+.vscode/
+考古/
+Leetcode/.lcpr_data/
+/*.*
+!.gitignore
+!.clang-format
