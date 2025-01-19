@@ -8,10 +8,11 @@ class UnionFind:
         self.cnt = n # 連通分量數量
 
     def find(self, x: int) -> int:
-        if self.pa[x] != x:
-            self.pa[x] = self.find(self.pa[x])
-        return self.pa[x]
-    
+        while self.pa[x] != x:
+            self.pa[x] = self.pa[self.pa[x]]
+            x = self.pa[x]
+        return x
+
     def union(self, x: int, y: int) -> bool:
         px, py = self.find(x), self.find(y)
         if px == py:
