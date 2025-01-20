@@ -22,7 +22,7 @@ class CombinationIterator:
     def next(self) -> str:
         ans = "".join([self.s[p] for p in self.comb])
         for i in range(self.k - 1, -1, -1):
-            if self.comb[i] != self.n - self.k + i:
+            if self.comb[i] != self.n - self.k + i:  # 此時最後的 x 個元素不是最大的 x 個元素
                 self.comb[i] += 1
                 for j in range(i + 1, self.k):
                     self.comb[j] = self.comb[j - 1] + 1
@@ -40,10 +40,12 @@ class CombinationIterator:
 # param_2 = obj.hasNext()
 # @lc code=end
 
+ans = []
 itr = CombinationIterator("123456", 4)
 while itr.hasNext():
-    print(itr.next())
-
+    ans.append(itr.next())
+print(len(ans))
+print(*ans)
 
 
 
