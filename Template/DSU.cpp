@@ -40,7 +40,7 @@ int main() {
         int pa = uf.find(i);
         if (!visited[pa]) {
             visited[pa] = true;
-            ans += uf.size[pa] * (uf.size[pa] - 1) / 2;
+            ans += uf.sz[pa] * (uf.sz[pa] - 1) / 2;
         }
     }
     cout << ans << endl;
