@@ -26,6 +26,7 @@ class CombinationIterator:
                 self.comb[i] += 1
                 for j in range(i + 1, self.k):
                     self.comb[j] = self.comb[j - 1] + 1
+                # assert self.comb[self.k - 1] == self.comb[i] + (self.k - i - 1)
                 break
         else:
             self.has_next = False
