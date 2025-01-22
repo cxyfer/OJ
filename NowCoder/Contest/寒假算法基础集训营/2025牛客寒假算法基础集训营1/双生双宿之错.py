@@ -13,7 +13,6 @@ for _ in range(t):
     A.sort()
     m = n // 2
     p, q = median(A[:m]), median(A[m:])
-    
 
     if all(x == A[0] for x in A):
         print(n // 2)
