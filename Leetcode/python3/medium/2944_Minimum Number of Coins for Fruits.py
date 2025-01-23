@@ -41,7 +41,7 @@ class Solution2:
             if i * 2 >= n:
                 f[i] = prices[i - 1] + 0
             else:
-                f[i] = prices[i - 1] + min(f[i+1:i * 2 + 2])
+                f[i] = prices[i - 1] + min(f[i + 1:i * 2 + 2])
         return f[1]
     
 class Solution3:
