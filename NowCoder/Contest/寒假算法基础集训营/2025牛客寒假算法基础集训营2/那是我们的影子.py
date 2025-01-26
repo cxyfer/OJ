@@ -24,12 +24,12 @@ def solve():
                 continue
             vis[j % 3].add(grid[i][j])
     
-    # 1. More than 3 numbers in a column
+    # 1. More than 3 numbers in a column group
     if any(len(x) > 3 for x in vis):
         print("0")
         return
     
-    # 2. Same number in different columns
+    # 2. Same number in different column groups
     if vis[0] & vis[1] or vis[0] & vis[2] or vis[1] & vis[2]:
         print("0")
         return
