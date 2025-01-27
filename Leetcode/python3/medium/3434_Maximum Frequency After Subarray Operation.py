@@ -14,19 +14,20 @@ class Solution:
     def maxFrequency(self, nums: List[int], k: int) -> int:
         n = len(nums)
         ans = 0
-        for d in range(k - 50, k + 50):
-            target = k - d
-            if target < 1 or target > 50 or d == 0:
+        # 枚舉 tgt = k - x，找到貢獻最大的子陣列 (Maximum Subarray Sum)
+        for tgt in range(1, 51):
+            if tgt == k:
                 continue
             D = [0] * n
-            for i, x in enumerate(nums):
-                if x == target:
+            for i, v in enumerate(nums):
+                if v == tgt:  # 加 x 後能變成 k，增加貢獻
                     D[i] = 1
-                elif x == k:
+                elif v == k:  # 本來就是 k，加 x 後會減少貢獻
                     D[i] = -1
+            # 前綴和求最大子陣列和
             s = mn = 0
-            for x in D:
-                s += x
+            for d in D:
+                s += d
                 ans = max(ans, s - mn)
                 mn = min(mn, s)
         return nums.count(k) + ans

@@ -10,11 +10,11 @@ for _ in range(t):
     for i, r in enumerate(R):
         ind[r] += 1
 
-    dist = [-1] * n
+    dist = [0] * n  # 到基環樹上環的距離
     q = deque()
     for u in range(n):
         if ind[u] == 0:
-            dist[u] = 0
+            dist[u] = 1
             q.append(u)
 
     while q:
@@ -23,5 +23,5 @@ for _ in range(t):
         if ind[R[u]] == 0:
             dist[R[u]] = dist[u] + 1
             q.append(R[u])
-
-    print(max(dist) + 3)
+    
+    print(max(dist) + 2)

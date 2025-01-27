@@ -45,16 +45,18 @@ for _ in range(t):
     ans = 0
     uf1 = UnionFind(n)
     for (u, v) in edges1:
-        if uf2.find(u) != uf2.find(v):
+        if uf2.find(u) != uf2.find(v):  # 刪除這條邊
             ans += 1
         else:
             uf1.union(u, v)
 
-    comp_nodes = defaultdict(list)
+    # 將 G 的連通分量分組
+    comps = defaultdict(list)
     for u in range(n):
-        comp_nodes[uf2.find(u)].append(u)
+        comps[uf2.find(u)].append(u)
 
-    for _, nodes in comp_nodes.items():
+    for _, nodes in comps.items():
+        # G 的這個連通分量，在 F 中被分成了 len(nodes) 個連通分量，需要將其連接起來
         roots = set()
         for u in nodes:
             roots.add(uf1.find(u))
