@@ -17,19 +17,20 @@ class Solution:
         sz = [1] * (n + 1)
 
         def find(x):
-            if pa[x] != x:
-                pa[x] = find(pa[x])
-            return pa[x]
-            
+            while x != pa[x]:
+                pa[x] = pa[pa[x]]
+                x = pa[x]
+            return x
+        
         for x, y in edges:
             fx, fy = find(x), find(y)
-            if fx == fy: # 已經在同一個集合
+            if fx == fy:
                 return [x, y]
-            if sz[fx] > sz[fy]: # Union by size
+            if sz[fx] < sz[fy]:
                 fx, fy = fy, fx
-            pa[fy] = fx
+            pa[fy] = pa[fx]
             sz[fx] += sz[fy]
-        return []
+        return [-1, -1]
 # @lc code=end
 
 

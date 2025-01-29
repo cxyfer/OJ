@@ -13,36 +13,33 @@ class Solution {
  public:
   int maximumInvitations(vector<int>& favorite) {
     int n = favorite.size();
-    vector<int> indeg(n);
-    for (int f : favorite) {
-      indeg[f]++;
-    }
+    vector<int> ind(n);
+    for (int f : favorite) ind[f]++;
 
     vector<vector<int>> rg(n);
     queue<int> q;
-    for (int i = 0; i < n; ++i) {
-      if (indeg[i] == 0) q.push(i);
-    }
+    for (int i = 0; i < n; ++i)
+      if (ind[i] == 0) q.push(i);
+
     while (!q.empty()) {
       int u = q.front();
       q.pop();
       int v = favorite[u];
       rg[v].push_back(u);
-      indeg[v]--;
-      if (indeg[v] == 0) q.push(v);
+      ind[v]--;
+      if (ind[v] == 0) q.push(v);
     }
 
     auto rdfs = [&](auto&& rdfs, int u) -> int {
       int res = 1;
-      for (int v : rg[u]) {
+      for (int v : rg[u]) 
         res = max(res, rdfs(rdfs, v) + 1);
-      }
       return res;
     };
 
-    int max_ring_size = 0, sum_chain_size = 0;
+    int max_ring = 0, sum_chain = 0;
     for (int u = 0; u < n; ++u) {
-      if (indeg[u] == 0) continue;
+      if (ind[u] == 0) continue;
 
       vector<int> rings = {u};
       int v = favorite[u];
@@ -50,14 +47,14 @@ class Solution {
         rings.push_back(v);
         v = favorite[v];
       }
-      for (int v : rings) indeg[v] = 0;
+      for (int v : rings) ind[v] = 0;
 
       if (rings.size() == 2)
-        sum_chain_size += rdfs(rdfs, u) + rdfs(rdfs, favorite[u]);
+        sum_chain += rdfs(rdfs, u) + rdfs(rdfs, favorite[u]);
       else
-        max_ring_size = max(max_ring_size, (int)rings.size());
+        max_ring = max(max_ring, (int)rings.size());
     }
-    return max(max_ring_size, sum_chain_size);
+    return max(max_ring, sum_chain);
   }
 };
 // @lc code=end
