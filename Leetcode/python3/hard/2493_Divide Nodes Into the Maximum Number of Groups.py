@@ -38,7 +38,7 @@ class UnionFind:
 
 class Solution:
     def magnificentSets(self, n: int, edges: List[List[int]]) -> int:
-        g = [[] for _ in range(n)]
+        g = defaultdict(list)
         uf = UnionFind(n)
         for u, v in edges:
             u, v = u - 1, v - 1
@@ -78,6 +78,8 @@ class Solution:
 
         ans = 0
         for u, comp in comps.items():
+            if not comp:
+                continue
             if not dfs(u, 0):
                 return -1
             cur = 0
@@ -89,7 +91,7 @@ class Solution:
 
 sol = Solution()
 print(sol.magnificentSets(6, [[1,2],[1,4],[1,5],[2,6],[2,3],[4,6]]))
-# print(sol.magnificentSets(3, [[1,2],[2,3],[3,1]]))
+print(sol.magnificentSets(3, [[1,2],[2,3],[3,1]]))
 
 n = 92
 edges = [[67,29],[13,29],[77,29],[36,29],[82,29],[54,29],[57,29],[53,29],[68,29],[26,29],[21,29],[46,29],[41,29],[45,29],[56,29],[88,29],[2,29],[7,29],[5,29],[16,29],[37,29],[50,29],[79,29],[91,29],[48,29],[87,29],[25,29],[80,29],[71,29],[9,29],[78,29],[33,29],[4,29],[44,29],[72,29],[65,29],[61,29]]
