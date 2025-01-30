@@ -14,12 +14,12 @@ class UnionFind:
         return x
 
     def union(self, x: int, y: int) -> bool:
-        px, py = self.find(x), self.find(y)
-        if px == py:
+        fx, fy = self.find(x), self.find(y)
+        if fx == fy:
             return False
-        if self.sz[px] < self.sz[py]:
-            px, py = py, px
-        self.pa[py] = px
-        self.sz[px] += self.sz[py]
+        if self.sz[fx] < self.sz[fy]:
+            fx, fy = fy, fx
+        self.pa[fy] = fx
+        self.sz[fx] += self.sz[fy]
         self.cnt -= 1
         return True
