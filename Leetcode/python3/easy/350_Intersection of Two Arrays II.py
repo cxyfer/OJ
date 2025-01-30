@@ -25,7 +25,6 @@ class Solution1:
             cnt1[x] += 1
         for x in nums2:
             cnt2[x] += 1
-        
         ans = []
         for x in range(1001):
             ans += [x] * min(cnt1[x], cnt2[x])
@@ -33,7 +32,6 @@ class Solution1:
     
 class Solution2:
     def intersect(self, nums1: List[int], nums2: List[int]) -> List[int]:
-        # cnt = defaultdict(int)
         cnt = [0] * 1001
         for x in nums1:
             cnt[x] += 1
@@ -63,8 +61,8 @@ class Solution3:
                 j += 1
         return ans
     
-class Solution(Solution1):
-# class Solution(Solution2):
+# class Solution(Solution1):
+class Solution(Solution2):
 # class Solution(Solution3):
     pass
 # @lc code=end

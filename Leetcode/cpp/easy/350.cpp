@@ -4,14 +4,13 @@
  * [350] 两个数组的交集 II
  */
 
-
 // @lcpr-template-start
 #include <bits/stdc++.h>
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
 class Solution1 {
-public:
+   public:
     vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
         vector<int> cnt1(1001), cnt2(1001);
         for (int x : nums1) cnt1[x]++;
@@ -27,7 +26,7 @@ public:
 };
 
 class Solution2 {
-public:
+   public:
     vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
         // unordered_map<int, int> cnt;
         vector<int> cnt(1001);
@@ -44,7 +43,7 @@ public:
 };
 
 class Solution3 {
-public:
+   public:
     vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
         sort(nums1.begin(), nums1.end());
         sort(nums2.begin(), nums2.end());
@@ -70,4 +69,3 @@ public:
 // class Solution : public Solution2 {};
 class Solution : public Solution3 {};
 // @lc code=end
-
