@@ -79,8 +79,6 @@ class Solution:
         return ans
 # @lc code=end
 
-
-
 #
 # @lcpr case=start
 # ["ab","ba"]\n
@@ -94,5 +92,16 @@ class Solution:
 # ["aa","bb","cc"]\n
 # @lcpr case=end
 
-#
+# @lcpr case=start
+# ["jq","iq","qj","qi","ij"]\n
+# @lcpr case=end
+
+# @lcpr case=start
+# ["mh","hm","mr","rm","hr","rh"]\n
+# @lcpr case=end
+
+# @lcpr case=start
+# ["gg","gq","qg"]\n
+# @lcpr case=end
+
 
