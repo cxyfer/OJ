@@ -13,12 +13,12 @@ using namespace std;
 class Solution {
 public:
     string clearDigits(string s) {
-        string ans = "";
-        for (char ch : s) {
-            if (isdigit(ch)) ans.pop_back();
-            else ans += ch;
+        string st;
+        for (auto ch : s) {
+            if (isdigit(ch)) st.pop_back();
+            else st.push_back(ch);
         }
-        return ans;
+        return st;
     }
 };
 // @lc code=end
