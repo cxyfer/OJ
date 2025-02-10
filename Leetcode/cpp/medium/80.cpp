@@ -18,7 +18,7 @@ public:
         for (int i = 2; i < n; ++i)
             if (nums[sz - 2] != nums[i]) 
                 nums[sz++] = nums[i];
-        return min(sz, n);
+        return min(sz, n); // for n = 1
     }
 };
 // @lc code=end
