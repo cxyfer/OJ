@@ -55,7 +55,7 @@ class Solution2:
             hs = (hs * BASE + ord(ch)) % MOD  # 入窗口
             if i >= m:  # 出窗口，維持窗口大小為 m
                 hs = (hs - ord(text[i - m]) * P[m]) % MOD
-            # 比較雜湊值和字串，若不考慮碰撞則比較雜湊值即可
+            # 比較雜湊值和子字串，若不考慮碰撞則比較雜湊值即可
             if i >= m - 1 and hs == H[m] and text[i - m + 1:i + 1] == t:
                 return i - m + 1
         return -1
