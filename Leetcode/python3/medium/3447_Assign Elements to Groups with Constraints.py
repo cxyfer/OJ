@@ -24,7 +24,6 @@ class Solution:
 # @lc code=end
 
 
-
 #
 # @lcpr case=start
 # [8,4,3,2,4]\n[4,2]\n

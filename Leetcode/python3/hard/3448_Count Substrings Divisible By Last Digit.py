@@ -27,20 +27,6 @@ class Solution:
         return ans
 # @lc code=end
 
-        # ans = 0
-        # f = [[0] * 9 for _ in range(10)]
-        # for d in map(int, s):
-        #     for m in range(1, 10):  # 枚举模数 m
-        #         # 滚动数组计算 f
-        #         nf = [0] * m
-        #         nf[d % m] = 1
-        #         for rem in range(m):  # 枚举模 m 的余数 rem
-        #             nf[(rem * 10 + d) % m] += f[m][rem]  # 刷表法
-        #         f[m] = nf
-        #     # 以 s[i] 结尾的，模 s[i] 余数为 0 的子串个数
-        #     ans += f[d][0]
-        # return ans
-
 #
 # @lcpr case=start
 # "12936"\n
