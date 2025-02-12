@@ -13,9 +13,10 @@ from preImport import *
 class Solution:
     def minimumSize(self, nums: List[int], maxOperations: int) -> int:
         def check(k):
+            # return sum(math.ceil(x / k) - 1 for x in nums) <= maxOperations
             return sum((x - 1) // k for x in nums) <= maxOperations
         left, right = 1, max(nums)
-        while left <=right:
+        while left <= right:
             mid = (left + right) // 2
             if check(mid):
                 right = mid - 1
@@ -23,8 +24,6 @@ class Solution:
                 left = mid + 1
         return left
 # @lc code=end
-
-
 
 #
 # @lcpr case=start
