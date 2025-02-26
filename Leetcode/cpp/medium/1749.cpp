@@ -4,7 +4,6 @@
  * [1749] 任意子数组和的绝对值的最大值
  */
 
-
 // @lcpr-template-start
 #include <bits/stdc++.h>
 using namespace std;
@@ -12,7 +11,7 @@ using namespace std;
 // @lc code=start
 #include <ranges>
 class Solution1a {
-public:
+   public:
     int maxAbsoluteSum(vector<int>& nums) {
         int n = nums.size(), res1 = 0, res2 = 0;
         vector<int> f1(n + 1, 0), f2(n + 1, 0);
@@ -28,11 +27,11 @@ public:
 };
 
 class Solution1b {
-public:
+   public:
     int maxAbsoluteSum(vector<int>& nums) {
         int f1 = 0, f2 = 0;
         int ans = INT_MIN / 2;
-        for (auto const &x : nums) {
+        for (auto const& x : nums) {
             f1 = max(f1 + x, x);
             f2 = min(f2 + x, x);
             ans = max(ans, max(f1, -f2));
@@ -41,7 +40,35 @@ public:
     }
 };
 
-class Solution : public Solution1a {};
-// class Solution : public Solution1b {};
-// @lc code=end
+class Solution2a {
+   public:
+    int maxAbsoluteSum(vector<int>& nums) {
+        int ans = 0, s = 0, mx = 0, mn = 0;
+        for (auto const& x : nums) {
+            s += x;
+            mx = max(mx, s);
+            mn = min(mn, s);
+            ans = max(ans, mx - mn);
+        }
+        return ans;
+    }
+};
 
+class Solution2b {
+   public:
+    int maxAbsoluteSum(vector<int>& nums) {
+        int s = 0, mx = 0, mn = 0;
+        for (auto const& x : nums) {
+            s += x;
+            mx = max(mx, s);
+            mn = min(mn, s);
+        }
+        return mx - mn;
+    }
+};
+
+// class Solution : public Solution1a {};
+// class Solution : public Solution1b {};
+// class Solution : public Solution2a {};
+class Solution : public Solution2b {};
+// @lc code=end

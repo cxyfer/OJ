@@ -10,6 +10,13 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
+"""
+1. Kadane's Algorithm
+2. Prefix Sum
+  - 枚舉右端點，維護左端點
+  - 維護最大最小值即可
+    - 由於要取絕對值，小的前綴和不一定要在大的前綴和左側，因此直接維護最大最小值即可
+"""
 class Solution1a:
     def maxAbsoluteSum(self, nums: List[int]) -> int:
         n = len(nums)
@@ -28,8 +35,31 @@ class Solution1b:
             ans = max(ans, f1, -f2)
         return ans
     
+class Solution2a:
+    def maxAbsoluteSum(self, nums: List[int]) -> int:
+        ans = 0
+        # 枚舉右端點，維護左端點
+        s = mx = mn = 0
+        for x in nums:
+            s += x
+            ans = max(ans, mx - s, s - mn)
+            mx = max(mx, s)
+            mn = min(mn, s)
+        return ans
+
+class Solution2b:
+    def maxAbsoluteSum(self, nums: List[int]) -> int:
+        s = mx = mn = 0
+        for x in nums:
+            s += x
+            mx = max(mx, s)
+            mn = min(mn, s)
+        return mx - mn
+    
 # class Solution(Solution1a):
-class Solution(Solution1b):
+# class Solution(Solution1b):
+# class Solution(Solution2a):
+class Solution(Solution2b):
     pass
 # @lc code=end
 sol = Solution()
