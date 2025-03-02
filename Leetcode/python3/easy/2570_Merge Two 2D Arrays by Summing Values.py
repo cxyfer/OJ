@@ -1,8 +1,8 @@
 #
-# @lc app=leetcode.cn id=2570 lang=python3
+# @lc app=leetcode id=2570 lang=python3
 # @lcpr version=30204
 #
-# [2570] 合并两个二维数组 - 求和法
+# [2570] Merge Two 2D Arrays by Summing Values
 #
 
 
