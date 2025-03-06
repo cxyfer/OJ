@@ -9,19 +9,15 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+    1. Hash Table
+    2. Bit Manipulation
+        - Similar to 260. Single Number III
+    3. Math
+"""
 # @lc code=start
-class Solution:
-    """
-        1. Hash Table
-        2. Bit Manipulation
-            - 260. Single Number III
-        3. Math
-    """
+class Solution1:
     def findMissingAndRepeatedValues(self, grid: List[List[int]]) -> List[int]:
-        # return self.solve1(grid)
-        return self.solve2(grid)
-        # return self.solve3(grid)
-    def solve1(self, grid: List[List[int]]) -> List[int]:
         n = len(grid)
         cnt = [0] * (n * n + 1)
         for row in grid:
@@ -34,17 +30,14 @@ class Solution:
             elif cnt[i] == 0: # missing, b
                 ans[1] = i
         return ans
-    def solve2(self, grid: List[List[int]]) -> List[int]:
+    
+class Solution2:
+    def findMissingAndRepeatedValues(self, grid: List[List[int]]) -> List[int]:
         n = len(grid)
-        # 異或所有數字
-        xor = 0 # xor of all numbers
-        for row in grid:
-            for x in row:
-                xor ^= x
-        for x in range(1, n * n + 1):
-            xor ^= x
+        _xor = reduce(xor, (x for row in grid for x in row))
+        _xor ^= reduce(xor, (x for x in range(1, n * n + 1)))
         # 分組異或
-        lb = xor & -xor # 最低位的 1
+        lb = _xor & -_xor # 最低位的 1
         ans = [0, 0]
         for row in grid:
             for x in row:
@@ -52,13 +45,20 @@ class Solution:
         for x in range(1, n * n + 1):
             ans[x & lb == 0] ^= x # 分組異或
         return ans if ans[0] in [x for row in grid for x in row] else ans[::-1]
-    def solve3(self, grid: List[List[int]]) -> List[int]:
+    
+class Solution3:
+    def findMissingAndRepeatedValues(self, grid: List[List[int]]) -> List[int]:
         n, m = len(grid), len(grid) ** 2
         s1 = sum(x for row in grid for x in row) # sum of all numbers
         s2 = sum(x * x for row in grid for x in row) # sum of all squares
         d1 = s1 - m * (m + 1) // 2 # a - b
         d2 = s2 - m * (m + 1) * (m * 2 + 1) // 6 # a^2 - b^2 = (a + b)(a - b)
         return [(d2 // d1 + d1) // 2, (d2 // d1 - d1) // 2] # (a, b)
+    
+# class Solution(Solution1):
+# class Solution(Solution2):
+class Solution(Solution3):
+    pass
 # @lc code=end
 
 sol = Solution()
