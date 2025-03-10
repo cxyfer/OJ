@@ -14,43 +14,48 @@ class Solution {
 public:
     long long countOfSubstrings(string word, int k) {
         int n = word.size();
-        set<char> vowels = {'a', 'e', 'i', 'o', 'u'};
+        unordered_set<char> vowels = {'a', 'e', 'i', 'o', 'u'};
         
+        // pre[i] 表示 word[i] 前面有多少個連續的母音 (不含 word[i])
         vector<int> pre(n);
         for (int i = 0; i < n - 1; i++)
             if (vowels.count(word[i]))
                 pre[i + 1] = pre[i] + 1;
 
+        /*
+            使用滑動窗口維護 word[right] 為右端點的子字串
+        */
         long long ans = 0;
-        unordered_map<char, int> cnt_vowel;
-        int have_vowel = 0, cnt = 0, left = 0;
-
+        unordered_map<char, int> cnt;  // 記錄每個母音出現的次數
+        int have = 0, consonants = 0, left = 0;  // 母音的種類, 子音的數量, 左端點
         for (int right = 0; right < n; right++) {
-            // 1. 入窗口
             char ch = word[right];
+            // 1. 入窗口
             if (vowels.count(ch)) {
-                if (cnt_vowel[ch] == 0) have_vowel++;
-                cnt_vowel[ch]++;
+                if (cnt[ch] == 0) have++;
+                cnt[ch]++;
             }
-            else cnt++;
+            else consonants++;
 
             // 2. 子音太多了，縮小窗口
-            while (cnt > k) {
+            while (consonants > k) {
                 char lc = word[left];
                 if (vowels.count(lc)) {
-                    cnt_vowel[lc]--;
-                    if (cnt_vowel[lc] == 0) have_vowel--;
+                    cnt[lc]--;
+                    if (cnt[lc] == 0) have--;
                 }
-                else cnt--;
+                else consonants--;
                 left++;
             }
 
             // 3. 更新答案
-            if (cnt == k && have_vowel == 5) {
-                while (left < right && vowels.count(word[left]) && cnt_vowel[word[left]] > 1) {
-                    cnt_vowel[word[left]]--;
+            if (consonants == k && have == 5) {
+                // 把前綴中多餘的母音去掉
+                while (vowels.count(word[left]) && cnt[word[left]] > 1) {
+                    cnt[word[left]]--;
                     left++;
                 }
+                // pre[left] 即窗口可以向左延伸的長度
                 ans += pre[left] + 1;
             }
         }

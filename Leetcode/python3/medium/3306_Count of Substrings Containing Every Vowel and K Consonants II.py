@@ -2,7 +2,7 @@
 # @lc app=leetcode.cn id=3306 lang=python3
 # @lcpr version=30204
 #
-# [3306] 元音辅音字符串计数 II
+# [3306] Count of Substrings Containing Every Vowel and K Consonants II
 #
 
 
@@ -21,37 +21,36 @@ class Solution:
             if word[i] in vowels:
                 pre[i + 1] = pre[i] + 1
 
-        cnt_vowel = defaultdict(int)
-        have_vowel = 0 # 母音的種類
-
-        ans = 0
-        cnt = 0 # 子音的數量
-        left = 0
+        # 使用滑動窗口維護 word[right] 為右端點的子字串
+        ans = left = 0
+        cnt = defaultdict(int)  # 記錄每個母音出現的次數
+        have = 0  # 母音的種類
+        consonants = 0  # 子音的數量
         for right, ch in enumerate(word):
             # 1. 入窗口
             if ch in vowels:
-                if cnt_vowel[ch] == 0:
-                    have_vowel += 1
-                cnt_vowel[ch] += 1
+                if cnt[ch] == 0:
+                    have += 1
+                cnt[ch] += 1
             else:
-                cnt += 1
+                consonants += 1
 
             # 2. 子音太多了，縮小窗口
-            while cnt > k:
+            while consonants > k:
                 lc = word[left]
                 if lc in vowels:
-                    cnt_vowel[lc] -= 1
-                    if cnt_vowel[lc] == 0:
-                        have_vowel -= 1
+                    cnt[lc] -= 1
+                    if cnt[lc] == 0:
+                        have -= 1
                 else:
-                    cnt -= 1
+                    consonants -= 1
                 left += 1
 
             # 3. 更新答案
-            if cnt == k and have_vowel == 5:
+            if consonants == k and have == 5:
                 # 把前綴中多餘的母音去掉
-                while left < right and word[left] in vowels and cnt_vowel[word[left]] > 1:
-                    cnt_vowel[word[left]] -= 1
+                while word[left] in vowels and cnt[word[left]] > 1:
+                    cnt[word[left]] -= 1
                     left += 1
                 # pre[left] 即窗口可以向左延伸的長度
                 ans += pre[left] + 1
