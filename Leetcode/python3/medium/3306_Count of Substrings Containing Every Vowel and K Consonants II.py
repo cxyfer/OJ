@@ -58,7 +58,13 @@ class Solution:
         return ans
 # @lc code=end
 
-
+sol = Solution()
+print(sol.countOfSubstrings("aeioqq", 1)) # 0
+print(sol.countOfSubstrings("aeiou", 0)) # 1
+print(sol.countOfSubstrings("ieaouqqieaouqq", 1)) # 3
+print(sol.countOfSubstrings("iqeaouqi", 2)) # 3
+print(sol.countOfSubstrings("aadieuoh", 1)) # 2
+print(sol.countOfSubstrings("aoaiuefi", 1)) # 4
 
 #
 # @lcpr case=start
