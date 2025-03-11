@@ -16,18 +16,15 @@ public:
         int n = s.size();
         int ans = 0, left = 0, have = 0;
         vector<int> cnt(3);
-        for (char ch : s) {
-            cnt[ch - 'a'] += 1;
-            if (cnt[ch - 'a'] == 1) {
-                have += 1;
-            }
+        for (char& ch : s) {
+            // 1. 入窗口
+            if (++cnt[ch - 'a'] == 1) have++;
+            // 2. 出窗口，維持窗口在向左延伸即可滿足條件的狀態
             while (have == 3) {
-                cnt[s[left] - 'a'] -= 1;
-                if (cnt[s[left] - 'a'] == 0) {
-                    have -= 1;
-                }
-                left += 1;
+                if (--cnt[s[left] - 'a'] == 0) have--;
+                left++;
             }
+            // 3. 累加答案，即以 right 為右端點的子字串中，滿足條件的數量
             ans += left;
         }
         return ans;
