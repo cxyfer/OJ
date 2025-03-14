@@ -12,6 +12,9 @@ from preImport import *
 # @lc code=start
 class Solution:
     def maximumCandies(self, candies: List[int], k: int) -> int:
+        if sum(candies) < k:
+            return 0
+        
         def check(m):
             return sum(c // m for c in candies) >= k
         

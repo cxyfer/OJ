@@ -13,12 +13,18 @@ using namespace std;
 class Solution {
 public:
     int maximumCandies(vector<int>& candies, long long k) {
+        long long tot = accumulate(candies.begin(), candies.end(), 0LL);
+        if (tot < k) return 0;
+
         auto check = [&](auto &&dfs, int m) -> bool {
-            long long tot = 0;
-            for (auto&c : candies) tot += c / m;
-            return tot >= k;
+            long long res = 0;
+            for (auto&c : candies) {
+                res += c / m;
+            }
+            return res >= k;
         };
-        int left = 1, right = *max_element(candies.begin(), candies.end());
+        
+        int left = 1, right = min(*max_element(candies.begin(), candies.end()), (int) (tot / k));
         while (left <= right) {
             int mid = left + (right - left) / 2;
             if (check(check, mid)) left = mid + 1;
