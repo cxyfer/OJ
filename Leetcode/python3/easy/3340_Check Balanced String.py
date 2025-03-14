@@ -12,14 +12,11 @@ from preImport import *
 # @lc code=start
 class Solution:
     def isBalanced(self, num: str) -> bool:
-        # return sum((ord(d) - ord('0')) * (-1 if idx & 1 else 1) for idx, d in enumerate(num)) == 0
-        s1 = s2 = 0
-        for idx, d in enumerate(num):
-            if idx % 2 == 0:
-                s1 += ord(d) - ord('0')
-            else:
-                s2 += ord(d) - ord('0')
-        return s1 == s2
+        # return sum((ord(d) - ord('0')) * (-1 if i & 1 else 1) for i, d in enumerate(num)) == 0
+        cnt = [0, 0]
+        for i, ch in enumerate(num):
+            cnt[i & 1] += ord(ch) - ord('0')
+        return cnt[0] == cnt[1]
 # @lc code=end
 
 
