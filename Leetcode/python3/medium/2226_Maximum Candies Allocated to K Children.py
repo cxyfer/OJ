@@ -12,13 +12,14 @@ from preImport import *
 # @lc code=start
 class Solution:
     def maximumCandies(self, candies: List[int], k: int) -> int:
-        if sum(candies) < k:
+        tot = sum(candies)
+        if tot < k:
             return 0
         
         def check(m):
             return sum(c // m for c in candies) >= k
-        
-        left, right = 1, min(max(candies), sum(candies) // k)
+
+        left, right = 1, tot // k
         while left <= right:
             mid = (left + right) // 2
             if check(mid):

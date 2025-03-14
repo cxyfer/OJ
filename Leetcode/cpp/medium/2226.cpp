@@ -24,7 +24,7 @@ public:
             return res >= k;
         };
         
-        int left = 1, right = min(*max_element(candies.begin(), candies.end()), (int) (tot / k));
+        int left = 1, right = (int) (tot / k);
         while (left <= right) {
             int mid = left + (right - left) / 2;
             if (check(check, mid)) left = mid + 1;
