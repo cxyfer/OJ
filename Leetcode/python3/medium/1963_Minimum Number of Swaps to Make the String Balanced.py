@@ -9,10 +9,13 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+    https://gdst.dev/posts/LC-1963/
+"""
 # @lc code=start
 class Solution1:
     def minSwaps(self, s: str) -> int:
-        st = []
+        st = []  # 維護未配對的 '[' 
         for ch in s:
             if ch == '[':
                 st.append(ch)
@@ -22,14 +25,13 @@ class Solution1:
 
 class Solution2:
     def minSwaps(self, s: str) -> int:
-        cnt = 0
+        cnt = 0  # 未配對的 '[' 數量
         for ch in s:
             if ch == '[':
                 cnt += 1
             elif cnt:
                 cnt -= 1
         return (cnt + 1) // 2
-
 
 class Solution(Solution1):
 # class Solution(Solution2):
