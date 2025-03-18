@@ -1,7 +1,7 @@
 /*
  * @lc app=leetcode.cn id=2614 lang=cpp
  *
- * [2614] 对角线上的质数
+ * [2614] Prime In Diagonal
  */
 
 
@@ -10,24 +10,29 @@
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
+
+const int MAXN = 4e6 + 5;
+bool is_prime[MAXN];
+auto init = []() {
+    memset(is_prime, true, sizeof(is_prime));
+    is_prime[0] = is_prime[1] = false;
+    for (long long i = 2; i < MAXN; i++) {
+        if (is_prime[i]) {
+            for (long long j = i * i; j < MAXN; j += i)
+                is_prime[j] = false;
+        }
+    }
+    return 0;
+}();
+
 class Solution {
 public:
     int diagonalPrime(vector<vector<int>>& nums) {
-        auto is_prime = [](int n) {
-            if (n < 2 || n % 2 == 0 && n != 2) return false;
-            for (int i = 3; i <= sqrt(n); i += 2) {
-                if (n % i == 0) return false;
-            }
-            return true;
-        };
         int n = nums.size(), ans = 0;
-        for (int i = 0; i < n; i++) {
-            for (int x : {nums[i][i], nums[i][n-1-i]}) {
-                if (x > ans && is_prime(x)) ans = x; // 先判斷是否比 ans 大，再判斷是否是質數
-            }
-        }
+        for (int i = 0; i < n; i++)
+            for (int x : {nums[i][i], nums[i][n-1-i]})
+                if (is_prime[x]) ans = max(ans, x);
         return ans;
     }
 };
 // @lc code=end
-
