@@ -21,18 +21,21 @@ class Solution1:
         cnt = [0] * 32
         for right, x in enumerate(nums):
             # 1. 入窗口
-            for i in range(32):
-                if x & (1 << i):
-                    cnt[i] += 1
-                    if cnt[i] == 2:
-                        over += 1
+            while x:
+                lb = x & -x
+                cnt[lb.bit_length() - 1] += 1
+                if cnt[lb.bit_length() - 1] == 2:
+                    over += 1
+                x ^= lb
             # 2. 出窗口
             while over > 0:
-                for i in range(32):
-                    if nums[left] & (1 << i):
-                        cnt[i] -= 1
-                        if cnt[i] == 1:
-                            over -= 1
+                y = nums[left]
+                while y:
+                    lb = y & -y
+                    cnt[lb.bit_length() - 1] -= 1
+                    if cnt[lb.bit_length() - 1] == 1:
+                        over -= 1
+                    y ^= lb
                 left += 1
             # 3. 更新答案
             ans = max(ans, right - left + 1)
@@ -64,8 +67,8 @@ class Solution3:
             ans = max(ans, right - left)
         return ans
 
-# class Solution(Solution1):
-class Solution(Solution2):
+class Solution(Solution1):
+# class Solution(Solution2):
 # class Solution(Solution3):
     pass
 # @lc code=end

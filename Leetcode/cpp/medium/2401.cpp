@@ -26,15 +26,19 @@ public:
         for (int right = 0; right < n; right++) {
             int x = nums[right];
             // 1. 入窗口
-            for (int j = 0; j < 32; j++)
-                if (x & (1 << j))
-                    if (++cnt[j] == 2) over++;
+            while (x) {
+                int lb = x & -x;
+                if (++cnt[__builtin_ctz(lb)] == 2) over++;
+                x ^= lb;
+            }
             // 2. 出窗口
             while (over > 0) {
                 int y = nums[left++];
-                for (int j = 0; j < 32; j++)
-                    if (y & (1 << j))
-                        if (--cnt[j] == 1) over--;
+                while (y) {
+                    int lb = y & -y;
+                    if (--cnt[__builtin_ctz(lb)] == 1) over--;
+                    y ^= lb;
+                }
             }
             // 3. 更新答案
             ans = max(ans, right - left + 1);
@@ -47,7 +51,7 @@ class Solution2 {
 public:
     int longestNiceSubarray(vector<int>& nums) {
         int n = nums.size();
-        int ans = 0, left = 0, over = 0, or_val = 0;
+        int ans = 0, left = 0, or_val = 0;
         for (int right = 0; right < n; right++) {
             int x = nums[right];
             // 1. 要先出窗口才能入窗口
@@ -76,8 +80,9 @@ public:
         return ans;
     }
 };
-// class Solution : public Solution1 {};
-class Solution : public Solution2 {};
+
+class Solution : public Solution1 {};
+// class Solution : public Solution2 {};
 // class Solution : public Solution3 {};
 // @lc code=end
 
