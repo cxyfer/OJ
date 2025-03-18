@@ -3,6 +3,7 @@
 __pycache__/
 考古/
 Leetcode/.lcpr_data/
+*.exe
 /*.*
 !.gitignore
 !.clang-format
