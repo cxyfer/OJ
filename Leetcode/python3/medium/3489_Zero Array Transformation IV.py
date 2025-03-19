@@ -9,7 +9,7 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class Solution:
+class Solution1:
     def minZeroArray(self, nums: List[int], queries: List[List[int]]) -> int:
         n = len(nums)
         if all(x == 0 for x in nums):
@@ -24,6 +24,24 @@ class Solution:
             if all(f[i][nums[i]] for i in range(n)):
                 return k + 1
         return -1
+    
+class Solution2:
+    def minZeroArray(self, nums: List[int], queries: List[List[int]]) -> int:
+        n = len(nums)
+        if all(x == 0 for x in nums):
+            return 0
+        f = [1] * n
+        for k, (l, r, v) in enumerate(queries):
+            for i in range(l, r + 1):
+                if (f[i] >> nums[i]) & 1: continue
+                f[i] |= f[i] << v
+            if all((f[i] >> v) & 1 for i, v in enumerate(nums)):
+                return k + 1
+        return -1
+    
+# class Solution(Solution1):
+class Solution(Solution2):
+    pass
 # @lc code=end
 
 sol = Solution()
