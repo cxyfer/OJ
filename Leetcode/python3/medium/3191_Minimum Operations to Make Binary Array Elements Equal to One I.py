@@ -9,17 +9,16 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
-# @lc code=start
 """
     Greedy
 """
+# @lc code=start
 class Solution:
     def minOperations(self, nums: List[int]) -> int:
         n = len(nums)
         ans = 0
         for i in range(n - 2):
             if nums[i] == 0:
-                nums[i] = 1
                 nums[i + 1] ^= 1
                 nums[i + 2] ^= 1
                 ans += 1
