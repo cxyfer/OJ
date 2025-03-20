@@ -19,11 +19,12 @@ from preImport import *
     3. u 和 v 不在同一個連通分量中，則不存在一條從 u 到 v 的路徑，答案為 -1。
 """
 # @lc code=start
+
 class Solution1:
     def minimumCost(self, n: int, edges: List[List[int]], query: List[List[int]]) -> List[int]:
         pa = list(range(n))
         sz = [1] * n
-        ands = [0xFFFFFFFF] * n # 該連通分量中的所有邊的 AND 值，初始化為 0xFFFFFFFF
+        ands = [0xFFFFFFFF] * n  # 該連通分量中的所有邊的 AND 值，初始化為 0xFFFFFFFF
 
         def find(x):
             while x != pa[x]:
@@ -41,9 +42,9 @@ class Solution1:
             sz[fx] += sz[fy]
             ands[fx] &= ands[fy]
             pa[fy] = fx
-        
+
         return [ands[find(x)] if find(x) == find(y) else -1 for x, y in query]
-    
+
 class Solution2:
     def minimumCost(self, n: int, edges: List[List[int]], query: List[List[int]]) -> List[int]:
         g = [[] for _ in range(n)]
@@ -53,27 +54,29 @@ class Solution2:
 
         idxs = [-1] * n  # 每個點所在連通分量的編號，初始化為 -1
         ands = []  # 每個連通分量中所有邊的 AND 值
+
         def dfs(u: int) -> int:
             res = 0xFFFFFFFF
-            idxs[u] = len(ands) # 紀錄該點所在的連通分量編號
+            idxs[u] = len(ands)  # 紀錄該點所在的連通分量編號
             for v, w in g[u]:
                 res &= w
-                if idxs[v] >= 0: # visited
+                if idxs[v] >= 0:  # visited
                     continue
                 res &= dfs(v)
             return res
 
         for i in range(n):
-            if idxs[i] < 0: # not visited
-                ands.append(dfs(i))
+            if idxs[i] >= 0:  # visited
+                continue
+            ands.append(dfs(i))
 
         return [ands[idxs[x]] if idxs[x] == idxs[y] else -1 for x, y in query]
-    
-# class Solution(Solution1):
-class Solution(Solution2):
+
+class Solution(Solution1):
+# class Solution(Solution2):
     pass
 # @lc code=end
 
 sol = Solution()
-print(sol.minimumCost(5, [[0,1,7],[1,3,7],[1,2,1]], [[0,3],[3,4]])) # [1,-1]
-print(sol.minimumCost(3, [[0,2,7],[0,1,15],[1,2,6],[1,2,1]], [[1,2]])) # [0]
+print(sol.minimumCost(5, [[0, 1, 7],[1, 3, 7],[1, 2, 1]], [[0, 3], [3, 4]]))  # [1,-1]
+print(sol.minimumCost(3, [[0, 2, 7],[0,1,15],[1,2,6],[1,2,1]], [[1,2]])) # [0]
