@@ -1,39 +1,41 @@
 import sys
+from collections import deque
 
 def answer(text):
     print(text)
     sys.stdout.flush()
 
 N = int(input())
-
-g = [[] for _ in range(N+1)]
+g = [[] for _ in range(N + 1)]
 edges = set()
-dist = [[float('inf')] * (N + 1) for _ in range(N + 1)]
-for i in range(1, N+1):
-    dist[i][i] = 0
 for _ in range(N-1):
     u, v = map(int, input().split())
+    edges.add((min(u, v), max(u, v)))
     g[u].append(v)
     g[v].append(u)
-    dist[u][v] = 1
-    dist[v][u] = 1
-    edges.add((u, v))  # u < v
 
-# Floyd-Warshall
-for k in range(1, N + 1):
-    for i in range(1, N + 1):
-        if dist[i][k] == float('inf'):
+# Bipartite
+color = [-1] * (N + 1)
+q = deque([1])
+color[1] = 0
+while q:
+    u = q.popleft()
+    for v in g[u]:
+        if color[v] != -1:
             continue
-        for j in range(1, N+1):
-            dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+        color[v] = 1 ^ color[u]
+        q.append(v)
+
+A = [u for u in range(1, N + 1) if color[u] == 0]
+B = [u for u in range(1, N + 1) if color[u] == 1]
 
 moves = set()
-for u in range(1, N + 1):
-    for v in range(u + 1, N + 1):
+for a in A:
+    for b in B:
+        u, v = min(a, b), max(a, b)
         if (u, v) in edges:
             continue
-        if dist[u][v] & 1:
-            moves.add((u, v))
+        moves.add((u, v))
 
 if len(moves) & 1:
     answer("First")
