@@ -10,6 +10,7 @@ AlignTrailingComments: true
 ColumnLimit: 80
 DerivePointerAlignment: false
 LambdaBodyIndentation: OuterScope
+AccessModifierOffset: -4
 ---
 Language: Java
 AllowShortBlocksOnASingleLine: Empty
