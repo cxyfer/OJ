@@ -14,20 +14,16 @@ using namespace std;
 class Solution {
 public:
     int countCompleteComponents(int n, vector<vector<int>>& edges) {
-        vector<int> pa(n);
-        vector<int> sz(n, 1);
-        vector<int> cnt(n, 0);
+        vector<int> pa(n), sz(n, 1), cnt(n);
         iota(pa.begin(), pa.end(), 0);
 
         auto find = [&](int x) -> int {
-            while (x != pa[x]) {
-                pa[x] = pa[pa[x]];
-                x = pa[x];
-            }
+            while (x != pa[x])
+                x = pa[x] = pa[pa[x]];
             return x;
         };
 
-        for (auto& e : edges) {
+        for (auto& e: edges) {
             int fx = find(e[0]), fy = find(e[1]);
             cnt[fx]++;
             if (fx == fy) continue;

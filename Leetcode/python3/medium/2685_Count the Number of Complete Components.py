@@ -17,8 +17,7 @@ class Solution:
 
         def find(x):
             while x != pa[x]:
-                pa[x] = pa[pa[x]]
-                x = pa[x]
+                x = pa[x] = pa[pa[x]]
             return x
         
         for x, y in edges:
