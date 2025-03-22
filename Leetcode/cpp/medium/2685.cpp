@@ -18,12 +18,11 @@ public:
         iota(pa.begin(), pa.end(), 0);
 
         auto find = [&](int x) -> int {
-            while (x != pa[x])
-                x = pa[x] = pa[pa[x]];
+            while (x != pa[x]) x = pa[x] = pa[pa[x]];
             return x;
         };
 
-        for (auto& e: edges) {
+        for (auto& e : edges) {
             int fx = find(e[0]), fy = find(e[1]);
             cnt[fx]++;
             if (fx == fy) continue;
