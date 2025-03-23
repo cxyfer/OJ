@@ -10,6 +10,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 // @lcpr-template-end
+/*
+ * 1. Greedy (Two-pass)
+ *   - 確保從左到右的能變成 '(' 的數量大於 ')' 的數量，反之同理
+ * 2. Greedy (One-pass)
+ *   - Similar to 678. Valid Parenthesis String
+ *   - 維護可能的 cnt 取值範圍
+*/
 // @lc code=start
 class Solution1 {
 public:
