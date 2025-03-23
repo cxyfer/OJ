@@ -12,8 +12,8 @@ using namespace std;
 // @lcpr-template-end
 // @lc code=start
 using LL = long long;
+using pll = pair<LL, LL>;
 const int MOD = 1e9 + 7;
-#define pll pair<LL, LL>
 
 class Solution {
 public:
