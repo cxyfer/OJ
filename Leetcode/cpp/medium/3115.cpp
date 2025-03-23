@@ -12,9 +12,8 @@ using namespace std;
 // @lc code=start
 const int N = 105;
 
-bool is_prime[N];
+vector<bool> is_prime(N, true);
 auto init = []() {
-    memset(is_prime, true, sizeof(is_prime));
     is_prime[0] = is_prime[1] = false;
     for (int i = 2; i * i < N; i++) {
         if (is_prime[i]) {

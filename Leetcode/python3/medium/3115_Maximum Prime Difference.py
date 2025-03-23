@@ -17,10 +17,6 @@ for i in range(2, math.isqrt(MAX_N) + 1):
             is_prime[j] = False
 class Solution:
     def maximumPrimeDifference(self, nums: List[int]) -> int:
-        # prime = [i for i, x in enumerate(nums) if is_prime[x]]
-        # if len(prime) < 2:
-        #     return 0
-        # return prime[-1] - prime[0]
         i = 0
         while not is_prime[nums[i]]:
             i += 1
