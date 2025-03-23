@@ -9,29 +9,59 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+1. Greedy (Two-pass)
+    - 確保從左到右的能變成 '(' 的數量大於 ')' 的數量，反之同理
+2. Greedy (One-pass)
+    - Similar to 678. Valid Parenthesis String
+    - 維護可能的 cnt 取值範圍
+"""
 # @lc code=start
-class Solution:
+class Solution1:
     def canBeValid(self, s: str, locked: str) -> bool:
         n = len(s)
         if n & 1:
             return False
-        x = 0
-        for i in range(n):
-            if s[i] == '(' or locked[i] == '0':
-                x += 1
+        cnt = 0
+        for ch, lk in zip(s, locked):
+            if ch == '(' or lk == '0':
+                cnt += 1
             else:
-                x -= 1
-                if x < 0:
+                cnt -= 1
+                if cnt < 0:
                     return False
-        x = 0
-        for i in range(n - 1, -1, -1):
-            if s[i] == ')' or locked[i] == '0':
-                x += 1
+        cnt = 0
+        for ch, lk in zip(s[::-1], locked[::-1]):
+            if ch == ')' or lk == '0':
+                cnt += 1
             else:
-                x -= 1
-                if x < 0:
+                cnt -= 1
+                if cnt < 0:
                     return False
         return True
+
+class Solution2:
+    def canBeValid(self, s: str, locked: str) -> bool:
+        if len(s) & 1:
+            return False
+        mn = mx = 0
+        for ch, lk in zip(s, locked):
+            if lk == '1':
+                if ch == '(':
+                    mn += 1
+                    mx += 1
+                elif ch == ')':
+                    mn = max(0, mn - 1)
+                    mx -= 1
+                    if mx < 0:
+                        return False
+            else:
+                mn = max(0, mn - 1)
+                mx += 1
+        return mn == 0
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 
 
