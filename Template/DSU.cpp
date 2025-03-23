@@ -25,25 +25,3 @@ public:
         return true;
     }
 };
-
-int main() {
-    ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
-    int n, m; cin >> n >> m;
-    UnionFind uf(n);
-    for (int i = 0; i < m; i++) {
-        int a, b; cin >> a >> b;
-        uf.unionSet(a-1, b-1);
-    }
-    bool visited[n] = {false};
-    int ans = -m;
-    for (int i = 0; i < n; i++) {
-        int pa = uf.find(i);
-        if (!visited[pa]) {
-            visited[pa] = true;
-            ans += uf.sz[pa] * (uf.sz[pa] - 1) / 2;
-        }
-    }
-    cout << ans << endl;
-
-    return 0;
-}
