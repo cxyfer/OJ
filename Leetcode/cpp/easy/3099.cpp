@@ -13,12 +13,12 @@ using namespace std;
 class Solution {
 public:
     int sumOfTheDigitsOfHarshadNumber(int x) {
-        int s = 0, tmp = x;
-        while (tmp) {
-            s += tmp % 10;
-            tmp /= 10;
+        int s = 0, t = x;
+        while (t) {
+            s += t % 10;
+            t /= 10;
         }
-        return x % s == 0? s : -1;
+        return x % s == 0 ? s : -1;
     }
 };
 // @lc code=end

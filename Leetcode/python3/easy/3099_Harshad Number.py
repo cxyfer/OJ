@@ -12,9 +12,9 @@ from preImport import *
 # @lc code=start
 class Solution:
     def sumOfTheDigitsOfHarshadNumber(self, x: int) -> int:
-        s, tmp = 0, x
-        while tmp:
-            tmp, r = divmod(tmp, 10)
+        s, t = 0, x
+        while t:
+            t, r = divmod(t, 10)
             s += r
         return s if x % s == 0 else -1
 # @lc code=end
