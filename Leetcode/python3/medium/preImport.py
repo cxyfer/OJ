@@ -5,6 +5,7 @@ from typing import *
 from collections import *
 from functools import *
 from operator import *
+from string import *
 del pow
 
 from heapq import *
