@@ -134,9 +134,9 @@ public:
         int ans = 0, s = 0, pre = 1;
         for (int i = 0; i < vec.size(); i++) {
             auto [d, v] = vec[i];
-            while (i + 1 < vec.size() && vec[i + 1].first == d) {
+            // Same day of line sweep should be merged
+            while (i + 1 < vec.size() && vec[i + 1].first == d)
                 v += vec[++i].second;
-            }
             if (s == 0) ans += d - pre;  // [pre, d - 1] is valid
             s += v;
             pre = d;
@@ -147,8 +147,8 @@ public:
 };
 
 // using Solution = Solution1a;
-using Solution = Solution1b;
+// using Solution = Solution1b;
 // using Solution = Solution1c;
 // using Solution = Solution2;
-// using Solution = Solution2b;
+using Solution = Solution2b;
 // @lc code=end
