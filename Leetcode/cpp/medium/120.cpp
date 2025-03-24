@@ -43,13 +43,13 @@ class Solution2b {
 public:
     int minimumTotal(vector<vector<int>>& triangle) {
         int n = triangle.size();
-        vector<int> f(n, 0);
+        vector<int> f(n, 0), nf(n, 0);
         f = triangle[n - 1];
         for (int i = n - 2; i >= 0; i--) {
-            vector<int> nf(i + 1, 0);
+            fill(nf.begin(), nf.end(), 0);
             for (int j = 0; j <= i; j++)
                 nf[j] = triangle[i][j] + min(f[j], f[j + 1]);
-            f = nf;
+            swap(f, nf);
         }
         return f[0];
     }
