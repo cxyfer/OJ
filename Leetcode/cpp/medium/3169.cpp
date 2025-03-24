@@ -14,14 +14,17 @@ using namespace std;
  * 2. Prefix Sum + Line Sweep
  */
 // @lc code=start
-const int SIZE = 256;   // 2^8
-const int MASK = 255;   // 0xFF
+const int BIT = 32;
+const int LEN = 8;
+const int SIZE = 1 << LEN;
+const int MASK = SIZE - 1;
 
 void radixSort(vector<pair<int, int>>& vec) {
-    vector<pair<int, int>> temp(vec.size());
+    int n = vec.size();
+    vector<pair<int, int>> temp(n);
     vector<int> buckets(SIZE);
     
-    for (int shift = 0; shift < 32; shift += 8) {
+    for (int shift = 0; shift < BIT; shift += LEN) {
         fill(buckets.begin(), buckets.end(), 0);
         
         for (const auto& x : vec)
@@ -30,10 +33,10 @@ void radixSort(vector<pair<int, int>>& vec) {
         for (int i = 1; i < SIZE; i++)
             buckets[i] += buckets[i - 1];
         
-        for (int i = vec.size() - 1; i >= 0; i--)
+        for (int i = n - 1; i >= 0; i--)
             temp[--buckets[(vec[i].first >> shift) & MASK]] = vec[i];
         
-        vec.swap(temp);
+        swap(vec, temp);
     }
 }
 
@@ -144,8 +147,8 @@ public:
 };
 
 // using Solution = Solution1a;
-// using Solution = Solution1b;
+using Solution = Solution1b;
 // using Solution = Solution1c;
 // using Solution = Solution2;
-using Solution = Solution2b;
+// using Solution = Solution2b;
 // @lc code=end
