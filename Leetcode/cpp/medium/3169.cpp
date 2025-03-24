@@ -38,8 +38,7 @@ class Solution1b {
 public:
     int countDays(int days, vector<vector<int>>& meetings) {
         sort(meetings.begin(), meetings.end());
-        int ans = days;
-        int st = meetings[0][0], ed = meetings[0][1];
+        int ans = days, st = 0, ed = -1;
         for (auto& m : meetings) {
             int x = m[0], y = m[1];
             if (x > ed) {
@@ -91,8 +90,8 @@ public:
     }
 };
 
-using Solution = Solution1a;
-// using Solution = Solution1b;
+// using Solution = Solution1a;
+using Solution = Solution1b;
 // using Solution = Solution1c;
 // using Solution = Solution2;
 // @lc code=end

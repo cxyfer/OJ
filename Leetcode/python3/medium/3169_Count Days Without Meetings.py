@@ -33,7 +33,8 @@ class Solution1b:
     def countDays(self, days: int, meetings: List[List[int]]) -> int:
         meetings.sort(key=lambda x: x[0])
         ans = days
-        st, ed = meetings[0]
+        # st, ed = meetings[0]
+        st, ed = 0, -1  # Initialize as a empty interval
         for x, y in meetings:
             if x > ed:
                 ans -= (ed - st + 1)  # [st, ed] is invalid
@@ -72,9 +73,9 @@ class Solution2:
         return ans
     
 # Solution = Solution1a
-# Solution = Solution1b
+Solution = Solution1b
 # Solution = Solution1c
-Solution = Solution2
+# Solution = Solution2
 # @lc code=end
 
 sol = Solution()
