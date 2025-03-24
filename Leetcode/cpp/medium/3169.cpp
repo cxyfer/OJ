@@ -4,7 +4,6 @@
  * [3169] 无需开会的工作日
  */
 
-
 // @lcpr-template-start
 #include <bits/stdc++.h>
 using namespace std;
@@ -19,16 +18,18 @@ class Solution1a {
 public:
     int countDays(int days, vector<vector<int>>& meetings) {
         sort(meetings.begin(), meetings.end());
-        
+
         vector<pair<int, int>> merged;
         for (auto& m : meetings) {
             int x = m[0], y = m[1];
-            if (merged.empty() || merged.back().second < x) merged.emplace_back(x, y);
-            else merged.back().second = max(merged.back().second, y);
+            if (merged.empty() || merged.back().second < x)
+                merged.emplace_back(x, y);
+            else
+                merged.back().second = max(merged.back().second, y);
         }
-        
+
         int ans = days;
-        for (auto& [x, y]: merged)  // [x, y] is invalid
+        for (auto& [x, y] : merged)  // [x, y] is invalid
             ans -= y - x + 1;
         return ans;
     }
@@ -45,8 +46,8 @@ public:
                 ans -= (ed - st + 1);  // [st, ed] is invalid
                 st = x;
                 ed = y;
-            }
-            else ed = max(ed, y);
+            } else
+                ed = max(ed, y);
         }
         ans -= (ed - st + 1);  // [st, ed] is invalid
         return ans;
@@ -63,8 +64,8 @@ public:
             if (x > ed) {
                 ans += x - ed - 1;  // [ed + 1, x - 1] is valid
                 ed = y;
-            }
-            else ed = max(ed, y);
+            } else
+                ed = max(ed, y);
         }
         ans += days - ed;  // [ed + 1, days] is valid
         return ans;
@@ -95,4 +96,3 @@ using Solution = Solution1b;
 // using Solution = Solution1c;
 // using Solution = Solution2;
 // @lc code=end
-

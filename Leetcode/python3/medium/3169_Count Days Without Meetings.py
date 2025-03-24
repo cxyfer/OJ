@@ -5,7 +5,6 @@
 # [3169] Count Days Without Meetings
 #
 
-
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
@@ -43,6 +42,7 @@ class Solution1b:
                 ed = max(ed, y)
         ans -= (ed - st + 1)  # [st, ed] is invalid
         return ans
+
 class Solution1c:
     def countDays(self, days: int, meetings: List[List[int]]) -> int:
         meetings.sort(key=lambda x: x[0])
@@ -71,7 +71,7 @@ class Solution2:
             pre = d
         ans += days - pre + 1  # [pre, days] is valid
         return ans
-    
+
 # Solution = Solution1a
 Solution = Solution1b
 # Solution = Solution1c
@@ -79,11 +79,13 @@ Solution = Solution1b
 # @lc code=end
 
 sol = Solution()
-print(sol.countDays(10, [[5,7],[1,3],[9,10]]))  # 2
-print(sol.countDays(5, [[2,4],[1,3]]))  # 1
-print(sol.countDays(6, [[1,6]]))  # 0
-print(sol.countDays(8, [[3,4],[4,8],[2,5],[3,8]]))  # 1
+print(sol.countDays(10, [[5, 7], [1, 3], [9, 10]]))  # 2
+print(sol.countDays(5, [[2, 4], [1, 3]]))  # 1
+print(sol.countDays(6, [[1, 6]]))  # 0
+print(sol.countDays(8, [[3, 4], [4, 8], [2, 5], [3, 8]]))  # 1
+
 #
+
 # @lcpr case=start
 # 10\n[[5,7],[1,3],[9,10]]\n
 # @lcpr case=end
@@ -97,4 +99,3 @@ print(sol.countDays(8, [[3,4],[4,8],[2,5],[3,8]]))  # 1
 # @lcpr case=end
 
 #
-
