@@ -17,8 +17,9 @@ using namespace std;
 class Solution1a {
 public:
     int countDays(int days, vector<vector<int>>& meetings) {
-        sort(meetings.begin(), meetings.end());
-
+        sort(meetings.begin(), meetings.end(), [](const vector<int>& a, const vector<int>& b) {
+            return a[0] < b[0];
+        });
         vector<pair<int, int>> merged;
         for (auto& m : meetings) {
             int x = m[0], y = m[1];
@@ -38,7 +39,9 @@ public:
 class Solution1b {
 public:
     int countDays(int days, vector<vector<int>>& meetings) {
-        sort(meetings.begin(), meetings.end());
+        sort(meetings.begin(), meetings.end(), [](const vector<int>& a, const vector<int>& b) {
+            return a[0] < b[0];
+        });
         int ans = days, st = 0, ed = -1;
         for (auto& m : meetings) {
             int x = m[0], y = m[1];
@@ -57,7 +60,9 @@ public:
 class Solution1c {
 public:
     int countDays(int days, vector<vector<int>>& meetings) {
-        sort(meetings.begin(), meetings.end());
+        sort(meetings.begin(), meetings.end(), [](const vector<int>& a, const vector<int>& b) {
+            return a[0] < b[0];
+        });
         int ans = 0, ed = 0;
         for (auto& m : meetings) {
             int x = m[0], y = m[1];
