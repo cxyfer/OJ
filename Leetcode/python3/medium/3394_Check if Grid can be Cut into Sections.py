@@ -9,6 +9,10 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+    1. Line Sweep
+    2. Merge Intervals
+"""
 # @lc code=start
 class Solution1:
     def checkValidCuts(self, n: int, rectangles: List[List[int]]) -> bool:
@@ -28,8 +32,28 @@ class Solution1:
             return res >= 3
 
         return check(X) or check(Y)
+    
+class Solution2:
+    def checkValidCuts(self, n: int, rectangles: List[List[int]]) -> bool:
+        X, Y = [], []
+        for x1, y1, x2, y2 in rectangles:
+            X.append((x1, x2))
+            Y.append((y1, y2))
+        
+        def check(intervals):
+            intervals.sort(key=lambda x: x[0])
+            res = []
+            for x, y in intervals:
+                if not res or res[-1][1] <= x:
+                    res.append([x, y])
+                else:
+                    res[-1][1] = max(res[-1][1], y)
+            return len(res)
+
+        return check(X) >= 3 or check(Y) >= 3
 
 Solution = Solution1
+# Solution = Solution2
 # @lc code=end
 
 sol = Solution()
