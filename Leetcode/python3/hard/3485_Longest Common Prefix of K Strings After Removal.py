@@ -19,13 +19,13 @@ class Node:
 
     def __lt__(self, other):
         return self.dep < other.dep
-    
+
     def __eq__(self, other):
         return self.dep == other.dep
-    
+
     def __hash__(self):
         return hash(id(self))
-    
+
 class Trie:
     def __init__(self):
         self.root = Node(0)
@@ -42,17 +42,18 @@ class Solution:
         for word in words:
             trie.insert(word)
 
-        st = SortedSet()
+        st = SortedSet()  # {node}, compare by node.dep
         for word in words:
             cur = trie.root
             for ch in word:
                 cur = cur.child[ch]
                 if cur.cnt >= k:
                     st.add(cur)
-            
+
         def calc(s: str) -> int:
-            cur = trie.root
             res = 0
+            # Erase nodes of this path
+            cur = trie.root
             for ch in s:
                 cur = cur.child[ch]
                 if cur.cnt >= k:
@@ -60,9 +61,11 @@ class Solution:
                 if cur.cnt >= k + 1:
                     res = max(res, cur.dep)
 
+            # Find the longest common prefix
             if st:
                 res = max(res, st[-1].dep)
 
+            # Reinsert nodes of this path
             cur = trie.root
             for ch in s:
                 cur = cur.child[ch]
