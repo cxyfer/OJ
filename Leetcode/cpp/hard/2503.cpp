@@ -11,10 +11,6 @@
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
-#include <bits/stdc++.h>
-using namespace std;
-#define endl '\n'
-
 class UnionFind {
 public:
     vector<int> pa, sz;
