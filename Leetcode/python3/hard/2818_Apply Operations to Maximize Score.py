@@ -9,13 +9,14 @@
 from preImport import *
 # @lcpr-template-end
 """
+Sieve of Eratosthenes + Greedy + Monotonic Stack + Exponentiating by Squaring
 1. 質數篩預處理出 prime score
 2. 貪心思路是越大的數要盡可能的使用越多次
 3. 考慮每個 x = nums[i] 可以使用多少次，即多少區間的貢獻是 x
     - 往左找到第一個 >= scores[x] 的下標 l，則左端點可以是 [l + 1, i]
     - 往右找到第一個 > scores[x] 的下標 r，則右端點可以是 [i, r - 1]
     - 共有 (i - l) * (r - i) 個區間
-4. 排序並根據可以使用的次數計算貢獻。
+4. 按照 nums[i] 排序，並根據可以使用的次數使用快速冪計算貢獻。
 """
 # @lc code=start
 MOD = int(1e9+7)

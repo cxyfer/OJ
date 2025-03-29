@@ -17,11 +17,10 @@ const int MAXN = 1e5 + 10;
 
 vector<int> scores(MAXN, 0);
 auto init = []() {
-    for (int i = 2; i < MAXN; i++) {
-        if (scores[i]) continue;
-        for (int j = i; j < MAXN; j += i)
-            scores[j]++;
-    }
+    for (int i = 2; i < MAXN; i++)
+        if (scores[i] == 0)
+            for (int j = i; j < MAXN; j += i)
+                scores[j]++;
     return 0;
 }();
 
