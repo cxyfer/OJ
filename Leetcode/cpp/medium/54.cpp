@@ -11,21 +11,22 @@ using namespace std;
 // @lcpr-template-end
 // @lc code=start
 class Solution {
+    const vector<vector<int>> dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 public:
     vector<int> spiralOrder(vector<vector<int>>& matrix) {
         int m = matrix.size(), n = matrix[0].size();
+
         vector<int> ans(m * n, -1);
+        vector<vector<bool>> vis(m, vector<bool>(n, false));
         int x = 0, y = 0, nx, ny;
         int cd = 0; // current direction
-        int DIRX[4]= {0, 1, 0, -1}, DIRY[4] = {1, 0, -1, 0};
-        vector<vector<bool>> visited(m, vector<bool>(n, false));
         for (int i = 0; i < m * n; ++i){
             ans[i] = matrix[x][y];
-            visited[x][y] = true;
-            nx = x + DIRX[cd]; ny = y + DIRY[cd];
-            if (nx < 0 || nx >= m || ny < 0 || ny >= n || visited[nx][ny]) {
+            vis[x][y] = true;
+            nx = x + dirs[cd][0]; ny = y + dirs[cd][1];
+            if (nx < 0 || nx >= m || ny < 0 || ny >= n || vis[nx][ny]) {
                 cd = (cd + 1) % 4;
-                nx = x + DIRX[cd]; ny = y + DIRY[cd];
+                nx = x + dirs[cd][0]; ny = y + dirs[cd][1];
             }
             x = nx, y = ny;
         }
