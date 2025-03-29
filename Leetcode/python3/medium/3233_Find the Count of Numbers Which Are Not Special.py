@@ -14,11 +14,12 @@ MAXN = int(1e9 + 5)
 MAXN_SQRT = math.isqrt(MAXN)
 is_prime = [True] * (MAXN_SQRT + 1)
 is_prime[0] = is_prime[1] = False
+nums = []
 for i in range(2, MAXN_SQRT + 1):
     if is_prime[i]:
         for j in range(i * i, MAXN_SQRT + 1, i):
             is_prime[j] = False
-nums = [i * i for i in range(2, MAXN_SQRT + 1) if is_prime[i]]
+        nums.append(i * i)
 class Solution:
     def nonSpecialCount(self, l: int, r: int) -> int:
         return r - l + 1 - (bisect_right(nums, r) - bisect_left(nums, l))
