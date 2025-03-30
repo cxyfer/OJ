@@ -12,13 +12,14 @@ from preImport import *
 # @lc code=start
 class Solution:
     def addSpaces(self, s: str, spaces: List[int]) -> str:
-        res = []
-        pre = 0 
-        for i in spaces:
-            res.append(s[pre:i])
-            pre = i
-        res.append(s[pre:])
-        return ' '.join(res)
+        # return ' '.join([s[x:y] for x, y in pairwise([0] + spaces + [len(s)])])
+        ans = []
+        last = 0
+        for x in spaces:
+            ans.append(s[last:x])
+            last = x
+        ans.append(s[last:])
+        return ' '.join(ans)
 # @lc code=end
 
 
