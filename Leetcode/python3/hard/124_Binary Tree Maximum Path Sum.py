@@ -14,13 +14,12 @@ class Solution:
     def maxPathSum(self, root: Optional[TreeNode]) -> int:
         ans = float('-inf')
         def dfs(node):
-            if not node:
-                return 0
+            if node is None: return 0
             nonlocal ans
-            left = max(dfs(node.left), 0) # 不選負數
-            right = max(dfs(node.right), 0) # 不選負數
+            left = max(dfs(node.left), 0)  # 不選負數
+            right = max(dfs(node.right), 0)  # 不選負數
             ans = max(ans, node.val + left + right)
-            return node.val + max(left, right)
+            return node.val + max(left, right)  # 到葉子的最長路徑
         dfs(root)
         return ans
 # @lc code=end
