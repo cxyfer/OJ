@@ -57,7 +57,7 @@ public:
     long long putMarbles(vector<int>& weights, int k) {
         if (k == 1) return 0;
         int n = weights.size();
-        // 維護大小為 k - 1 的 Min/Max Heap 保存前 k 個最大/最小 pair
+        // 維護大小為 k-1 的 Min/Max Heap 保存前 k-1 個最大/最小 pair
         priority_queue<int, vector<int>, greater<int>> hp1;
         priority_queue<int> hp2;
         for (int i = 0; i < n - 1; i++) {

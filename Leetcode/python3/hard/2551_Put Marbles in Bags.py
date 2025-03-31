@@ -29,7 +29,7 @@ class Solution2:
     def putMarbles(self, weights: List[int], k: int) -> int:
         if k == 1:
             return 0
-        hp1, hp2 = [], []  # 維護大小為 k - 1 的 Min/Max Heap 保存前 k 個最大/最小 pair
+        hp1, hp2 = [], []  # 維護大小為 k-1 的 Min/Max Heap 保存前 k-1 個最大/最小 pair
         for x, y in pairwise(weights):
             pair = x + y
             if len(hp1) < k - 1:
