@@ -12,6 +12,14 @@ from preImport import *
 class Solution:
     def maxProduct(self, nums: List[int], k: int, limit: int) -> int:
         n = len(nums)
+        
+        # Pruning
+        mx = max(nums)
+        if k >= 0 and k > (n + 1) // 2 * mx:
+            return -1
+        if k < 0 and k < -n // 2 * mx:
+            return -1
+
         suf0 = [0] * n
         suf0[n - 1] = int(nums[n - 1] == 0)
         for i in range(n - 2, -1, -1):
@@ -21,8 +29,6 @@ class Solution:
         def f(i: int, s: int, p: int, pos: int, taken: bool, has0: bool) -> int:
             if i == n:
                 return p if s == k and taken else -1
-            if p == 0 and suf0[i] == 0 and not has0:
-                return -1
             if p == 0 and suf0[i] == 1 and nums[i] == 0 and not has0:
                 return f(i + 1, s, 0, pos ^ 1, True, True)
             res = f(i + 1, s, p, pos, taken, has0)
