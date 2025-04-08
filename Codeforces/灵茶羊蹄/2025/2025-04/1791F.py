@@ -15,12 +15,8 @@ class UnionFind:
         fx, fy = self.find(x), self.find(y)
         if fx == fy:
             return False
-        if fx > fy:
-            fx, fy = fy, fx
-        self.pa[fx] = fy  # 向右合併
+        self.pa[fx] = fy
         return True
-
-t = int(input())
 
 def calc(x):
     res = 0
@@ -28,6 +24,8 @@ def calc(x):
         res += x % 10
         x //= 10
     return res
+
+t = int(input())
 
 for _ in range(t):
     n, q = map(int, input().split())
@@ -41,7 +39,7 @@ for _ in range(t):
             while (idx <= r):
                 A[idx] = calc(A[idx])
                 if A[idx] < 10:
-                    uf.union(idx, idx + 1)
+                    uf.union(idx, idx + 1)  # 向右合併
                 idx = uf.find(idx + 1)
         else:
             idx = args[0] - 1
