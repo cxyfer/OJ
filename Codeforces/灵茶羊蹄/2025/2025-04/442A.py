@@ -10,7 +10,7 @@ for msk in range(1 << 10):
     vis = set()
     # 枚舉所有卡片，根據標記方式得出這張卡片上的標記
     for card in cards:
-        mark = msk & (1 << card[0]) | msk & (1 << (card[1] + 5))
+        mark = msk & ((1 << card[0]) | (1 << (card[1] + 5)))
         vis.add(mark)
     # 若要區分所有卡片，則標記數量需要等於卡片的種類數量
     if len(vis) == n:
