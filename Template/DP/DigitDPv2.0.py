@@ -3,15 +3,15 @@ from functools import cache
 """
 Digit DP Template v2.0
 - 3490. Count Beautiful Numbers
+- 2999. Count the Number of Powerful Integers
 """
 
 class Solution:
     def beautifulNumbers(self, l: int, r: int) -> int:
-        low = list(map(int, str(l)))
         high = list(map(int, str(r)))
         n = len(high)
+        low = list(map(int, str(l).zfill(n)))  # 補前導零，使 low 和 high 對齊
         diff = n - len(low)
-        low = [0] * (n - len(low)) + low  # 補前導零，使 low 和 high 對齊
 
         @cache
         def dfs(i: int, s: int, m: int, limit_low: bool, limit_high: bool) -> int:
