@@ -14,7 +14,7 @@ class Solution:
         high = list(map(int, str(finish)))
         n = len(high)
         low = list(map(int, str(start).zfill(n)))  # 補前導零，使 low 和 high 對齊
-        s = list(map(int, str(s)))
+        s = list(map(int, s))
 
         @cache
         def dfs(i: int, limit_low: bool, limit_high: bool) -> int:
