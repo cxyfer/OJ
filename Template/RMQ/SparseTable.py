@@ -17,3 +17,13 @@ class SparseTable:
     def query(self, L, R):
         k = math.floor(math.log2(R - L + 1))
         return self.merge(self.st[L][k], self.st[R - (1 << k) + 1][k])
+    
+n, q = map(int, input().split())
+A = [int(input()) for _ in range(n)]
+
+st_mx = SparseTable(A, max)
+st_mn = SparseTable(A, min)
+
+for _ in range(q):
+    l, r = map(lambda x : int(x) - 1, input().split())
+    print(st_mx.query(l, r) - st_mn.query(l, r))
