@@ -9,7 +9,6 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
-# @lc code=start
 """
     Binary Search
     由於順序不影響 Fair Pairs 的對數，只需要確保不重複計算即可，因此可以先對nums進行排序。
@@ -21,13 +20,14 @@ from preImport import *
     這可以透過限制二分的範圍在 [0, i) 或 [i + 1, n) 來解決：
     或是也能先不管，但先扣掉 (i, i) 的情況後，最後再除以 2 即可。
 """
+# @lc code=start
 class Solution:
     def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
         ans = 0
         nums.sort()
-        for idx, x in enumerate(nums):
-            l = bisect_left(nums, lower - x, 0, idx) # [0, idx)
-            r = bisect_right(nums, upper - x, 0, idx) - 1 # [0, idx)
+        for i, x in enumerate(nums):
+            l = bisect_left(nums, lower - x, 0, i) # [0, idx)
+            r = bisect_right(nums, upper - x, 0, i) - 1 # [0, idx)
             ans += r - l + 1
         return ans
 # @lc code=end
