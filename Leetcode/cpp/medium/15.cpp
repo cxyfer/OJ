@@ -39,19 +39,16 @@ public:
             if (nums[i] > 0) break; // 1.
             if (nums[i] + nums[i+1] + nums[i+2] > 0) break; // 2.
             if (nums[i] + nums[n-2] + nums[n-1] < 0) continue; // 3.
-            int left = i + 1, right = n - 1;
-            while (left < right) {
-                int s = nums[i] + nums[left] + nums[right];
-                if (s < 0) left++; // 太小了，左邊的數字太小，往右移
-                else if (s > 0) right--; // 太大了，右邊的數字太大，往左移
+            int j = i + 1, k = n - 1;
+            while (j < k) {
+                int s = nums[i] + nums[j] + nums[k];
+                if (s < 0) j++; // 太小了，左邊的數字太小，往右移
+                else if (s > 0) k--; // 太大了，右邊的數字太大，往左移
                 else {
-                    ans.push_back({nums[i], nums[left], nums[right]});
+                    ans.push_back({nums[i], nums[j++], nums[k--]});
                     // 跳過重複的答案
-                    while (left < right && nums[left] == nums[left+1]) left++;
-                    while (left < right && nums[right] == nums[right-1]) right--;
-                    // 找下一個答案
-                    left++;
-                    right--;
+                    while (j < k && nums[j] == nums[j-1]) j++;
+                    while (j < k && nums[k] == nums[k+1]) k--;
                 }
             }
         }

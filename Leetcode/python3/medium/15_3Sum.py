@@ -29,33 +29,30 @@ class Solution:
             return []
         ans = []
         nums.sort()
-        # i < left < right < n
-        for i in range(n - 2):  # 枚舉第一個數字 nums[i]
-            if i > 0 and nums[i] == nums[i-1]:  # 和前一個數字相同，由於題目要求不能有重複數字，跳過
+        for i in range(n - 2):
+            if i > 0 and nums[i] == nums[i - 1]:  # 跳過重複
                 continue
-            if nums[i] > 0:  # 優化 1
-                break
-            if nums[i] + nums[i+1] + nums[i+2] > 0:  # 優化 2
+            if nums[i] > 0 or i + 2 < n and nums[i] + nums[i+1] + nums[i+2] > 0:  # 優化 1 & 2
                 break
             if nums[i] + nums[n-2] + nums[n-1] < 0:  # 優化 3
                 continue
-            left, right = i + 1, n - 1
-            while left < right:
-                s = nums[i] + nums[left] + nums[right]
-                if s < 0:  # 太小了，左邊的數字太小，往右移
-                    left += 1
-                elif s > 0:  # 太大了，右邊的數字太大，往左移
-                    right -= 1
+            j, k = i + 1, n - 1
+            while j < k:
+                cur = nums[i] + nums[j] + nums[k]
+                if cur > 0:  # 太大了，右邊的數字太大，往左移
+                    k -= 1
+                elif cur < 0:  # 太小了，左邊的數字太小，往右移
+                    j += 1
                 else:
-                    ans.append([nums[i], nums[left], nums[right]])
-                    # 跳過重複答案
-                    while left < right and nums[left] == nums[left + 1]:
-                        left += 1
-                    while left < right and nums[right] == nums[right - 1]:
-                        right -= 1
-                    # 找下一個答案
-                    left += 1
-                    right -= 1
-        return ans
+                    ans.append([nums[i], nums[j], nums[k]])
+                    j += 1
+                    k -= 1
+                    while j < k and nums[j - 1] == nums[j]:
+                        j += 1
+                    while j < k and nums[k] == nums[k + 1]:
+                        k -= 1
+        return ans 
 # @lc code=end
 
+sol = Solution()
+print(sol.threeSum([-1,0,1,2,-1,-4]))  # [[-1,-1,2],[-1,0,1]]
