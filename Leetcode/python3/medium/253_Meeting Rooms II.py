@@ -11,12 +11,12 @@ from preImport import *
 # @lc code=start
 class Solution:
     def minMeetingRooms(self, intervals: List[List[int]]) -> int:
-        diff = [0] * (int(1e6 + 5))
+        diff = defaultdict(int)
         for s, e in intervals:
             diff[s] += 1
             diff[e] -= 1
         ans = s = 0
-        for d in diff:
+        for _, d in sorted(diff.items()):
             s += d
             ans = max(ans, s)
         return ans
