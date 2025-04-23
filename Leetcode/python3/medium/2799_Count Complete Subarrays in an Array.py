@@ -13,16 +13,16 @@ from preImport import *
 class Solution:
     def countCompleteSubarrays(self, nums: List[int]) -> int:
         need = len(set(nums))
-        ans = left = have = 0
+        ans = left = 0
         cnt = defaultdict(int)
         for right, x in enumerate(nums):
             cnt[x] += 1
             if cnt[x] == 1:
-                have += 1
-            while have == need:
+                need -= 1
+            while need == 0:
                 cnt[nums[left]] -= 1
                 if cnt[nums[left]] == 0:
-                    have -= 1
+                    need += 1
                 left += 1
             ans += left
         return ans

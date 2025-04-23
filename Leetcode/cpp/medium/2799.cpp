@@ -15,16 +15,13 @@ public:
     int countCompleteSubarrays(vector<int>& nums) {
         int n = nums.size();
         int need = unordered_set(nums.begin(), nums.end()).size();
-        int ans = 0, left = 0, have = 0;
+        int ans = 0, left = 0;
         unordered_map<int, int> cnt;
         for (int right = 0; right < n; right++) {
             cnt[nums[right]]++;
-            if (cnt[nums[right]] == 1) have++;
-            while (have == need) {
-                cnt[nums[left]]--;
-                if (cnt[nums[left]] == 0) have--;
-                left++;
-            }
+            if (cnt[nums[right]] == 1) need--;
+            while (need == 0)
+                if (--cnt[nums[left++]] == 0) need++;
             ans += left;
         }
         return ans;
