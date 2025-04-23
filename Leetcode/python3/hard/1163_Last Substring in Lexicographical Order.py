@@ -27,7 +27,48 @@ class Solution2:
             else:
                 j = j + ln + 1
         return s[i:]
+
+class Solution2:
+    def lastSubstring(self, s: str) -> str:
+        n = len(s)
+        i, j = 0, 1
+        while j < n:
+            ln = 0
+            while j + ln < n and s[j + ln] == s[i + ln]:
+                ln += 1
+            if j + ln < n and s[j + ln] > s[i + ln]:
+                i, j = j, max(j + 1, i + ln + 1)
+            else:
+                j = j + ln + 1
+        return s[i:]
     
-Solution = Solution2
+class Solution3:
+    def lastSubstring(self, s: str) -> str:
+        n = len(s)
+        mx = max(ch for ch in s)
+        lst = [i for i, ch in enumerate(s) if ch == mx]
+        if len(lst) == 1:
+            return s[lst[0]:]
+        i, j, k = lst[0], lst[1], 1
+        while j < n:
+            ln = 0
+            while j + ln < n and s[j + ln] == s[i + ln]:
+                ln += 1
+            if j + ln < n and s[j + ln] > s[i + ln]:
+                k = bisect_right(lst, max(j, i + ln))
+                i, j = j, lst[k] if k < len(lst) else n
+            else:
+                k = bisect_right(lst, j + ln)
+                j = lst[k] if k < len(lst) else n
+        return s[i:]
+
+# Solution = Solution1
+# Solution = Solution2
+Solution = Solution3
 # @lc code=end
+
+sol = Solution()
+print(sol.lastSubstring("abab"))  # "bab"
+print(sol.lastSubstring("leetcode"))  # "tcode"
+print(sol.lastSubstring("cacacb"))  # "cb"
 
