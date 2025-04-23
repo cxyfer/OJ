@@ -15,20 +15,20 @@ class Solution {
 public:
     vector<int> vowelStrings(vector<string>& words, vector<vector<int>>& queries) {
         int n = words.size(), m = queries.size();
-        vector<int> s(n+1, 0); // prefix sum
-        for (int i=0; i<n; i++) {
+        vector<int> s(n + 1, 0);  // prefix sum
+        for (int i = 0; i < n; i++) {
             string w = words[i];
-            s[i+1] = s[i] + (isvowel(w[0]) && isvowel(w.back()));
+            s[i + 1] = s[i] + (isvowel(w.front()) && isvowel(w.back()));
         }
         vector<int> ans(m, 0);
-        for (int i=0; i<m; i++) {
+        for (int i = 0; i < m; i++) {
             int l = queries[i][0], r = queries[i][1];
-            ans[i] = s[r+1] - s[l];
+            ans[i] = s[r + 1] - s[l];
         }
         return ans;
     }
     bool isvowel(char c) {
-        return c=='a' || c=='e' || c=='i' || c=='o' || c=='u';
+        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
     }
 };
 // @lc code=end
