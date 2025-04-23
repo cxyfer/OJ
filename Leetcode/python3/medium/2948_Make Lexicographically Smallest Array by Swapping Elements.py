@@ -8,6 +8,9 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+    排序 + 分組循環
+"""
 # @lc code=start
 class Solution:
     def lexicographicallySmallestArray(self, nums: List[int], limit: int) -> List[int]:
