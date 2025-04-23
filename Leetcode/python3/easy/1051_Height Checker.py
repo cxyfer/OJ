@@ -10,28 +10,25 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class Solution:
+class Solution1:
     def heightChecker(self, heights: List[int]) -> int:
-        # return self.solve1(heights)
-        return self.solve2(heights)
-    def solve1(self, heights: List[int]) -> int:
-        expected = sorted(heights)
-        ans = 0
-        for x, y in zip(heights, expected):
-            ans += (x != y)
-        return ans
-    def solve2(self, heights: List[int]) -> int:
+        return sum(x != y for x, y in zip(heights, sorted(heights)))
+
+class Solution2:
+    def heightChecker(self, heights: List[int]) -> int:
         cnt = [0] * 101
         for x in heights:
             cnt[x] += 1
-        s = 0 # prefix sum
+        s = 0  # prefix sum
         ans = 0
-        for i in range(101):
-            for j in range(s, s + cnt[i]):
-                if heights[j] != i:
-                    ans += 1
-            s += cnt[i]
+        for x in range(101):
+            for i in range(s, s + cnt[x]):
+                ans += heights[i] != x
+            s += cnt[x]
         return ans
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 
 

@@ -10,36 +10,34 @@
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     int heightChecker(vector<int>& heights) {
-        // return solve1(heights);
-        return solve2(heights);
-    }
-    int solve1(vector<int>& heights) {
         int n = heights.size();
         vector<int> expected = heights;
         sort(expected.begin(), expected.end());
         int ans = 0;
-        for (int i = 0; i < n; i++) {
-            if (heights[i] != expected[i]) {
-                ans++;
-            }
-        }
+        for (int i = 0; i < n; i++)
+            ans += heights[i] != expected[i];
         return ans;
     }
-    int solve2(vector<int>& heights) {
+};
+
+class Solution2 {
+public:
+    int heightChecker(vector<int>& heights) {
         int n = heights.size();
         vector<int> cnt(101, 0);
         for (int x : heights) cnt[x]++;
         int ans = 0, s = 0;
-        for (int i = 0; i < 101; i++) {
-            for (int j = 0; j < cnt[i]; j++) {
-                if (heights[s++] != i) ans++;
-            }
-        }
+        for (int x = 0; x < 101; x++)
+            while (cnt[x]--)
+                ans += heights[s++] != x;
         return ans;
     }
 };
+
+// using Solution = Solution1;
+using Solution = Solution2;
 // @lc code=end
 
