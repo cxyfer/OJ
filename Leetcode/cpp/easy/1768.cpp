@@ -16,10 +16,8 @@ public:
     string mergeAlternately(string word1, string word2) {
         int ln = min(word1.size(), word2.size());
         string ans;
-        for (int i = 0; i < ln; i++) {
-            ans += word1[i];
-            ans += word2[i];
-        }
+        for (int i = 0; i < ln; i++)
+            ans += word1.substr(i, 1) + word2.substr(i, 1);
         ans += word1.substr(ln) + word2.substr(ln);
         return ans;
     }

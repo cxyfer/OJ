@@ -14,8 +14,7 @@ class Solution:
         ln = min(len(word1), len(word2))
         ans = ""
         for i in range(ln):
-            ans += word1[i]
-            ans += word2[i]
+            ans += word1[i] + word2[i]
         ans += word1[ln:] + word2[ln:]
         return ans
 # @lc code=end
