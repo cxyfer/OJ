@@ -14,7 +14,8 @@ class Solution:
     def countCompleteSubarrays(self, nums: List[int]) -> int:
         need = len(set(nums))
         ans = left = 0
-        cnt = defaultdict(int)
+        # cnt = defaultdict(int)
+        cnt = [0] * 2001
         for right, x in enumerate(nums):
             cnt[x] += 1
             if cnt[x] == 1:
