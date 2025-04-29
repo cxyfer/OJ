@@ -36,17 +36,15 @@ public:
         long long ans = 0;
         for (int right = 0; right < n; right++) {
             if (nums[right] == mx) cnt++;
-            while (cnt == k) {
-                if (nums[left] == mx) cnt--;
-                left++;
-            }
+            while (cnt == k)
+                cnt -= nums[left++] == mx;
             ans += left;
         }
         return ans;
     }
 };
 
-class Solution : public Solution1 {};
-// class Solution : public Solution2 {};
+// class Solution : public Solution1 {};
+class Solution : public Solution2 {};
 // @lc code=end
 

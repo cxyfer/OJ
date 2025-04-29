@@ -19,19 +19,18 @@ class Solution1:
         n = len(nums)
         mx = max(nums)
 
-        pre = [0] # prefix sum
-        for num in nums:
-            pre.append(pre[-1] + (num == mx))
+        pre = [0] * (n + 1)  # prefix sum
+        for i, x in enumerate(nums):
+            pre[i + 1] = pre[i] + (x == mx)
+   
         ans = 0
-
-        for i in range(n): # 對於每個 i，找到 pre[i] + k 的位置
-            j = bisect_left(pre, pre[i] + k)
+        for i, s in enumerate(pre):  # 對於每個 i，找到 pre[i] + k 的位置
+            j = bisect_left(pre, s + k)
             ans += n - (j - 1)
         return ans
     
 class Solution2:
-    def countSubarrays(self, nums: List[int], k: int) -> int: 
-        n = len(nums)
+    def countSubarrays(self, nums: List[int], k: int) -> int:
         mx = max(nums)
         ans = left = cnt = 0
         for right, x in enumerate(nums):
