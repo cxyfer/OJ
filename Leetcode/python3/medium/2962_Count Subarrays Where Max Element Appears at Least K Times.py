@@ -42,10 +42,9 @@ class Solution2:
                 left += 1
             ans += left
         return ans
-    
-# class Solution(Solution1):
-class Solution(Solution2):
-    pass
+
+# Solution = Solution1   
+Solution = Solution2
 # @lc code=end
 #
 # @lcpr case=start

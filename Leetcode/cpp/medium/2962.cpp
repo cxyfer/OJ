@@ -37,14 +37,14 @@ public:
         for (int right = 0; right < n; right++) {
             if (nums[right] == mx) cnt++;
             while (cnt == k)
-                cnt -= nums[left++] == mx;
+                if (nums[left++] == mx) cnt--;
             ans += left;
         }
         return ans;
     }
 };
 
-// class Solution : public Solution1 {};
-class Solution : public Solution2 {};
+// using Solution = Solution1;
+using Solution = Solution2;
 // @lc code=end
 
