@@ -83,20 +83,18 @@ class Matrix:
     
 class Solution3a:
     def numTilings(self, n: int) -> int:
-        MOD = int(1e9 + 7)
         if n <= 2: return n
         M = Matrix([[0, 0, 0, 1], [1, 0, 1, 0], [1, 1, 0, 0], [1, 1, 1, 1]])
         x = Matrix([[1], [0], [0], [1]])
-        res = (M ** (n - 1))* x
+        res = (M ** (n - 1)) * x
         return res.mat[3][0]
     
 class Solution3b:
     def numTilings(self, n: int) -> int:
-        MOD = int(1e9 + 7)
         if n <= 2: return n
         M = Matrix([[2, 0, 1], [1, 0, 0], [0, 1, 0]])
         x = Matrix([[2], [1], [1]])
-        res = (M ** (n - 2))* x
+        res = (M ** (n - 2)) * x
         return res.mat[0][0]
     
 # Solution = Solution1
