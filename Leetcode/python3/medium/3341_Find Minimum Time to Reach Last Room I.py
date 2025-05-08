@@ -10,8 +10,6 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-
-
 class Solution:
     def minTimeToReach(self, moveTime: List[List[int]]) -> int:
         n, m = len(moveTime), len(moveTime[0])

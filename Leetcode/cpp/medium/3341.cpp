@@ -11,16 +11,15 @@
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
-struct Node {
-    int x, y, t;
-    bool operator<(const Node &other) const {
-        return t > other.t;
-    }
-};
-
 class Solution {
 private:
-    vector<pair<int, int>> DIR = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    inline static const vector<pair<int, int>> DIR = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    struct Node {
+        int x, y, t;
+        bool operator<(const Node &other) const {
+            return t > other.t;
+        }
+    };
 public:
     int minTimeToReach(vector<vector<int>>& moveTime) {
         int n = moveTime.size(), m = moveTime[0].size();
