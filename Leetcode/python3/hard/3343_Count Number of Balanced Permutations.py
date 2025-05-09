@@ -13,33 +13,32 @@ from preImport import *
 MOD = 10**9 + 7
 MAXN = 80
 
-fact = [1] * (MAXN + 1) # 階乘
+fact = [1] * (MAXN + 1)  # fact[i] = i! % MOD
 for i in range(1, MAXN + 1):
     fact[i] = fact[i-1] * i % MOD
 
-invf = [1] * (MAXN + 1) # 階乘的乘法反元素
-invf[MAXN] = pow(fact[MAXN], MOD-2, MOD)
+invf = [1] * (MAXN + 1)  # invf[i] = 1/(i!) % MOD
+invf[MAXN] = pow(fact[MAXN], MOD-2, MOD)  # Fermat's little theorem
 for i in range(MAXN, 0, -1):
     invf[i-1] = invf[i] * i % MOD
 
-comb = [[0] * (MAXN + 1) for _ in range(MAXN + 1)] # 組合數
+comb = [[0] * (MAXN + 1) for _ in range(MAXN + 1)]  # comb[i][j] = C(i, j) % MOD
 for i in range(MAXN + 1):
     comb[i][0] = 1
     for j in range(1, i + 1):
-        comb[i][j] = (comb[i-1][j] + comb[i-1][j-1]) % MOD
+        comb[i][j] = (comb[i-1][j] + comb[i-1][j-1]) % MOD  # Pascal's triangle
 
 class Solution:
     def countBalancedPermutations(self, num: str) -> int:
         n = len(num)
-        cnt = [0] * 10
-        for d in num:
-            cnt[int(d)] += 1
-        n_e, n_o = (n + 1) // 2, n // 2
 
         s = sum(int(ch) for ch in num)
         if s & 1:
             return 0
-
+        n_e, n_o = (n + 1) // 2, n // 2
+        cnt = [0] * 10
+        for d in num:
+            cnt[int(d)] += 1
         @cache
         # d: 當前數字, left_e: 剩餘下標數量, left_s: 剩餘下標和
         def dfs(d, left_e, left_s):
