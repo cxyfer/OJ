@@ -1,5 +1,4 @@
-MOD = 10 ** 9 + 7
-
+MOD = int(1e9 + 7)
 class Matrix:
     def __init__(self, mat):
         self.mat = mat
@@ -27,13 +26,18 @@ class Matrix:
             k >>= 1
         return res
     
-    def __getitem__(self, key):
-        i, j = key
-        return self.mat[i][j]
+    def mul_pow(self, k, x):
+        assert len(self.mat[0]) == len(x.mat)
+        res = x
+        while k > 0:
+            if k & 1:
+                res = self * res
+            self = self * self
+            k >>= 1
+        return res
     
-    def __setitem__(self, key, value):
-        i, j = key
-        self.mat[i][j] = value
+    def __getitem__(self, i):
+        return self.mat[i]
 
     def __str__(self):
         return "\n".join(map(lambda x: " ".join(map(str, x)), self.mat))
