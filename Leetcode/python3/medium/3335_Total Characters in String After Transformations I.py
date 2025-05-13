@@ -9,6 +9,24 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
+class Solution1:
+    def lengthAfterTransformations(self, s: str, t: int) -> int:
+        MOD = int(1e9 + 7)
+        f = [0] * 26
+        for ch in s:
+            f[ord(ch) - ord('a')] += 1
+
+        for _ in range(t):
+            nf = [0] * 26
+            for i in range(26):
+                if i == 25:  # z -> ab
+                    nf[0] = (nf[0] + f[i]) % MOD
+                    nf[1] = (nf[1] + f[i]) % MOD
+                else:
+                    nf[i + 1] = (nf[i + 1] + f[i]) % MOD
+            f = nf
+        return sum(f) % MOD
+    
 MOD = int(1e9 + 7)
 class Matrix:
     def __init__(self, mat):
@@ -53,7 +71,7 @@ class Matrix:
     def __str__(self):
         return "\n".join(map(lambda x: " ".join(map(str, x)), self.mat))
 
-class Solution:
+class Solution2:
     def lengthAfterTransformations(self, s: str, t: int) -> int:
         cnt = [0] * 26
         for ch in s:
@@ -72,5 +90,8 @@ class Solution:
             ans += cnt[i] * M[i][0]
             ans %= MOD
         return ans
+    
+Solution = Solution1
+# Solution = Solution2
 # @lc code=end
 
