@@ -70,7 +70,7 @@ def matrix_power(A: np.ndarray, n: int, mod: int):
     res = np.eye(len(A), dtype=object)
     while n > 0:
         if n & 1:
-            res = res @ A % mod
+            res = A @ res % mod
         A = A @ A % mod
         n >>= 1
     return res
@@ -95,16 +95,16 @@ class Solution2:
         for i in range(26):
             for k in range(1, nums[i] + 1):
                 j = (i + k) % 26
-                M[i, j] = 1
+                M[i][j] = 1
         
         x = np.ones((26, 1), dtype=object)
+        # M_t = matrix_power(M, t, MOD)
+        # f = M_t @ x % MOD
         f = matrix_power_mul(M, t, x, MOD)
-        return sum(f[i, 0] * cnt[i] for i in range(26)) % MOD
+        return sum(f[i][0] * cnt[i] for i in range(26)) % MOD
     
-# Solution = Solution1
-Solution = Solution2
+Solution = Solution1
+# Solution = Solution2
 # @lc code=end
 sol = Solution()
-# print(sol.lengthAfterTransformations("abcyy", 2, [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2]))  # 7
-print(sol.lengthAfterTransformations("mppgvcssluzhipednraxbdfbyn", 3719, [5,3,8,1,4,2,2,4,5,2,8,5,8,2,6,10,8,1,4,1,7,4,2,4,7,5]))  # 1000000006
-# 467065288
+print(sol.lengthAfterTransformations("abcyy", 2, [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2]))  # 7
