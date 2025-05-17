@@ -9,31 +9,31 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+Two Pointer
+把 0 放到前面、把 2 放到後面，這樣 1 自然就會在中間
+這個思路與 3-Way QuickSort 相同
+Reference:
+- https://www.bilibili.com/video/BV1Q4421Z74Y/
+"""
 # @lc code=start
 class Solution:
-    """
-        Two Pointer
-        把 0 放到前面，2 放到後面，1 就會在中間
-        這個思路與 3-Way QuickSort 相同
-        Reference:
-        - https://www.bilibili.com/video/BV1Q4421Z74Y/
-    """
     def sortColors(self, nums: List[int]) -> None:
         """
         Do not return anything, modify nums in-place instead.
         """
         n = len(nums)
-        l, r, idx = 0, n-1, 0
-        while idx <= r:  # 小於 l 的位置都是 0，大於 r 的位置都是 2
-            if nums[idx] == 0:  # 把 0 放到前面
-                nums[l], nums[idx] = nums[idx], nums[l]
+        i = 0
+        l, r = 0, n - 1
+        while i <= r:
+            if nums[i] == 0:  # 這裡交換過來的數字一定是 1
+                nums[i], nums[l] = nums[l], nums[i]
                 l += 1
-                idx += 1
-            elif nums[idx] == 2:  # 把 2 放到後面，這裡要注意交換來的數字可能是 2，因此 idx 不能 +1
-                nums[r], nums[idx] = nums[idx], nums[r]
+            elif nums[i] == 2:  # 這裡交換過來的數字可能是 0 或 2，因此還要檢查新的 nums[i]
+                nums[i], nums[r] = nums[r], nums[i]
                 r -= 1
-            else:
-                idx += 1
+                continue
+            i += 1
 # @lc code=end
 
 

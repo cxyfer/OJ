@@ -14,14 +14,11 @@ class Solution {
 public:
     void sortColors(vector<int>& nums) {
         int n = nums.size();
-        int l = 0, r = n - 1, idx = 0;
-        while (idx <= r) {
-            if (nums[idx] == 0)
-                swap(nums[l++], nums[idx++]);
-            else if (nums[idx] == 2) // 注意這裡 idx 不能 +1
-                swap(nums[r--], nums[idx]);  
-            else
-                idx++;
+        int i = 0, l = 0, r = n - 1;
+        while (i <= r) {
+            if (nums[i] == 0) swap(nums[i++], nums[l++]);
+            else if (nums[i] == 2) swap(nums[i], nums[r--]);
+            else i++;
         }
     }
 };
