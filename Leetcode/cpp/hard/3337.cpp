@@ -20,6 +20,8 @@ public:
     vector<vector<T>> mat;
     int rows, cols;
 
+    Matrix() : rows(0), cols(0) {}
+
     Matrix(int r, int c, bool is_identity = false) : rows(r), cols(c) {
         mat.resize(r, vector<T>(c, 0));
         if (is_identity) {
@@ -46,7 +48,7 @@ public:
         return res;
     }
 
-    Matrix power(LL k) const {
+    Matrix pow(LL k) const {
         assert(rows == cols);
         Matrix res(rows, cols, true);
         Matrix base = *this;
@@ -61,6 +63,7 @@ public:
 
     Matrix mul_pow(LL k, Matrix x) const {
         assert(cols == x.rows);
+        
         Matrix res = x;
         Matrix base = *this;
         while (k > 0) {
