@@ -9,6 +9,11 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+1. Binary Search
+2. Two Pointers
+3. Lazy Segment Tree (TODO)
+"""
 # @lc code=start
 class Solution1:
     def minZeroArray(self, nums: List[int], queries: List[List[int]]) -> int:
@@ -18,9 +23,11 @@ class Solution1:
             for l, r, v in queries[:k]:
                 diff[l] += v
                 diff[r + 1] -= v
-            for i in range(1, n + 1):
-                diff[i] += diff[i - 1]
-            return all(x <= d for x, d in zip(nums, diff))
+            for i in range(n):
+                if diff[i] < nums[i]:
+                    return False
+                diff[i + 1] += diff[i]
+            return True
         left, right = 0, m
         while left <= right:
             mid = (left + right) // 2
@@ -29,9 +36,26 @@ class Solution1:
             else:
                 left = mid + 1
         return left if left <= m else -1
+
+class Solution2:
+    def minZeroArray(self, nums: List[int], queries: List[List[int]]) -> int:
+        n, m = len(nums), len(queries)
+        diff = [0] * (n + 1)
+        s = k = 0
+        for i in range(n):
+            s += diff[i]
+            while k < m and s < nums[i]:
+                l, r, v = queries[k]
+                diff[l] += v
+                diff[r + 1] -= v
+                if l <= i <= r:
+                    s += v
+                k += 1
+            if s < nums[i]:
+                return -1
+        return k
     
-class Solution(Solution1):
-    pass
+Solution = Solution2
 # @lc code=end
 
 sol = Solution()
