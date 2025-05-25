@@ -11,14 +11,9 @@ using namespace std;
 // @lcpr-template-end
 // @lc code=start
 using LL = long long;
-class Solution {
+class Solution1 {
 public:
     LL maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
-        // return solve1(nums, k, edges);
-        // return solve2a(nums, k, edges);
-        return solve2b(nums, k, edges);
-    }
-    LL solve1(vector<int>& nums, int k, vector<vector<int>>& edges) {
         int n = nums.size();
         vector<vector<int>> g(n); // adjacency list
         for (auto &e : edges) {
@@ -39,7 +34,11 @@ public:
         };
         return dfs(0, -1).first;
     }
-    LL solve2a(vector<int>& nums, int k, vector<vector<int>>& edges) {
+};
+
+class Solution2a {
+public:
+    LL maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
         int n = nums.size();
         vector<vector<LL>> dp(n + 1, {0, LLONG_MIN}); // dp[i][0/1]: 前 i 個點總共操作偶數/奇數次時的最大值
         for (int i = 0; i < n; i++) {
@@ -48,15 +47,21 @@ public:
         }
         return dp[n][0];
     }
-    LL solve2b(vector<int>& nums, int k, vector<vector<int>>& edges) {
+};
+
+class Solution2b {
+public:
+    LL maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
         LL f0 = 0, f1 = LLONG_MIN; // f0/f1: 總共操作偶數/奇數次時的最大值
         for (int x : nums) {
-            LL t0 = f0, t1 = f1; // backup
-            f0 = max(t0 + x, t1 + (x ^ k)); // 不操作/操作
-            f1 = max(t1 + x, t0 + (x ^ k)); // 不操作/操作
+            LL t = max(f1 + x, f0 + (x ^ k));
+            f0 = max(f0 + x, f1 + (x ^ k)); // 不操作/操作
+            f1 = t; // 不操作/操作
         }
         return f0;
     }
 };
+
+using Solution = Solution2b;
 // @lc code=end
 
