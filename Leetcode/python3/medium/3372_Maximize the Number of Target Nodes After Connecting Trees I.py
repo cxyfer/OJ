@@ -12,9 +12,9 @@ from preImport import *
 # @lc code=start
 class Solution:
     def maxTargetNodes(self, edges1: List[List[int]], edges2: List[List[int]], k: int) -> List[int]:
-        n, m = len(edges1) + 1, len(edges2) + 1
-        g1 = [[] for _ in range(n)]
-        g2 = [[] for _ in range(m)]
+        n1, n2 = len(edges1) + 1, len(edges2) + 1
+        g1 = [[] for _ in range(n1)]
+        g2 = [[] for _ in range(n2)]
         for u, v in edges1:
             g1[u].append(v)
             g1[v].append(u)
@@ -22,37 +22,31 @@ class Solution:
             g2[u].append(v)
             g2[v].append(u)
 
-        # 計算在 g 中與 u 距離小於 t 的節點數
         def bfs(u, g, t):
-            q = deque([(u, 0)])
-            dist = [float('inf')] * len(g)
+            n = len(g)
+            q = deque([u])
+            dist = [float("inf")] * n
             dist[u] = 0
             cnt = 0
             while q:
-                u, d = q.popleft()
-                if d > t:
+                u = q.popleft()
+                if dist[u] > t:
                     break
                 cnt += 1
                 for v in g[u]:
-                    nd = d + 1
+                    nd = dist[u] + 1
                     if nd < dist[v]:
                         dist[v] = nd
-                        q.append((v, nd))
+                        q.append(v)
             return cnt
-        
-        cnt1 = [bfs(x, g1, k) for x in range(n)]
-        cnt2 = [bfs(x, g2, k - 1) for x in range(m)]
-        mx = max(cnt2)
-        ans = [-1] * n
-        for x in range(n):
-            ans[x] = cnt1[x] + mx
-        return ans
+        mx2 = max(bfs(u, g2, k - 1) for u in range(n2))
+        return [bfs(u, g1, k) + mx2 for u in range(n1)]
 # @lc code=end
 sol = Solution()
 edges1 = [[0,1],[0,2],[2,3],[2,4]]
 edges2 = [[0,1],[0,2],[0,3],[2,7],[1,4],[4,5],[4,6]]
 k = 2
-print(sol.maxTargetNodes(edges1, edges2, k))
+print(sol.maxTargetNodes(edges1, edges2, k))  # [9, 7, 9, 8, 8]
 
 
 #
