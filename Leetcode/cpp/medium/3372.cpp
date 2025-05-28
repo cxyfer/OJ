@@ -14,8 +14,8 @@ using namespace std;
 class Solution {
 public:
     vector<int> maxTargetNodes(vector<vector<int>>& edges1, vector<vector<int>>& edges2, int k) {
-        int n1 = edges1.size() + 1, n2 = edges2.size() + 1;
-        vector<vector<int>> g1(n1), g2(n2);
+        int n = edges1.size() + 1, m = edges2.size() + 1;
+        vector<vector<int>> g1(n), g2(m);
         for (auto& e : edges1) {
             g1[e[0]].push_back(e[1]);
             g1[e[1]].push_back(e[0]);
@@ -26,10 +26,10 @@ public:
         }
 
         auto bfs = [&](int u, int t, vector<vector<int>>& g) {
-            int n = g.size(), cnt = 0;
+            int cnt = 0;
             queue<int> q;
             q.push(u);
-            vector<int> dist(n, INT_MAX / 2);
+            vector<int> dist(g.size(), INT_MAX / 2);
             dist[u] = 0;
             while (!q.empty()) {
                 int u = q.front(); q.pop();
@@ -45,11 +45,11 @@ public:
             return cnt;
         };
 
-        vector<int> ans(n1, 0), cnt2(n2, 0);
-        for (int u = 0; u < n2; u++)
-            cnt2[u] = bfs(u, k - 1, g2);
-        int mx2 = *max_element(cnt2.begin(), cnt2.end());
-        for (int u = 0; u < n1; u++)
+        int mx2 = 0;
+        for (int u = 0; u < m; u++)
+            mx2 = max(mx2, bfs(u, k - 1, g2));
+        vector<int> ans(n, 0);
+        for (int u = 0; u < n; u++)
             ans[u] = bfs(u, k, g1) + mx2;
         return ans;
     }
