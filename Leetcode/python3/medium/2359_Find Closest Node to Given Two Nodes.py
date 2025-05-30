@@ -15,24 +15,18 @@ class Solution:
         n = len(edges)
         def get_dist(u: int) -> List[int]:
             dist = [float('inf')] * n
-            dist[u] = 0
-            v = edges[u]
-            d = 1
-            while v != -1 and dist[v] == float('inf'):
-                dist[v] = d
-                v = edges[v]
+            d = 0
+            while u != -1 and dist[u] == float("inf"):
+                dist[u] = d
                 d += 1
+                u = edges[u]
             return dist
         dist = [max(d1, d2) for d1, d2 in zip(get_dist(node1), get_dist(node2))]
-        ans, min_dist = -1, float('inf')
-        for i in range(n):
-            if dist[i] < min_dist:
-                min_dist = dist[i]
-                ans = i
-        return ans
+        ans = min(range(n), key = lambda x : dist[x])
+        return ans if dist[ans] != float("inf") else -1
 # @lc code=end
 
-
+sol = Solution()
 
 #
 # @lcpr case=start

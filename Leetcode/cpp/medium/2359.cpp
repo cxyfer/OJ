@@ -23,8 +23,7 @@ public:
             }
             return dist;
         };
-        auto dist1 = get_dist(node1);
-        auto dist2 = get_dist(node2);
+        auto dist1 = get_dist(node1), dist2 = get_dist(node2);
         int ans = -1, min_dist = INT_MAX;
         for (int i = 0; i < n; i++) {
             int d = max(dist1[i], dist2[i]);
