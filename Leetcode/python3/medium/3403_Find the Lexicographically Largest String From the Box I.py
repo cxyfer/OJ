@@ -15,10 +15,7 @@ class Solution:
         if k == 1: return s
         n = len(s)
         ln = n - k + 1
-        ans = ""
-        for i in range(n):
-            ans = max(ans, s[i:i+ln])
-        return ans
+        return max(s[i:i+ln] for i in range(n))
 # @lc code=end
 
 
