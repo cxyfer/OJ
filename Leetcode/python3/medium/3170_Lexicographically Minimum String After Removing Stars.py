@@ -9,35 +9,32 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+1. 26 個 Stack 來保存所有字母的位置，每次遇到 * 刪除最小字母的最後一個位置
+    O(Σn)
+2. 用 heap 來保存所有字母的位置，每次刪除最小字母的最後一個位置
+    O(n log n)
+3. 和 1 相同，但改用 bitmask 來紀錄哪些 Stack 非空
+    O(n)
+"""
 # @lc code=start
-class Solution:
-    """
-        1. 常規作法，每次都遍歷 26 個字母，找到最小字母的最後一個位置，然後刪除
-        2. 用 heap 來保存所有字母的位置，每次刪除最小字母的最後一個位置
-
-        由於 Python 不能直接修改字串，因此這裡是另外創建一個 list 來重建字串
-    """
+class Solution1:
     def clearStars(self, s: str) -> str:
-        # return self.solve1(s)
-        return self.solve2(s)
-    def solve1(self, s: str) -> str:
-        n = len(s)
+        ans = list(s)
         pos = [[] for _ in range(26)]
         for i, ch in enumerate(s):
-            idx = ord(ch) - ord("a")
-            if ch != "*":
-                pos[idx].append(i)
-            else:
-                for i in range(26):
-                    if pos[i]:
-                        pos[i].pop()
+            if ch == "*":
+                ans[i] = ""
+                for c in range(26):
+                    if pos[c]:
+                        ans[pos[c].pop()] = ""
                         break
-        ans = [""] * n
-        for i in range(26):
-            for j in pos[i]:
-                ans[j] = chr(i + ord("a"))
+            else:
+                pos[ord(ch) - ord("a")].append(i)
         return "".join(ans)
-    def solve2(self, s: str) -> str:
+
+class Solution2:
+    def clearStars(self, s: str) -> str:
         n = len(s)
         hp = []
         for i, ch in enumerate(s):
@@ -51,6 +48,29 @@ class Solution:
             c, i = heappop(hp)
             ans[-i] = chr(c + ord("a"))
         return "".join(ans)
+
+class Solution3:
+    def clearStars(self, s: str) -> str:
+        ans = list(s)
+        pos = [[] for _ in range(26)]
+        vis = 0
+        for i, ch in enumerate(s):
+            if ch == "*":
+                ans[i] = ""
+                lb = vis & -vis
+                c = lb.bit_length() - 1
+                ans[pos[c].pop()] = ""
+                if not pos[c]:
+                    vis &= ~(1 << c)
+            else:
+                c = ord(ch) - ord("a")
+                pos[c].append(i)
+                vis |= 1 << c
+        return "".join(ans)
+
+# Solution = Solution1
+# Solution = Solution2
+Solution = Solution3
 # @lc code=end
 
 
