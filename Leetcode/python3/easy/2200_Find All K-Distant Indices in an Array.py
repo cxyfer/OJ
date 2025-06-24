@@ -14,11 +14,11 @@ class Solution:
         pos = deque(i for i, x in enumerate(nums) if x == key)
         ans = []
         for i, x in enumerate(nums):
-            if not pos or i < pos[0] - k:
-                continue
             while pos and i > pos[0] + k:
                 pos.popleft()
-            if pos and pos[0] - k <= i:
+            if not pos:
+                break
+            if i >= pos[0] - k:
                 ans.append(i)
         return ans
 # @lc code=end

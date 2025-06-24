@@ -21,11 +21,10 @@ public:
                 pos.push(i);
         vector<int> ans;
         for (int i = 0; i < n; i++) {
-            if (pos.empty()) break;
-            if (i < pos.front() - k) continue;
             while (!pos.empty() && i > pos.front() + k)
                 pos.pop();
-            if (!pos.empty() && pos.front() - k <= i)
+            if (pos.empty()) break;
+            if (i >= pos.front() - k)
                 ans.push_back(i);
         }
         return ans;
