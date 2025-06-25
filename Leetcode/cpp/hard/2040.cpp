@@ -116,8 +116,8 @@ public:
         };
         auto check = [&](long long mx) {
             long long cnt = 0;
-            if (mx >= 0) return below0 + cal(pos1, pos2, mx) + cal(neg1, neg2, mx, true, true) >= k;
-            else return cal(neg1, pos2, mx, false, true) + cal(pos1, neg2, mx, true, false) >= k;
+            if (mx >= 0) return below0 + cal(neg1, neg2, mx, true, true) + cal(pos1, pos2, mx) >= k;
+            else return cal(pos1, neg2, mx, true, false) + cal(neg1, pos2, mx, false, true) >= k;
         };
         vector<long long> corners = {1LL * nums1[0] * nums2[0], 1LL * nums1[0] * nums2.back(), 1LL * nums1.back() * nums2[0], 1LL * nums1.back() * nums2.back()};
         long long left = *min_element(corners.begin(), corners.end());

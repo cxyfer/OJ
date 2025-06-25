@@ -68,10 +68,10 @@ class Solution2:
                 cnt += j + 1
             return cnt
         def check(mx):
-            if mx >= 0:  # 一定包含左下跟右上全部，只需要檢查左上跟右下
-                return below0 + cal(pos1, pos2, mx) + cal(neg1[::-1], neg2[::-1], mx) >= k
+            if mx >= 0:  # 一定包含全部的左下跟右上，只需要檢查左上跟右下
+                return below0 + cal(neg1[::-1], neg2[::-1], mx) + cal(pos1, pos2, mx) >= k
             else:  # 只需要檢查左下跟右上
-                return (cal(neg1, pos2[::-1], mx) + cal(pos1[::-1], neg2, mx)) >= k
+                return cal(pos1[::-1], neg2, mx) + cal(neg1, pos2[::-1], mx) >= k
         corners = [nums1[0] * nums2[0], nums1[0] * nums2[-1], nums1[-1] * nums2[0], nums1[-1] * nums2[-1]]
         left, right = min(corners), max(corners)
         while left <= right:
