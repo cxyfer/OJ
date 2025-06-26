@@ -45,11 +45,28 @@ public:
     }
 };
 
+class Solution3 {
+public:
+    int longestSubsequence(string s, int k) {
+        int n = s.size(), ans = n;
+        int v = 0;
+        for (int i = max(n - BITS, 0); i < n; i++)
+            v |= (s[i] == '1') << (n - i - 1);
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '1') {
+                if (n - i - 1 >= BITS) ans--;
+                else if (v <= k) break;
+                else v ^= 1 << (n - i - 1), ans--;
+            }
+        }
+        return ans;
+    }
+};
+
 // using Solution = Solution1;
-using Solution = Solution2;
+// using Solution = Solution2;
+using Solution = Solution3;
 // @lc code=end
-
-
 
 /*
 // @lcpr case=start
