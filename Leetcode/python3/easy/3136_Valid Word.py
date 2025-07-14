@@ -7,17 +7,5 @@ from preImport import *
 # @lc code=start
 class Solution:
     def isValid(self, word: str) -> bool:
-        if len(word) < 3:
-            return False
-        ck1, ck2 = False, False
-        for ch in word:
-            if ch.isalpha():
-                if ch.lower() in "aeiou":
-                    ck1 = True
-                else:
-                    ck2 = True
-            elif not ch.isdigit():
-                return False
-        return ck1 and ck2
+        return (lambda w : (len(w) >= 3 and w.isalnum() and any(c in "aeiou" for c in w) and any(c.isalpha() and c.lower() not in "aeiou" for c in w)))(word.lower())
 # @lc code=end
-
