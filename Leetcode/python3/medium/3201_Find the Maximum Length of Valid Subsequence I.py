@@ -26,7 +26,7 @@ class Solution1:
 class Solution2:
     def maximumLength(self, nums: List[int]) -> int:
         return max(reduce(lambda ans, b:
-                          [ans[0] + (1 - b), ans[1] + b, ans[2] + (b == (ans[2] & 1)), ans[3] + (b != (ans[3] & 1))],
+                          [ans[0] + (b ^ 1), ans[1] + b, ans[2] + (b == (ans[2] & 1)), ans[3] + (b != (ans[3] & 1))],
                           map(lambda x: x & 1, nums),
                           [0, 0, 0, 0]))
 
