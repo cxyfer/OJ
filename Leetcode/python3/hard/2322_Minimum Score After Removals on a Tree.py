@@ -37,6 +37,9 @@ class Solution:
         def query(u: int, v: int) -> bool:
             # assert u != v
             return dfni[u] < dfni[v] <= dfno[u]
+        # 計算三個數的最大值和最小值的差
+        def calc(x: int, y: int, z: int) -> int:
+            return max(x, y, z) - min(x, y, z)
         
         # 枚舉切斷的兩條邊，求出兩個子樹的異或和，並求出兩個子樹的異或和的異或和
         ans = float('inf')
@@ -46,12 +49,11 @@ class Solution:
                 u2, v2 = edges[j]
                 u2, v2 = (u2, v2) if query(u2, v2) else (v2, u2)
                 if query(v1, v2):  # v2 在 v1 的子樹中
-                    a, b, c = f[v2], f[v1] ^ f[v2], f[0] ^ f[v1]
+                    ans = min(ans, calc(f[v2], f[v1] ^ f[v2], f[0] ^ f[v1]))
                 elif query(v2, v1):  # v1 在 v2 的子樹中
-                    a, b, c = f[v1], f[v2] ^ f[v1], f[0] ^ f[v2]
+                    ans = min(ans, calc(f[v1], f[v2] ^ f[v1], f[0] ^ f[v2]))
                 else:  # 兩個子樹不相交
-                    a, b, c = f[v1], f[v2], f[0] ^ f[v1] ^ f[v2]
-                ans = min(ans, max(a, b, c) - min(a, b, c))
+                    ans = min(ans, calc(f[v1], f[v2], f[0] ^ f[v1] ^ f[v2]))
                 if ans == 0:
                     return 0
         return ans
