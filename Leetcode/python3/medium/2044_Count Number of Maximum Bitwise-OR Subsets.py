@@ -13,9 +13,7 @@ from preImport import *
 class Solution1:
     def countMaxOrSubsets(self, nums: List[int]) -> int:
         n = len(nums)
-        mx = 0
-        for x in nums:
-            mx |= x
+        mx = reduce(or_, nums)
         ans = 0
         for s in range(1, 1 << n): # 枚舉所有子集
             cur = 0
@@ -46,34 +44,29 @@ class Solution2:
 class Solution3:
     def countMaxOrSubsets(self, nums: List[int]) -> int:
         n = len(nums)
-        mx = 0
-        for x in nums:
-            mx |= x
-        @cache # Memoization
+        mx = reduce(or_, nums)
+        @cache  # Memoization
         def dfs(i, cur):
             if i == n:
                 return cur == mx
-            return dfs(i + 1, cur) + dfs(i + 1, cur | nums[i])
+            return dfs(i + 1, cur) + dfs(i + 1, cur | nums[i])  # 選或不選
         return dfs(0, 0)
     
 class Solution4:
     def countMaxOrSubsets(self, nums: List[int]) -> int:
-        mx = 0
-        for x in nums:
-            mx |= x
-        # dp[i] 表示子集的 OR 值為 i 的子集數量
-        dp = [0] * (1 << mx.bit_length())
-        dp[0] = 1
+        mx = reduce(or_, nums)
+        # f[i] 表示子集的 OR 值為 i 的子集數量
+        f = [0] * (1 << mx.bit_length())
+        f[0] = 1
         for x in nums:
             for i in range(mx, -1, -1):
-                dp[i | x] += dp[i]
-        return dp[mx]
-    
-# class Solution(Solution1):
-# class Solution(Solution2):
-# class Solution(Solution3):
-class Solution(Solution4):
-    pass   
+                f[i | x] += f[i]
+        return f[mx]
+
+# Solution = Solution1
+# Solution = Solution2
+Solution = Solution3
+# Solution = Solution4
 # @lc code=end
 
 sol = Solution()
