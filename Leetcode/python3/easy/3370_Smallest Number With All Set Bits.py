@@ -12,10 +12,7 @@ from preImport import *
 # @lc code=start
 class Solution:
     def smallestNumber(self, n: int) -> int:
-        x = 0
-        while n >= (1 << x):
-            x += 1
-        return (1 << x) - 1
+        return (1 << n.bit_length()) - 1
 # @lc code=end
 
 
