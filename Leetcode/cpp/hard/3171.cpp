@@ -13,6 +13,24 @@ using namespace std;
 class Solution1a {
 public:
     int minimumDifference(vector<int>& nums, int k) {
+        int ans = INT_MAX;
+        unordered_set<int> st, st2;
+        for (int x : nums) {
+            st2.clear();
+            for (int y : st)
+                st2.insert(y | x);
+            st2.insert(x);
+            swap(st, st2);
+            for (int y : st)
+                ans = min(ans, abs(y - k));
+        }
+        return ans;
+    }
+};
+
+class Solution1b {
+public:
+    int minimumDifference(vector<int>& nums, int k) {
         int n = nums.size();
         int ans = INT_MAX;
         vector<int> st;
@@ -29,7 +47,7 @@ public:
     }
 };
 
-class Solution1b {
+class Solution1c {
 public:
     int minimumDifference(vector<int>& nums, int k) {
         int n = nums.size();

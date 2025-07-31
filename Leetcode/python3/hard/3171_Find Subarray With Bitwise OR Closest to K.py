@@ -39,12 +39,24 @@ Python 會超時，C++ 可以過，這裡僅做參考用。
 # @lc code=start
 class Solution1a:
     def minimumDifference(self, nums: List[int], k: int) -> int:
+        st = set()
+        ans = float('inf')
+        for x in nums: # 枚舉右端點
+            # 保存以 x 為右端點的所有 OR 結果
+            st = {y | x for y in st}
+            st.add(x)
+            ans = min(ans, min(abs(y - k) for y in st))
+        return ans
+    
+class Solution1b:
+    def minimumDifference(self, nums: List[int], k: int) -> int:
         st = []
         ans = float('inf')
         for x in nums: # 枚舉右端點
             # 保存以 x 為右端點的所有 OR 結果，注意由於 OR 的性質，這裡的 st2 是遞增的
             st2 = [x]
             for y in st:
+                # 保持有序性質以便去重，省去一個 set
                 if y | x != st2[-1]:
                     st2.append(y | x)
             # 更新答案
@@ -53,7 +65,7 @@ class Solution1a:
             st = st2
         return ans
 
-class Solution1b:
+class Solution1c:
     def minimumDifference(self, nums: List[int], k: int) -> int:
         ans = float('inf')
         # 枚舉右端點 i，在枚舉 i 時將 nums[j] 原地修改成 OR(nums[j...i])
@@ -183,6 +195,7 @@ class Solution4:
 
 # Solution = Solution1a
 # Solution = Solution1b
+# Solution = Solution1c
 # Solution = Solution2
 Solution = Solution3a
 # Solution = Solution3b
