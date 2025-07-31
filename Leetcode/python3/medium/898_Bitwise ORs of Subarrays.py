@@ -8,6 +8,9 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+LogTrick
+"""
 # @lc code=start
 class Solution1a:
     def subarrayBitwiseORs(self, arr: List[int]) -> int:
