@@ -10,7 +10,7 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class Solution:
+class Solution1:
     def removeDuplicates(self, nums: List[int]) -> int:
         n = len(nums)
         i = k = 0
@@ -21,6 +21,19 @@ class Solution:
             nums[k] = nums[j]
             k += 1
         return k
+    
+class Solution2:
+    def removeDuplicates(self, nums: List[int]) -> int:
+        n = len(nums)
+        k = 1
+        for i in range(1, n):
+            if nums[i] != nums[i - 1]:
+                nums[k] = nums[i]
+                k += 1
+        return k
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 
 
