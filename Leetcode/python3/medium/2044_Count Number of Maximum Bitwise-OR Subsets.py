@@ -9,6 +9,12 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+1. 枚舉子集: O(n * 2^n)
+2. 回溯: O(2^n)
+3. Top-Down DP: O(2^n)
+4. Bottom-Up DP: O(n * 2^n) / O(2^n)
+"""
 # @lc code=start
 class Solution1:
     def countMaxOrSubsets(self, nums: List[int]) -> int:
@@ -52,7 +58,7 @@ class Solution3:
             return dfs(i + 1, cur) + dfs(i + 1, cur | nums[i])  # 選或不選
         return dfs(0, 0)
     
-class Solution4:
+class Solution4a:
     def countMaxOrSubsets(self, nums: List[int]) -> int:
         mx = reduce(or_, nums)
         # f[i] 表示子集的 OR 值為 i 的子集數量
@@ -62,15 +68,29 @@ class Solution4:
             for i in range(mx, -1, -1):
                 f[i | x] += f[i]
         return f[mx]
+    
+class Solution4b:
+    def countMaxOrSubsets(self, nums: List[int]) -> int:
+        mx = reduce(or_, nums)
+        f = defaultdict(int)
+        f[0] = 1
+        for x in nums:
+            nf = f.copy()
+            for y in f:
+                nf[y | x] += f[y]
+            f = nf
+        return f[mx]
 
 # Solution = Solution1
 # Solution = Solution2
-Solution = Solution3
-# Solution = Solution4
+# Solution = Solution3
+# Solution = Solution4a
+Solution = Solution4b
 # @lc code=end
 
 sol = Solution()
 print(sol.countMaxOrSubsets([3,1]))
+print(sol.countMaxOrSubsets([1 << b for b in range(1, 17)]))
 
 #
 # @lcpr case=start

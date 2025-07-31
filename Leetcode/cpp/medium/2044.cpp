@@ -65,7 +65,7 @@ public:
     }
 };
 
-class Solution4 {
+class Solution4a {
 public:
     int countMaxOrSubsets(vector<int>& nums) {
         int n = nums.size();
@@ -78,9 +78,29 @@ public:
     }
 };
 
+class Solution4b {
+public:
+    int countMaxOrSubsets(vector<int>& nums) {
+        int n = nums.size();
+        int mx = ranges::fold_left(nums, 0, bit_or{});
+        unordered_map<int, int> f, nf;
+        f[0] = 1;
+        for (int x : nums) {
+            nf.clear();
+            for (auto [y, cnt] : f) {
+                nf[y] += cnt;
+                nf[y | x] += cnt;
+            }
+            swap(f, nf);
+        }
+        return f[mx];
+    }
+};
+
 // using Solution = Solution1;
 // using Solution = Solution2;
-using Solution = Solution3;
-// using Solution = Solution4;
+// using Solution = Solution3;
+// using Solution = Solution4a;
+using Solution = Solution4b;
 // @lc code=end
 
