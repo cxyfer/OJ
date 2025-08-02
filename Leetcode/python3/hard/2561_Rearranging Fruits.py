@@ -61,9 +61,7 @@ class Solution2:
                 return -1
             A.extend([k] * (v >> 1))
             B.extend([k] * (-v >> 1))
-        A.sort()
-        B.sort(reverse=True)
-        return sum(min(a, b, mn * 2) for a, b in zip(A, B))
+        return sum(min(a, b, mn * 2) for a, b in zip(sorted(A), sorted(B, reverse=True)))
     
 Solution = Solution2
 # @lc code=end

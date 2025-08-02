@@ -21,8 +21,8 @@ public:
         vector<int> A, B;
         for (auto [k, v] : cnt) {
             if (v & 1) return -1;
-            for (int i = 0; i < (v >> 1); i++) A.push_back(k);
-            for (int i = 0; i < (-v >> 1); i++) B.push_back(k);
+            ranges::copy(views::repeat(k, v >> 1), back_inserter(A));
+            ranges::copy(views::repeat(k, -v >> 1), back_inserter(B));
         }
         ranges::sort(A);
         ranges::sort(B, greater<>());
