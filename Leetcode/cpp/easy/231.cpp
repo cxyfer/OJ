@@ -14,13 +14,9 @@ using namespace std;
 class Solution {
 public:
     bool isPowerOfTwo(int n) {
-        if (n <= 0) return false;
-        int cnt = 0;
-        while (n){
-            cnt += (n & 1);
-            n >>= 1;
-        }
-        return (cnt == 1);
+        // return n > 0 && __builtin_popcount(n) == 1;
+        return n > 0 && (n & -n) == n;
+        // return n > 0 && (n & (n - 1)) == 0;
     }
 };
 // @lc code=end
