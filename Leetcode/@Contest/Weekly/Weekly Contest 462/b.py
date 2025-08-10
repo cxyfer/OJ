@@ -9,7 +9,7 @@ from operator import *
 
 class Solution:
     def sortPermutation(self, nums: List[int]) -> int:
-        return reduce(and_, [i for i in range(len(nums)) if nums[i] != i], -1) if nums != sorted(nums) else 0
+        return ans if (ans := reduce(and_, [i for i in range(len(nums)) if nums[i] != i], -1)) != -1 else 0
         
 sol = Solution()
 

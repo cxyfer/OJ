@@ -7,7 +7,7 @@ from bisect import *
 from itertools import *
 from operator import *
 
-st = set()
+ANS = []
 odds = [-1, 1, 3, 5, 7, 9]
 evens = [2, 4, 6, 8]
 for i in range(1 << len(evens)):
@@ -20,7 +20,7 @@ for i in range(1 << len(evens)):
         if not digits:
             continue
         if len(digits) == 1:
-            st.add(int(str(digits[0]) * digits[0]))
+            ANS.append(int(str(digits[0]) * digits[0]))
             continue
         s = sum(digits)
         if s > 16:
@@ -31,7 +31,7 @@ for i in range(1 << len(evens)):
         n = sum(cnt.values())
         def dfs(i, cur):
             if i == n:
-                st.add(int(str(cur) + (str(odd) if odd != -1 else "") + str(cur)[::-1]))
+                ANS.append(int(str(cur) + (str(odd) if odd != -1 else "") + str(cur)[::-1]))
                 return
             for d in cnt:
                 if cnt[d] == 0:
@@ -40,7 +40,7 @@ for i in range(1 << len(evens)):
                 dfs(i + 1, cur * 10 + d)
                 cnt[d] += 1
         dfs(0, 0)
-ANS = sorted(st)
+ANS.sort()
 
 class Solution:
     def specialPalindrome(self, n: int) -> int:
