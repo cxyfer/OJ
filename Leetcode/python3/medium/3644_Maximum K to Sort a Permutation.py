@@ -11,6 +11,8 @@ from preImport import *
 # @lc code=start
 class Solution:
     def sortPermutation(self, nums: List[int]) -> int:
+        if nums[0] > 0:  # 優化：此時 0 參與交換，AND 結果必為 0
+            return 0
         ans = reduce(and_, [i for i, x in enumerate(nums) if x != i], -1)
         return ans if ans != -1 else 0
 # @lc code=end
