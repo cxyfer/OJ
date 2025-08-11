@@ -59,19 +59,20 @@ int main() {
         return a.r > b.r;  // 右端點從大到小
     });
 
-    int r = 0;
+    int l = 0, r = 0;
     for (int i = 0; i < queries.size(); i++) {
         const auto& q = queries[i];
         int l0 = q.bid * BLK_SZ;
         // 遍歷到一個新的 block
         if (i == 0 || q.bid > queries[i - 1].bid) {
+            // 左端點刪到 l0，這裡直接對 cnt0 進行操作
+            for (; l < l0; l++)
+                if (A[l] <= N && --cnt0[A[l]] == 0) mex0 = min(mex0, A[l]);
             // 複製 cnt0 到 cnt
             cnt = cnt0;
             mex = mex0;
             // 設定右端點
             r = N - 1;
-            // 左端點刪到 l0 (不包含 l0)
-            for (int i = 0; i < l0; i++) del(A[i]);
         }
         // 右端點從 r 移動到 q.r (不包含 q.r)
         while (q.r < r) del(A[r--]);
