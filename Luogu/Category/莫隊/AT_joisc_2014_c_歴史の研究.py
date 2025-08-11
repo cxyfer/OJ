@@ -12,20 +12,20 @@ def add(x: int) -> None:
     cnt[x] += 1
     max_val = max(max_val, cnt[x] * x)
 
-# BLK_SZ = math.ceil(N / math.sqrt(Q * 2))
-BLK_SZ = math.sqrt(N)
+BLK_SZ = math.ceil(N / math.sqrt(Q * 2))
 
 ans = [-1] * Q
 queries = []  # (bid, l, r, qid)
 for qid in range(Q):
     l, r = map(int, input().split())
-    l -= 1  # 0-indexed, [l, r)
+    l -= 1  # 0-indexed, [l, r]
+    r -= 1
     # 大區間離線，確保 l 和 r 不在同一個 block 中
-    if r - l > BLK_SZ:
+    if r - l + 1 > BLK_SZ:
         queries.append((l // BLK_SZ, l, r, qid))
         continue
     # 小區間暴力
-    for x in A[l: r]:
+    for x in A[l: r + 1]:
         add(x)
     ans[qid] = max_val
     # 重置
@@ -40,14 +40,14 @@ for i, (bid, ql, qr, qid) in enumerate(queries):
         cnt.clear()
         max_val = -1
 
-    # 右端點從 r 移動到 qr（qr 不計入）
-    while r < qr:
+    # 右端點從 r 向右移動到 qr（包含 qr）
+    while r <= qr:
         add(A[r])
         r += 1
 
     tmp_max_val = max_val
 
-    # 左端點從 l0 移動到 ql（l0 不計入）
+    # 左端點從 l0 向左移動到 ql（不包含 l0）
     for x in A[ql: l0]:
         add(x)
     ans[qid] = max_val
