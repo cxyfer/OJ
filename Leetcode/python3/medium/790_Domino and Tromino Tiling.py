@@ -28,7 +28,7 @@ f[n] = f[n-1] + f[n-2] + (f[n-3] + f[n-4] + ... + 1) * 2
 3. 矩陣快速冪優化
 """
 # @lc code=start
-class Solution1:
+class Solution1a:
     def numTilings(self, n: int) -> int:
         MOD = int(1e9 + 7)
         f = [[0] * 4 for _ in range(n + 1)]
@@ -39,7 +39,18 @@ class Solution1:
             f[i][2] = (f[i - 1][0] + f[i - 1][1]) % MOD
             f[i][3] = (f[i - 1][0] + f[i - 1][1] + f[i - 1][2] + f[i - 1][3]) % MOD
         return f[n][3]
-    
+
+class Solution1b:
+    def numTilings(self, n: int) -> int:
+        MOD = int(1e9 + 7)
+        # 砍掉原本的狀態 0，合併狀態 1 和 2
+        f = [[0] * 2 for _ in range(n + 1)]
+        f[0][1] = f[1][1] = 1
+        for i in range(2, n + 1):
+            f[i][0] = 2 * f[i - 2][1] + f[i - 1][0] % MOD
+            f[i][1] = (f[i - 2][1] + f[i - 1][0] + f[i - 1][1]) % MOD
+        return f[n][1]
+
 class Solution2:
     def numTilings(self, n: int) -> int:
         MOD = int(1e9 + 7)
@@ -97,9 +108,14 @@ class Solution3b:
         res = (M ** (n - 2)) * x
         return res.mat[0][0]
     
-# Solution = Solution1
+# Solution = Solution1a
+Solution = Solution1b
 # Solution = Solution2
-Solution = Solution3a
+# Solution = Solution3a
 # Solution = Solution3b
 # @lc code=end
 
+sol = Solution()
+print(sol.numTilings(3))  # 5
+print(sol.numTilings(1))  # 1
+print(sol.numTilings(4))  # 11
