@@ -11,13 +11,18 @@
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
+const int MAX_N = 1 << 31 - 1;
+int MAX_3 = 1;
+auto init = []() {
+    while (MAX_3 < MAX_N)
+        MAX_3 *= 3;
+    return 0;
+}();
+
 class Solution {
 public:
     bool isPowerOfThree(int n) {
-        while (n > 0 && n % 3 == 0){
-            n /= 3;
-        }
-        return (n == 1);
+        return n > 0 && MAX_3 % n == 0;
     }
 };
 // @lc code=end
