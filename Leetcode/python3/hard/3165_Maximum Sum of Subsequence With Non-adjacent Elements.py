@@ -10,55 +10,86 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class SegmentTree:
-    def __init__(self, nums: List[int]):
-        n = len(nums)
-        self.nums = [0] + nums # 讓 index 從 1 開始
-        self.tree = [[0, 0, 0, 0] for _ in range(4 * n)]
-        self.build(1, 1, n)
+MOD = int(1e9) + 7
+class SegNode:
+    def __init__(self):
+        self.f = [0, 0, 0, 0]
 
-    def build(self, o, left, right): # node, left, right
-        if left == right: # Leaf node initialization
-            self.tree[o][3] = max(self.nums[left], 0) # f11 
-            return
-        mid = (left + right) // 2
-        self.build(2*o, left, mid)
-        self.build(2*o+1, mid + 1, right)
-        self.tree[o] = self.merge(2*o, 2*o+1)
-
-    def merge(self, left_child, right_child):
-        res = [0, 0, 0, 0] # f00, f01, f10, f11
-        l00, l01, l10, l11 = self.tree[left_child]
-        r00, r01, r10, r11 = self.tree[right_child]
-        res[0] = max(l00 + r10, l01 + r00) # f00 表示不選 left, 不選 right
-        res[1] = max(l00 + r11, l01 + r01) # f01 表示不選 left, 可選可不選 right
-        res[2] = max(l10 + r10, l11 + r00) # f10 表示可選可不選 left, 不選 right
-        res[3] = max(l10 + r11, l11 + r01) # f11 表示可選可不選 left, 可選可不選 right
+    def __add__(self, other):
+        # f00: 不選 left, 不選 right
+        # f01: 不選 left, 可選可不選 right
+        # f10: 可選可不選 left, 不選 right
+        # f11: 可選可不選 left, 可選可不選 right
+        res = SegNode()
+        res.f[0] = max(self.f[0] + other.f[2], self.f[1] + other.f[0])
+        res.f[1] = max(self.f[0] + other.f[3], self.f[1] + other.f[1])
+        res.f[2] = max(self.f[2] + other.f[2], self.f[3] + other.f[0])
+        res.f[3] = max(self.f[2] + other.f[3], self.f[3] + other.f[1])
         return res
 
-    def update(self, o, left, right, idx, val):
+class SegmentTree:
+    def __init__(self, nums: List[int]):
+        self.n = len(nums)
+        self.nums = nums
+        self.tree = [SegNode() for _ in range(4 * self.n)]
+        self.build(1, 1, self.n)
+
+    def build(self, o, left, right) -> None:  # node, left, right
+        if left == right:  # Leaf node initialization
+            self.tree[o].f[3] = max(self.nums[left - 1], 0)  # f11 
+            return
+        mid = (left + right) // 2
+        self.build(o << 1, left, mid)
+        self.build(o << 1 | 1, mid + 1, right)
+        self.pushup(o)
+
+    def pushup(self, o) -> None:
+        # tree[o] = tree[o << 1] + tree[o << 1 | 1]  # 這樣寫需要重新建構 SegNode，會 TLE
+        l00, l01, l10, l11 = self.tree[o << 1].f
+        r00, r01, r10, r11 = self.tree[o << 1 | 1].f
+        self.tree[o].f[0] = max(l00 + r10, l01 + r00)  # f00 表示不選 left, 不選 right
+        self.tree[o].f[1] = max(l00 + r11, l01 + r01)  # f01 表示不選 left, 可選可不選 right
+        self.tree[o].f[2] = max(l10 + r10, l11 + r00)  # f10 表示可選可不選 left, 不選 right
+        self.tree[o].f[3] = max(l10 + r11, l11 + r01)  # f11 表示可選可不選 left, 可選可不選 right
+
+    def _update(self, o, left, right, idx, val) -> None:
         if left == right:
-            self.tree[o][3] = max(val, 0)
+            self.tree[o].f[3] = max(val, 0)
             return
         mid = (left + right) // 2
         if idx <= mid:
-            self.update(2*o, left, mid, idx, val)
+            self._update(o << 1, left, mid, idx, val)
         else:
-            self.update(2*o+1, mid + 1, right, idx, val)
-        self.tree[o] = self.merge(2*o, 2*o+1)
+            self._update(o << 1 | 1, mid + 1, right, idx, val)
+        self.pushup(o)
 
-    def query(self):
-        return self.tree[1][3]
+    def _query(self, o, left, right, l, r) -> SegNode:
+        if left == l and r == right:
+            return self.tree[o]
+        mid = (left + right) // 2
+        if r <= mid:
+            return self._query(o << 1, left, mid, l, r)
+        if mid < l:
+            return self._query(o << 1 | 1, mid + 1, right, l, r)
+        return self._query(o << 1, left, mid, l, mid) + self._query(o << 1 | 1, mid + 1, right, mid + 1, r)
+
+    def update(self, idx, val) -> None:
+        self._update(1, 1, self.n, idx, val)
+
+    # def query(self, l, r) -> SegNode:
+        # return self._query(1, 1, self.n, l, r)
+    @property
+    def query(self) -> int:
+        return self.tree[1].f[3]
 
 class Solution:
     def maximumSumSubsequence(self, nums: List[int], queries: List[List[int]]) -> int:
-        MOD = 10**9 + 7
         n = len(nums)
-        tree = SegmentTree(nums)
+        seg = SegmentTree(nums)
         ans = 0
         for pos, x in queries:
-            tree.update(1, 0, n - 1, pos, x)
-            ans = (ans + tree.query()) % MOD
+            seg.update(pos + 1, x)
+            ans = (ans + seg.query) % MOD
         return ans
 # @lc code=end
 
