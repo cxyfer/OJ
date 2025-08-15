@@ -1,69 +1,98 @@
-MAX_RANGE = int(1e9 + 7)
 
-class MyCalendar:
+"""
+PURQ (Point Update Range Query) Segment Tree
+用 SegNode 的 + operator 來合併兩個子節點
 
+> 能分治就能用線段樹
+
+- 3165. Maximum Sum of Subsequence With Non-adjacent Elements
+"""
+from typing import List
+MOD = int(1e9) + 7
+
+class SegNode:
     def __init__(self):
-        self.st = SegmentTree()
+        self.f = [0, 0, 0, 0]
 
-    def book(self, start: int, end: int) -> bool:
-        if SegmentTree.query(self.st.root, 0, MAX_RANGE, start, end - 1) != 0:
-            return False
-        SegmentTree.update(self.st.root, 0, MAX_RANGE, start, end - 1, 1)
-        return True
+    def __add__(self, other):
+        # f00: 不選 left, 不選 right
+        # f01: 不選 left, 可選可不選 right
+        # f10: 可選可不選 left, 不選 right
+        # f11: 可選可不選 left, 可選可不選 right
+        res = SegNode()
+        res.f[0] = max(self.f[0] + other.f[2], self.f[1] + other.f[0])
+        res.f[1] = max(self.f[0] + other.f[3], self.f[1] + other.f[1])
+        res.f[2] = max(self.f[2] + other.f[2], self.f[3] + other.f[0])
+        res.f[3] = max(self.f[2] + other.f[3], self.f[3] + other.f[1])
+        return res
 
-class Node:
-    def __init__(self) -> None:
-        self.ls = self.rs = None # Left and Right Son
-        self.val = 0 # 當前節點值
-        self.add = 0 # 懶惰標記
 
 class SegmentTree:
-    def __init__(self):
-        self.root = Node()
-    
-    @staticmethod
-    def update(node: Node, st: int, ed: int, l: int, r: int, val: int) -> None:
-        if l <= st and ed <= r:
-            node.val += val
-            node.add += val
+    def __init__(self, nums: List[int]):
+        self.n = len(nums)
+        self.nums = nums
+        self.tree = [SegNode() for _ in range(4 * self.n)]
+        self.build(1, 1, self.n)
+
+    def build(self, o, left, right) -> None:  # node, left, right
+        if left == right:  # Leaf node initialization
+            self.tree[o].f[3] = max(self.nums[left - 1], 0)  # f11
             return
-        SegmentTree.pushdown(node)
-        mid = (st + ed) >> 1
-        if l <= mid:
-            SegmentTree.update(node.ls, st, mid, l, r, val)
-        if r > mid:
-            SegmentTree.update(node.rs, mid + 1, ed, l, r, val)
-        SegmentTree.pushup(node)
- 
-    @staticmethod
-    def query(node: Node, st: int, ed: int, l: int, r: int) -> bool:
-        if l <= st and ed <= r:
-            return node.val
-        # 先確保所有關聯的懶標記下沈下去
-        SegmentTree.pushdown(node)
-        mid = (st + ed) >> 1
+        mid = (left + right) // 2
+        self.build(o << 1, left, mid)
+        self.build(o << 1 | 1, mid + 1, right)
+        self.pushup(o)
+
+    def pushup(self, o) -> None:
+        # tree[o] = tree[o << 1] + tree[o << 1 | 1]  # 這樣寫需要重新建構 SegNode，會 TLE
+        l00, l01, l10, l11 = self.tree[o << 1].f
+        r00, r01, r10, r11 = self.tree[o << 1 | 1].f
+        # f00 表示不選 left, 不選 right
+        self.tree[o].f[0] = max(l00 + r10, l01 + r00)
+        # f01 表示不選 left, 可選可不選 right
+        self.tree[o].f[1] = max(l00 + r11, l01 + r01)
+        # f10 表示可選可不選 left, 不選 right
+        self.tree[o].f[2] = max(l10 + r10, l11 + r00)
+        # f11 表示可選可不選 left, 可選可不選 right
+        self.tree[o].f[3] = max(l10 + r11, l11 + r01)
+
+    def _update(self, o, left, right, idx, val) -> None:
+        if left == right:
+            self.tree[o].f[3] = max(val, 0)
+            return
+        mid = (left + right) // 2
+        if idx <= mid:
+            self._update(o << 1, left, mid, idx, val)
+        else:
+            self._update(o << 1 | 1, mid + 1, right, idx, val)
+        self.pushup(o)
+
+    def _query(self, o, left, right, l, r) -> SegNode:
+        if left == l and r == right:
+            return self.tree[o]
+        mid = (left + right) // 2
+        if r <= mid:
+            return self._query(o << 1, left, mid, l, r)
+        if mid < l:
+            return self._query(o << 1 | 1, mid + 1, right, l, r)
+        return self._query(o << 1, left, mid, l, mid) + self._query(o << 1 | 1, mid + 1, right, mid + 1, r)
+
+    def update(self, idx, val) -> None:
+        self._update(1, 1, self.n, idx, val)
+
+    # def query(self, l, r) -> SegNode:
+        # return self._query(1, 1, self.n, l, r)
+    @property
+    def query(self) -> int:
+        return self.tree[1].f[3]
+
+
+class Solution:
+    def maximumSumSubsequence(self, nums: List[int], queries: List[List[int]]) -> int:
+        n = len(nums)
+        seg = SegmentTree(nums)
         ans = 0
-        if l <= mid:
-            ans = max(ans, SegmentTree.query(node.ls, st, mid, l, r))
-        if r > mid:
-            ans = max(ans, SegmentTree.query(node.rs, mid + 1, ed, l, r))
+        for pos, x in queries:
+            seg.update(pos + 1, x)
+            ans = (ans + seg.query) % MOD
         return ans
-    
-    @staticmethod
-    def pushdown(node: Node) -> None:
-        # 懶標記, 在需要的時候才開拓節點和賦值
-        if node.ls is None:
-            node.ls = Node()
-        if node.rs is None:
-            node.rs = Node()
-        if node.add == 0:
-            return
-        node.ls.val += node.val
-        node.rs.val += node.val
-        node.ls.add += node.val
-        node.rs.add += node.val
-        node.add = 0
-    
-    @staticmethod
-    def pushup(node: Node) -> None:
-        node.val = max(node.ls.val, node.rs.val)
