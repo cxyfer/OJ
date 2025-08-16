@@ -1,87 +1,108 @@
+"""
+P3372 【模板】线段树 1
+https://www.luogu.com.cn/problem/P3372
+Python 的執行時間浮動較大，多交幾次即可
+"""
+
 import sys
 from typing import List
-input = lambda: sys.stdin.readline().strip()
-print = lambda val: sys.stdout.write(str(val) + "\n")
+def input(): return sys.stdin.readline().strip()
+def print(val): return sys.stdout.write(str(val) + "\n")
+
+
+class SegInfo:
+    def __init__(self, s: int = 0) -> None:
+        self.s = s
+
+    def __iadd__(self, other: 'SegInfo') -> 'SegInfo':  # self += other
+        self.s += other.s
+        return self
+
 
 class SegNode:
     def __init__(self) -> None:
-        self.ls = self.rs = None # left and right child
-        self.val = self.lazy = 0 # value, lazy tag
+        self.ls = self.rs = None  # left and right child
+        self.val = SegInfo()  # value
+        self.lazy = 0  # lazy tag
+
 
 class SegmentTree:
     def __init__(self, nums: List[int] = None):
-        self.nums = nums
+        self.n = len(nums)
         self.root = SegNode()
         if nums is not None and len(nums) > 0:
-            self.build(self.root, 1, len(nums))
+            self.build(self.root, 1, self.n, nums)
 
-    def build(self, node: SegNode, left: int, right: int) -> None:
+    def update(self, l: int, r: int, v: int) -> None:
+        self._update(self.root, 1, self.n, l, r, v)
+
+    def query(self, l: int, r: int) -> SegInfo:
+        return self._query(self.root, 1, self.n, l, r)
+
+    def build(self, node: SegNode, left: int, right: int, nums: List[int]) -> None:
         if left == right:
-            node.val = self.nums[left - 1]
+            node.val = SegInfo(nums[left - 1])
             return
         mid = (left + right) // 2
         node.ls = SegNode()
         node.rs = SegNode()
-        self.build(node.ls, left, mid)
-        self.build(node.rs, mid + 1, right)
-        self.pushup(node) # push up node value
+        self.build(node.ls, left, mid, nums)
+        self.build(node.rs, mid + 1, right, nums)
+        self.pushup(node)  # push up node value
 
     # update the range [l, r] with value v
-    @staticmethod
-    def update(node: SegNode, left: int, right: int, l: int, r: int, v: int) -> None:
+    def _update(self, node: SegNode, left: int, right: int, l: int, r: int, v: int) -> None:
         if l <= left and right <= r:
-            # update node value (Customized)
-            SegmentTree._update(node, left, right, v)
+            # apply lazy tag
+            self.apply(node, left, right, v)
             return
-        SegmentTree.pushdown(node, left, right) # push down lazy tags
+        self.pushdown(node, left, right)  # push down lazy tags
         mid = (left + right) // 2
         if l <= mid:
-            SegmentTree.update(node.ls, left, mid, l, r, v)
+            self._update(node.ls, left, mid, l, r, v)
         if r > mid:
-            SegmentTree.update(node.rs, mid + 1, right, l, r, v)
-        SegmentTree.pushup(node) # push up node value
+            self._update(node.rs, mid + 1, right, l, r, v)
+        self.pushup(node)  # push up node value
 
-    # update node value (Customized)
-    @staticmethod
-    def _update(node: SegNode, left: int, right: int, v: int) -> None:
-        node.val += v * (right - left + 1)
+    # apply lazy tag
+    def apply(self, node: SegNode, left: int, right: int, v: int) -> None:
+        node.val.s += v * (right - left + 1)
         node.lazy += v
- 
+
     # query the range [l, r]
-    @staticmethod
-    def query(node: SegNode, left: int, right: int, l: int, r: int) -> int:
+    def _query(self, node: SegNode, left: int, right: int, l: int, r: int) -> SegInfo:
         if l <= left and right <= r:
             return node.val
         # Ensure all lazy tags have been pushed down
-        SegmentTree.pushdown(node, left, right) 
+        self.pushdown(node, left, right)
         mid = (left + right) // 2
         # Calculate answer (Customized)
-        ans = 0
+        ans = SegInfo()
         if l <= mid:
-            ans += SegmentTree.query(node.ls, left, mid, l, r)
+            ans += self._query(node.ls, left, mid, l, r)
         if r > mid:
-            ans += SegmentTree.query(node.rs, mid + 1, right, l, r)
+            ans += self._query(node.rs, mid + 1, right, l, r)
         return ans
-    
+
     # push down lazy tags
-    @staticmethod
-    def pushdown(node: SegNode, left: int, right: int) -> None:
+    def pushdown(self, node: SegNode, left: int, right: int) -> None:
         if node.ls is None:
             node.ls = SegNode()
         if node.rs is None:
             node.rs = SegNode()
         if node.lazy != 0:
-            # Update node value (Customized)
+            # apply lazy tag
             mid = (left + right) // 2
-            SegmentTree._update(node.ls, left, mid, node.lazy)
-            SegmentTree._update(node.rs, mid + 1, right, node.lazy)
-            node.lazy = 0
-    
+            self.apply(node.ls, left, mid, node.lazy)
+            self.apply(node.rs, mid + 1, right, node.lazy)
+            node.lazy = 0  # reset lazy tag
+
     # push up node value
-    @staticmethod
-    def pushup(node: SegNode) -> None:
-        # Update method (Customized)
-        node.val = node.ls.val + node.rs.val
+    def pushup(self, node: SegNode) -> None:
+        # update node value
+        # node.val = node.ls.val + node.rs.val
+        node.val.s = node.ls.val.s + node.rs.val.s
+
 
 n, q = map(int, input().split())
 nums = list(map(int, input().split()))
@@ -91,8 +112,8 @@ for _ in range(q):
     op, *args = map(int, input().split())
     if op == 1:
         l, r, x = args
-        SegmentTree.update(seg.root, 1, n, l, r, x)
+        seg.update(l, r, x)
     else:
         l, r = args
-        ans.append(SegmentTree.query(seg.root, 1, n, l, r))
+        ans.append(seg.query(l, r).s)
 print("\n".join(map(str, ans)))
