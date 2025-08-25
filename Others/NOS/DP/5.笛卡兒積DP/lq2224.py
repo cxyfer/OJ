@@ -10,20 +10,6 @@ B = [0] + list(map(int, input().split())) + [float("inf")]
 A.sort()
 B.sort()
 
-# @cache
-# def f(i: int, j: int, is_A: bool) -> int:
-#     if i == n and j == m:
-#         return 0
-#     if i > n or j > m:
-#         return float("inf")
-#     if is_A:
-#         return min(f(i + 1, j, True) + A[i + 1] - A[i],
-#                    f(i, j + 1, False) + math.hypot(A[i] - B[j + 1], d))
-#     else:
-#         return min(f(i, j + 1, False) + B[j + 1] - B[j],
-#                    f(i + 1, j, True) + math.hypot(A[i + 1] - B[j], d))
-# print(f"{f(0, 0, True):.2f}")
-
 f = [[[float("inf")] * 2 for _ in range(m + 1)] for _ in range(n + 1)]
 f[0][0][0] = 0
 for i in range(1, n + 1):
