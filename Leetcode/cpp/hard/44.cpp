@@ -52,15 +52,15 @@ public:
         int n = s.size(), m = p.size();
         s = " " + s + " ";
         p = " " + p + " ";
-        vector<vector<bool>> f(n + 2, vector<bool>(m + 2, false));
-        f[0][0] = true;
+        vector<vector<int>> f(n + 2, vector<int>(m + 2, 0));
+        f[0][0] = 1;
         for (int i = 0; i <= n; ++i)
             for (int j = 0; j <= m; ++j) {
                 if (p[j + 1] == '*') {
-                    f[i + 1][j] = f[i + 1][j] || f[i][j];
-                    f[i][j + 1] = f[i][j + 1] || f[i][j];
+                    f[i + 1][j] |= f[i][j];
+                    f[i][j + 1] |= f[i][j];
                 } else if (p[j + 1] == '?' || s[i + 1] == p[j + 1]) {
-                    f[i + 1][j + 1] = f[i + 1][j + 1] || f[i][j];
+                    f[i + 1][j + 1] |= f[i][j];
                 }
             }
         return f[n][m];
