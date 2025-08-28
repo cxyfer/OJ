@@ -9,25 +9,60 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+Variation of LCS
+"""
 # @lc code=start
-class Solution:
+class Solution1:
     def maxScore(self, a: List[int], b: List[int]) -> int:
-
-        # 考慮到前 i 個數字，選擇了 j 個數字
+        n, m = len(a), len(b)
         @cache
         def dfs(i: int, j: int) -> int:
-            if i == len(b):
-                if j < len(a):
-                    return float('-inf')
+            if i == n:
                 return 0
-            if j == len(a):
-                return 0
-            res = -float('inf')
-            res = max(res, dfs(i + 1, j + 1) + a[j] * b[i]) # 選擇 a[j] * b[i]
-            res = max(res, dfs(i + 1, j)) # 不選擇 a[j] * b[i]
-            return res
-        
+            if j == m:
+                return float('-inf')
+            return max(dfs(i, j + 1), dfs(i + 1, j + 1) + a[i] * b[j])
         return dfs(0, 0)
+
+class Solution2a:
+    def maxScore(self, a: List[int], b: List[int]) -> int:
+        n, m = len(a), len(b)
+        @cache
+        def dfs(i: int, j: int) -> int:
+            if i < 0:
+                return 0
+            if j < 0:
+                return float('-inf')
+            return max(dfs(i, j - 1), dfs(i - 1, j - 1) + a[i] * b[j])
+        return dfs(n - 1, m - 1)
+
+class Solution2b:
+    def maxScore(self, a: List[int], b: List[int]) -> int:
+        n, m = len(a), len(b)
+        f = [[0] * (m + 1) for _ in range(n + 1)]
+        for i in range(1, n + 1):
+            f[i][0] = float('-inf')
+        for i in range(1, n + 1):
+            for j in range(1, m + 1):
+                f[i][j] = max(f[i][j - 1], f[i - 1][j - 1] + a[i - 1] * b[j - 1])
+        return f[n][m]
+
+class Solution2c:
+    def maxScore(self, a: List[int], b: List[int]) -> int:
+        n, m = len(a), len(b)
+        f = [[0] * (m + 1) for _ in range(2)]
+        for i in range(1, n + 1):
+            cur, pre = i & 1, (i - 1) & 1
+            f[cur][0] = float('-inf')
+            for j in range(1, m + 1):
+                f[cur][j] = max(f[cur][j - 1], f[pre][j - 1] + a[i - 1] * b[j - 1])
+        return f[n & 1][m]
+
+# Solution = Solution1
+# Solution = Solution2a
+# Solution = Solution2b
+Solution = Solution2c
 # @lc code=end
 
 sol = Solution()
