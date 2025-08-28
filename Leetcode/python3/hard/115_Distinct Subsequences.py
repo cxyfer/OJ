@@ -65,9 +65,20 @@ class Solution2c:
                     f[cur][j] += f[pre][j - 1]
         return f[n & 1][m]
 
+class Solution2d:
+    def numDistinct(self, s: str, t: str) -> int:
+        n, m = len(s), len(t)
+        f = [1] + [0] * m
+        for i in range(1, n + 1):
+            for j in range(m, 0, -1):
+                if s[i - 1] == t[j - 1]:
+                    f[j] += f[j - 1]
+        return f[m]
+
 # Solution = Solution1
 Solution = Solution2a
 # Solution = Solution2b
 # Solution = Solution2c
+# Solution = Solution2d
 # @lc code=end
 

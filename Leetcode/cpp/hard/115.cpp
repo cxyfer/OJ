@@ -75,10 +75,25 @@ public:
     }
 };
 
+class Solution2d {
+public:
+    int numDistinct(string s, string t) {
+        int n = s.size(), m = t.size();
+        vector<ull> f(m + 1, 0);
+        f[0] = 1;
+        for (int i = 1; i <= n; ++i)
+            for (int j = m; j >= 1; --j)
+                if (s[i - 1] == t[j - 1])
+                    f[j] += f[j - 1];
+        return f[m];
+    }
+};
+
 // using Solution = Solution1;
 using Solution = Solution2a;
 // using Solution = Solution2b;
 // using Solution = Solution2c;
+// using Solution = Solution2d;
 // @lc code=end
 
 
