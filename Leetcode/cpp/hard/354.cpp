@@ -18,13 +18,13 @@ public:
             if (a[0] == b[0]) return a[1] > b[1];
             return a[0] < b[0];
         });
-        vector<int> tail;
+        vector<int> f;
         for (auto& e : envelopes) {
-            auto it = lower_bound(tail.begin(), tail.end(), e[1]);
-            if (it == tail.end()) tail.push_back(e[1]);
+            auto it = lower_bound(f.begin(), f.end(), e[1]);
+            if (it == f.end()) f.push_back(e[1]);
             else *it = e[1];
         }
-        return tail.size();
+        return f.size();
     }
 };
 // @lc code=end
