@@ -19,8 +19,8 @@ public:
         int n = a.size(), m = b.size();
         vector<vector<ll>> memo(n, vector<ll>(m, LLONG_MIN));
         auto dfs = [&](this auto&& dfs, int i, int j) -> ll {
+            if ((n - i) > (m - j)) return LLONG_MIN / 2;
             if (i == n) return 0;
-            if (j == m) return LLONG_MIN / 2;
             ll& res = memo[i][j];
             if (res != LLONG_MIN) return res;
             return res = max(dfs(i, j + 1),
@@ -36,8 +36,8 @@ public:
         int n = a.size(), m = b.size();
         vector<vector<ll>> memo(n, vector<ll>(m, LLONG_MIN));
         auto dfs = [&](this auto&& dfs, int i, int j) -> ll {
+            if (i > j) return LLONG_MIN / 2;
             if (i < 0) return 0;
-            if (j < 0) return LLONG_MIN / 2;
             ll& res = memo[i][j];
             if (res != LLONG_MIN) return res;
             return res = max(dfs(i, j - 1),

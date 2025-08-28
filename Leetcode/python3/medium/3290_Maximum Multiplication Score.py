@@ -18,10 +18,10 @@ class Solution1:
         n, m = len(a), len(b)
         @cache
         def dfs(i: int, j: int) -> int:
+            if (n - i) > (m - j):  # 剪枝，a 剩下的比 b 剩下的多，一定不合法
+                return float('-inf')
             if i == n:
                 return 0
-            if j == m:
-                return float('-inf')
             return max(dfs(i, j + 1), dfs(i + 1, j + 1) + a[i] * b[j])
         return dfs(0, 0)
 
@@ -30,10 +30,10 @@ class Solution2a:
         n, m = len(a), len(b)
         @cache
         def dfs(i: int, j: int) -> int:
+            if i > j:  # 剪枝，a 剩下的比 b 剩下的多，一定不合法
+                return float('-inf')
             if i < 0:
                 return 0
-            if j < 0:
-                return float('-inf')
             return max(dfs(i, j - 1), dfs(i - 1, j - 1) + a[i] * b[j])
         return dfs(n - 1, m - 1)
 
