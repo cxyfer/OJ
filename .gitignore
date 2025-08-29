@@ -10,3 +10,6 @@ Leetcode/.lcpr_data/
 !.clang-format
 !README.md
 tempCodeRunnerFile.*
+input.txt
+output.txt
+*.out
