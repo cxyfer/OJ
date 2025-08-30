@@ -14,6 +14,7 @@ P ⇒ Q 邏輯上等價於 ¬P ∨ Q，有以下兩個蘊含關係：
 其餘參考 P4782 【模板】2-SAT
 */
 #include <bits/stdc++.h>
+#include <ranges>
 using namespace std;
 #define endl '\n'
 
@@ -118,14 +119,11 @@ void solve() {
     SCC T(2 * n);
     // 二進位枚舉 d 個 x 地圖的禁用情況
     for (int k = 0; k < (1 << d); k++) {
-        // for (auto [i, pos] : views::enumerate(x_pos))
-        for (int i = 0; i < x_pos.size(); i++) {
-            int pos = x_pos[i];
+        for (auto [i, pos] : views::enumerate(x_pos))
             if ((k >> i) & 1)
                 choices[pos] = {'B', 'C'};  // 禁用 A
             else
                 choices[pos] = {'A', 'C'};  // 禁用 B
-        }
 
         T.reset();
         
@@ -163,19 +161,14 @@ void solve() {
         T.run();
 
         // 檢查是否有解
-        bool ok = true;
-        for (int i = 0; i < n; i++) {
-            if (T.scc_id[i] == T.scc_id[i + n]) {
-                ok = false;
-                break;
-            }
-        }
-        if (!ok) continue;
+        if (ranges::any_of(views::iota(0, n), [&](int i) {
+            return T.scc_id[i] == T.scc_id[i + n];
+        })) continue;
 
-        string ans = "";
-        for (int i = 0; i < n; i++)
-            ans += (T.scc_id[i] < T.scc_id[i + n]) ? choices[i].first
-                                                   : choices[i].second;
+        auto ans = ranges::fold_left(views::iota(0, n), "", [&](string ans, int i) {
+            return ans + ((T.scc_id[i] < T.scc_id[i + n]) ? choices[i].first
+                                                          : choices[i].second);
+        });
         cout << ans << endl;
         return;
     }
