@@ -7,21 +7,22 @@ def solve():
         g[v].append(u)
 
     ans = [0] * n
-    dep = [-1] * n
+    dep = [0] * n
     sz = [1] * n
     def dfs1(u: int, fa: int) -> None:
-        # dep[u] = dep[fa] + 1
+        """遞迴寫法"""
         # ans[0] += dep[u]
         # for v in g[u]:
         #     if v == fa:
         #         continue
+        #     dep[v] = dep[u] + 1
         #     dfs1(v, u)
         #     sz[u] += sz[v]
+        """非遞迴寫法"""
         st = [(u, fa, 0)]  # (u, fa, i)
         while st:
             u, fa, i = st.pop()
             if i == 0:
-                dep[u] = dep[fa] + 1
                 ans[0] += dep[u]
             if i > 0:
                 v = g[u][i - 1]
@@ -30,17 +31,20 @@ def solve():
                 v = g[u][j]
                 if v == fa:
                     continue
+                dep[v] = dep[u] + 1
                 st.append((u, fa, j + 1))
                 st.append((v, u, 0))
                 break
     dfs1(0, -1)
 
     def dfs2(u: int, fa: int) -> None:
+        """遞迴寫法"""
         # for v in g[u]:
         #     if v == fa:
         #         continue
         #     ans[v] = ans[u] + (n - sz[v]) - sz[v]
         #     dfs2(v, u)
+        """非遞迴寫法"""
         st = [(u, fa, 0)]
         while st:
             u, fa, i = st.pop()
