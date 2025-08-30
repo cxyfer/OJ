@@ -1,7 +1,3 @@
-import sys
-sys.setrecursionlimit(int(2e4))
-
-
 class SCC:
     def __init__(self, n: int):
         self.n = n
@@ -14,7 +10,7 @@ class SCC:
         self.stk = []
         self.in_stk = [False] * n
         self.scc_id = [-1] * n
-        self.sccs = []
+        self.scc_cnt = 0
 
     def add_edge(self, u: int, v: int):
         self.g[u].append(v)
@@ -32,15 +28,13 @@ class SCC:
         #     elif self.in_stk[v]:
         #         self.low[u] = min(self.low[u], self.dfn[v])
         # if self.dfn[u] == self.low[u]:
-        #     scc = []
         #     while True:
         #         v = self.stk.pop()
         #         self.in_stk[v] = False
-        #         self.scc_id[v] = len(self.sccs)
-        #         scc.append(v)
+        #         self.scc_id[v] = self.scc_cnt
         #         if v == u:
         #             break
-        #     self.sccs.append(scc)
+        #     self.scc_cnt += 1
         """迭代版本"""
         st = [(u, 0)]  # (u, i)
         while st:
@@ -63,15 +57,19 @@ class SCC:
                     self.low[u] = min(self.low[u], self.dfn[v])
             else:
                 if self.dfn[u] == self.low[u]:
-                    scc = []
                     while True:
                         v = self.stk.pop()
                         self.in_stk[v] = False
-                        self.scc_id[v] = len(self.sccs)
-                        scc.append(v)
+                        self.scc_id[v] = self.scc_cnt
                         if v == u:
                             break
-                    self.sccs.append(scc)
+                    self.scc_cnt += 1
+
+    def sccs(self):
+        sccs = [[] for _ in range(self.scc_cnt)]
+        for u in range(self.n):
+            sccs[self.scc_id[u]].append(u)
+        return sccs
 
     def run(self):
         for u in range(self.n):
