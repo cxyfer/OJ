@@ -1,10 +1,13 @@
 """
-944H - ±1
-https://codeforces.com/contest/1971/problem/H
+776D - The Door Problem
+https://codeforces.com/contest/776/problem/D
 
-令 +1 為 True、-1 為 False，
-為了每個 column 排序後中間是 True，需要至少有 2 個 True，
-也就是需要滿足 (c1i ∨ c2i) ∧ (c2i ∨ c3i) ∧ (c3i ∨ c1i)，此為 2-SAT 問題。
+每個門有兩個開關，令 P 表示第一個開關為開啟狀態、Q 表示第二個開關為開啟狀態。
+- 如果門本來是關閉的，則需要滿足 (¬P ∧ Q) ∨ (P ∧ ¬Q)
+  - 換句話說，如果第一個開關為關閉狀態，則第二個開關必需為開啟狀態，反之同理
+  - 得到 ¬P ⇔ Q 和 ¬Q ⇔ P 兩個蘊含關係
+- 如果門本來是開啟的，則需要滿足 (P ∧ Q) ∨ (¬P ∧ ¬Q)
+  - 得到 P ⇔ Q 和 ¬Q ⇔ ¬P 兩個蘊含關係
 """
 class SCC:
     def __init__(self, n: int):
@@ -83,25 +86,34 @@ class SCC:
                 self.dfs(u)
 
 def solve():
-    n = int(input())
-    A = [list(map(int, input().split())) for _ in range(3)]
-    
-    T = SCC(2 * n)  # 2 * n 個節點，(i, i + n) 分別代表 x_i 為假和 x_i 為真
-    for j in range(n):
-        for i in range(3):
-            nxt = (i + 1) % 3
-            u, v = abs(A[i][j]) - 1, abs(A[nxt][j]) - 1
-            x, y = (A[i][j] > 0), (A[nxt][j] > 0)
-            T.add_edge(u + n * (1 ^ x), v + n * y)
-            T.add_edge(v + n * (1 ^ y), u + n * x)
+    n, m = map(int, input().split())
+    R = list(map(int, input().split()))
+    switchs = [[] for _ in range(n)]
+    for i in range(m):
+        X = list(map(int, input().split()))[1:]
+        for x in X:
+            switchs[x-1].append(i)
+
+    T = SCC(2 * m)  # (i, i + m) 分別代表開關 i 的是關閉和開啟
+    assert len(switchs) == n
+    assert all(len(s) == 2 for s in switchs)
+    for i, (u, v) in enumerate(switchs):
+        if R[i] == 0:
+            T.add_edge(u, v + m)
+            T.add_edge(v + m, u)
+            T.add_edge(v, u + m)
+            T.add_edge(u + m, v)
+        else:
+            T.add_edge(u + m, v + m)
+            T.add_edge(v + m, u + m)
+            T.add_edge(v, u)
+            T.add_edge(u, v)
 
     T.run()
 
-    if any(T.scc_id[i] == T.scc_id[i + n] for i in range(n)):
+    if any(T.scc_id[i] == T.scc_id[i + m] for i in range(m)):
         print("NO")
     else:
         print("YES")
 
-t = int(input())
-for _ in range(t):
-    solve()
+solve()
