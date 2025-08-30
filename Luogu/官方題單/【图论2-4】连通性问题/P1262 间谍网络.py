@@ -110,9 +110,8 @@ def solve():
     k = len(g.sccs)
     in_deg = [0] * k
     values = [float('inf')] * k
-    for scc in g.sccs:
+    for i, scc in enumerate(g.sccs):
         for u in scc:
-            i = g.scc_id[u]
             values[i] = min(values[i], W[u])
             for v in g.g[u]:
                 j = g.scc_id[v]

@@ -95,12 +95,10 @@ def solve():
     else:
         k = len(g.sccs)
         out_deg = [0] * k
-        for scc in g.sccs:
+        for i, scc in enumerate(g.sccs):
             for u in scc:
-                i = g.scc_id[u]
                 for v in g.g[u]:
-                    j = g.scc_id[v]
-                    if i != j:
+                    if i != g.scc_id[v]:
                         out_deg[i] += 1
 
         if out_deg.count(0) == 1:
