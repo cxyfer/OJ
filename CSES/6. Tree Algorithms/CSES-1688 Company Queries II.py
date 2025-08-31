@@ -1,3 +1,9 @@
+"""
+CSES-1688 Company Queries II
+https://cses.fi/problemset/task/1688/
+
+TLE
+"""
 import sys
 it = iter(sys.stdin.read().splitlines())
 input = lambda: next(it)
