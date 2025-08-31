@@ -37,6 +37,7 @@ def solve():
             if s < U:
                 f2[s ^ (1 << i)] += f2[s]
             s += 1
+
     for x in A:
         print(f1[x], f2[x], n - f1[x ^ ((1 << BITS) - 1)])
 
