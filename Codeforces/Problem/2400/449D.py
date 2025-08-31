@@ -17,6 +17,7 @@ MOD = int(1e9 + 7)
 def solve():
     n = int(input())
     A = list(map(int, input().split()))
+    assert len(A) == n
     B = max(A).bit_length()
     U = 1 << B
 
