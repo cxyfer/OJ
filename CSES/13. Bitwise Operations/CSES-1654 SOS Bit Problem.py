@@ -18,15 +18,25 @@ def solve():
         f2[x] += 1
 
     for i in range(BITS):
-        for msk in range(U):
-            if (msk >> i) & 1:
-                f1[msk] += f1[msk ^ (1 << i)]
+        # for s in range(U):
+        #     if (s >> i) & 1:
+        #         f1[s] += f1[s ^ (1 << i)]
+        s = 0
+        while s < U:
+            s |= (1 << i)  # 優化：保證 (s >> i) & 1 成立
+            f1[s] += f1[s ^ (1 << i)]
+            s += 1
 
     for i in range(BITS):
-        for msk in range(U - 1, -1, -1):
-            if (msk >> i) & 1:
-                f2[msk ^ (1 << i)] += f2[msk]
-
+        # for s in range(U - 1, -1, -1):
+        #     if (s >> i) & 1:
+        #         f2[s ^ (1 << i)] += f2[s]
+        s = 0
+        while s < U:
+            s |= (1 << i)
+            if s < U:
+                f2[s ^ (1 << i)] += f2[s]
+            s += 1
     for x in A:
         print(f1[x], f2[x], n - f1[x ^ ((1 << BITS) - 1)])
 
