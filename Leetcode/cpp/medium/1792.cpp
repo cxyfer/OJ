@@ -16,29 +16,24 @@ using namespace std;
 = (ba + b - ab - a)/b(b + 1)
 = (b - a)/b(b + 1)
 
-為了避免除法，將比較關係改為乘法
+為了避免 double 除法的經度丟失以及效率問題，將比較關係改為乘法
    (b1 - a1) / b1(b1 + 1) > (b2 - a2) / b2(b2 + 1)
 => (b1 - a1) * b2(b2 + 1) > (b2 - a2) * b1(b1 + 1)
 */
 // @lc code=start
-struct Node {
-    int a, b;
-    Node (int a, int b) : a(a), b(b) {}
-    bool operator < (const Node &other) const {
-        return (other.b + 1LL) * other.b * (b - a) < (b + 1LL) * b * (other.b - other.a);
-    }
-};
-
 class Solution {
 public:
     double maxAverageRatio(vector<vector<int>>& classes, int extraStudents) {
         int n = classes.size();
-        priority_queue<Node> hp;
-        for (auto &c : classes) hp.push(Node(c[0], c[1]));
+        auto comp = [](const pair<int, int> &a, const pair<int, int> &b) {
+            return (b.second + 1LL) * b.second * (a.first - a.second) > (a.second + 1LL) * a.second * (b.first - b.second);
+        };
+        priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(comp)> hp;
+        for (auto &c : classes) hp.push({c[0], c[1]});
         while (extraStudents--) {
             auto [a, b] = hp.top();
             hp.pop();
-            hp.push(Node(a + 1, b + 1));
+            hp.push({a + 1, b + 1});
         }
         double ans = 0;
         while (!hp.empty()) {
