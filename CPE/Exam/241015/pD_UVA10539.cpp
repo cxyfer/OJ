@@ -8,8 +8,7 @@ const LL MAXN_SQRT = sqrt(MAXN);
 
 vector<LL> almost_primes;
 vector<bool> is_prime(MAXN_SQRT + 1, true);
-
-void init() {
+auto init = []() {
     is_prime[0] = is_prime[1] = false;
     for (LL i = 2; i * i <= MAXN_SQRT; i++) {
         if (is_prime[i]) {
@@ -28,11 +27,11 @@ void init() {
         }
     }
     sort(all(almost_primes));
-}
+    return 0;
+}();
 
 int main() {
     ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
-    init();
     int t;
     cin >> t;
     while (t--) {
