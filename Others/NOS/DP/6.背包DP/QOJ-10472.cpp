@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
-const int MAX_K = 6;
-const int MAX_C = 1e6;
+const int MAX_C = 1e6 + 5;
 #define endl '\n'
 
 struct Pyramid {
@@ -10,8 +9,7 @@ struct Pyramid {
 };
 
 vector<Pyramid> pyramids;
-vector<vector<vector<int>>> f(MAX_K + 1, vector<vector<int>>(MAX_C + 1));
-vector<vector<bool>> g(MAX_K + 1, vector<bool>(MAX_C + 1, false));
+vector<vector<int>> f;
 
 auto init = []() {
     // 生成所有可能的金字塔
@@ -40,20 +38,16 @@ auto init = []() {
         return a.type > b.type;
     });
 
-    // f[i][k][c] 表示考慮前 i 個金字塔，選了 k 個金字塔，使用 c 個方塊的最佳方案
-    // g[i][k][c] 表示是否存在方案
-    g[0][0] = true;
-    for (int i = 0; i < pyramids.size(); ++i) {
-        auto [cubes, X, type] = pyramids[i];
-        for (int k = MAX_K; k > 0; --k) {
-            for (int c = 0; c <= MAX_C; ++c) {
-                if (c + cubes > MAX_C) break;
-                if (!g[k - 1][c]) continue;
-                // 由於更優的方案在後面，所以直接覆蓋即可
-                f[k][c + cubes] = f[k - 1][c];
-                f[k][c + cubes].push_back(i);
-                g[k][c + cubes] = true;
-            }
+    // f[i][c] 表示考慮前 i 個金字塔，使用 c 個方塊所需的最少金字塔數
+    f.resize(pyramids.size() + 1, vector<int>(MAX_C + 1, INT_MAX));
+    f[0][0] = 0;
+    for (int i = 1; i <= pyramids.size(); ++i) {
+        auto [cubes, X, type] = pyramids[i - 1];
+        for (int c = 0; c <= MAX_C; ++c) {
+            if (c >= cubes && f[i - 1][c - cubes] != INT_MAX)
+                f[i][c] = min(f[i - 1][c], f[i - 1][c - cubes] + 1);
+            else
+                f[i][c] = f[i - 1][c];
         }
     }
     return 0;
@@ -61,18 +55,22 @@ auto init = []() {
 
 int main() {
     ios::sync_with_stdio(false); cin.tie(nullptr);
-    int C, kase = 0;
+    int C, kase = 0, m = pyramids.size();
     while (cin >> C && C != 0) {
         cout << "Case " << ++kase << ": ";
-        bool ok = false;
-        for (int k = 1; k <= MAX_K; ++k) {
-            if (!g[k][C]) continue;
-            ok = true;
-            for (int i = k - 1; i >= 0; --i)
-                cout << pyramids[f[k][C][i]].X << pyramids[f[k][C][i]].type << " \n"[i == 0];
-            break;
+        if (f[m][C] == INT_MAX) {
+            cout << "impossible" << endl;
         }
-        if (!ok) cout << "impossible" << endl;
+        else {
+            for (int i = m, k = f[m][C]; i > 0; --i) {
+                auto [cubes, X, type] = pyramids[i - 1];
+                if (C >= cubes && f[i][C] == f[i - 1][C - cubes] + 1) {
+                    cout << X << type << " \n"[k == 1];
+                    C -= cubes;
+                    --k;
+                }
+            }
+        }
     }
     return 0;
 }
