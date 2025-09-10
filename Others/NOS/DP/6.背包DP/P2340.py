@@ -2,6 +2,7 @@
 P2340 [USACO03FALL] Cow Exhibition G
 https://www.luogu.com.cn/problem/P2340
 背包DP：將其中一維視為 weight，另一維視為 value
+因為負數很麻煩，所以直接用 defaultdict 來處理，對負數應用偏移的寫法見 C++ 版本
 """
 from collections import defaultdict
 

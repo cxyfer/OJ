@@ -7,24 +7,45 @@ int main() {
     int N; cin >> N;
 
     vector<pair<int, int>> cows(N);
-    for (int i = 0; i < N; ++i) cin >> cows[i].first >> cows[i].second;
+    for (auto &[a, b] : cows) cin >> a >> b;
 
     // f[s] 表示智商和為 s 時，能達到的最大情商和
     unordered_map<int, int> f;
     f[0] = 0;
-    for (auto [s_i, f_i] : cows) {
+    for (auto [a, b] : cows) {
         auto nf = f;
-        for (auto [s_tot, f_tot] : f) {
-            int new_s = s_tot + s_i, new_f = f_tot + f_i;
-            if (nf.find(new_s) == nf.end() || new_f > nf[new_s])
-                nf[new_s] = new_f;
+        for (auto [s, t] : f) {
+            int ns = s + a, nt = t + b;
+            if (nf.find(ns) == nf.end() || nt > nf[ns])
+                nf[ns] = nt;
         }
         f = move(nf);
     }
 
     int ans = 0;
-    for (auto [s_tot, f_tot] : f)
-        if (s_tot >= 0 && f_tot >= 0) ans = max(ans, s_tot + f_tot);
+    for (auto [s, t] : f)
+        if (s >= 0 && t >= 0) ans = max(ans, s + t);
     cout << ans << endl;
+
+    // int s1 = 0, s2 = 0;
+    // for (auto [a, b] : cows)
+    //     if (a >= 0) s1 += a;
+    //     else s2 -= a;
+
+    // // f[j] 表示智商和為 j 時，能達到的最大情商和
+    // vector<int> f(s1 + s2 + 1, INT_MIN / 2);
+    // f[0 + s2] = 0;
+    // for (auto [a, b] : cows)
+    //     if (a >= 0)
+    //         for (int j = s1 + s2; j >= a; --j)
+    //             f[j] = max(f[j], f[j - a] + b);
+    //     else
+    //         for (int j = 0; j - a <= s1 + s2; ++j)
+    //             f[j] = max(f[j], f[j - a] + b);
+
+    // int ans = 0;
+    // for (int j = s2; j <= s1 + s2; ++j)
+    //     if (f[j] >= 0) ans = max(ans, (j - s2) + f[j]);
+    // cout << ans << endl;
     return 0;
 }
