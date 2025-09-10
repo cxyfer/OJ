@@ -24,13 +24,13 @@ void solve() {
             for (int j = 1; j <= T; j++) {
                 curr[j][0] = max({prev[j][0], prev[j - 1][1], prev[j - 1][2]}) + (ch == '0');
                 curr[j][1] = max({prev[j - 1][0], prev[j][1], prev[j - 1][2]}) + (ch == '1');
-                curr[j][2] = max({prev[j][0], prev[j][1], prev[j][2]});
+                curr[j][2] = ranges::max(prev[j]);
             }
         }
         // 分組背包
         vector<pair<int, int>> items;
         for (int t = 1; t <= T; t++)
-            items.emplace_back(t, max({g[M & 1][t][0], g[M & 1][t][1], g[M & 1][t][2]}));
+            items.emplace_back(t, ranges::max(g[M & 1][t]));
         for (int j = T; j >= 0; j--)
             for (auto [t, c] : items)
                 if (j >= t)
