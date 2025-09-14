@@ -9,7 +9,7 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class Solution:
+class Solution1:
     def subsequenceSumAfterCapping(self, nums: List[int], k: int) -> List[bool]:
         n = len(nums)
         heapify(nums)
@@ -27,6 +27,27 @@ class Solution:
                     ans[i] = True
                     break
         return ans
+
+class Solution2:
+    def subsequenceSumAfterCapping(self, nums: List[int], k: int) -> List[bool]:
+        n = len(nums)
+        heapify(nums)
+        U = (1 << (k + 1)) - 1
+        f = 1
+        ans = [False] * n
+        for i in range(n):
+            x = i + 1
+            while nums and nums[0] <= x:
+                v = heappop(nums)
+                f = (f | (f << v)) & U
+            for j in range(min(len(nums), k // x) + 1):
+                if f & (1 << (k - j * x)):
+                    ans[i] = True
+                    break
+        return ans
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 sol = Solution()
 print(sol.subsequenceSumAfterCapping([4,3,2,4], 5))  # [false,false,true,true]
