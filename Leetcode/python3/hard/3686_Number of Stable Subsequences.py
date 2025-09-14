@@ -24,6 +24,7 @@ class Solution1:
 class Solution2:
     def countStableSubsequences(self, nums: List[int]) -> int:
         # f[i][b1][b2] 表示考慮前 i 個元素，最後兩個元素分別為 b1 和 b2 ，且不出現超過連續三個相同元素的子序列數量
+        # 特別地，用 f[2][b] 來表示長度為 1，且最後一個元素為 b 的子序列數量
         f = [[0, 0, 0] for _ in range(3)]
         for x in nums:
             b = x & 1
@@ -32,21 +33,18 @@ class Solution2:
             f[b ^ 1][b] += (f[0][b ^ 1] + f[1][b ^ 1] + f[2][b ^ 1])
             f[b ^ 1][b] %= MOD
             f[2][b] += 1
-            f[2][b] %= MOD
             # if b == 0:  # 拆開來會比較好懂
             #     f[0][0] += (f[1][0] + f[2][0])
             #     f[0][0] %= MOD
             #     f[1][0] += (f[0][1] + f[1][1] + f[2][1])
             #     f[1][0] %= MOD
             #     f[2][0] += 1
-            #     f[2][0] %= MOD
             # else:
             #     f[1][1] += (f[0][1] + f[2][1])
             #     f[1][1] %= MOD
             #     f[0][1] += (f[0][0] + f[1][0] + f[2][0])
             #     f[0][1] %= MOD
             #     f[2][1] += 1
-            #     f[2][1] %= MOD
         return sum(map(sum, f)) % MOD
 
 # Solution = Solution1
