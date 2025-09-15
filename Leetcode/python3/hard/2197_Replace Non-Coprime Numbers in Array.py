@@ -14,8 +14,7 @@ class Solution:
         st = []
         for x in nums:
             while st and math.gcd(st[-1], x) > 1:
-                y = st.pop()
-                x = y * x // math.gcd(y, x)
+                x = math.lcm(st.pop(), x)
             st.append(x)
         return st
 # @lc code=end
