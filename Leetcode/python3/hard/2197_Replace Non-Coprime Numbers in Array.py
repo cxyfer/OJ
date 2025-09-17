@@ -13,8 +13,8 @@ class Solution:
     def replaceNonCoprimes(self, nums: List[int]) -> List[int]:
         st = []
         for x in nums:
-            while st and math.gcd(st[-1], x) > 1:
-                x = math.lcm(st.pop(), x)
+            while st and (g := math.gcd(st[-1], x)) > 1:
+                x = st.pop() * x // g
             st.append(x)
         return st
 # @lc code=end
