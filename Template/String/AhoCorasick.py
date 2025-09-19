@@ -40,7 +40,7 @@ class AhoCorasick:
         node.length = len(word)
         node.cost = min(node.cost, cost)  # 避免相同單字有不同 cost
 
-    def build(self):  # O(|Σ|L)，|Σ| 是字元集大小，L 是單字總長度，適合較稠密的 Trie 
+    def build(self):  # O(|Σ|)，|Σ| 是字元集大小，n 是節點數，適合較稠密的 Trie 
         self.root.fail = self.root.last = self.root
         # BFS
         q = deque()
@@ -61,12 +61,12 @@ class AhoCorasick:
                     q.append(v)
 
     def build2(self):  # O(L)，L 是單字總長度，適合較稀疏的 Trie
-        self.root.fail = self.root
+        self.root.fail = self.root.last = self.root
         # BFS
         q = deque()
         for v in self.root.child:
             if v is None: continue
-            v.fail = self.root
+            v.fail = v.last = self.root
             q.append(v)
         while q:
             u = q.popleft()
@@ -77,8 +77,9 @@ class AhoCorasick:
                     fu = fu.fail
                 if fu.child[i] is not None:
                     v.fail = fu.child[i]
-                else: # 如果一路找到根節點都沒有，則 fail 指向根
+                else:  # 如果一路找到根節點都沒有，則 fail 指向根
                     v.fail = self.root
+                v.last = v.fail if v.fail.length else v.fail.last
                 q.append(v)
 
     def traverse2(self, word: str):
