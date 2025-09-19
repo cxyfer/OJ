@@ -62,9 +62,8 @@ class AhoCorasick:
 
     def build2(self):  # O(L)，L 是單字總長度，適合較稀疏的 Trie
         self.root.fail = self.root
-        q = deque()
-        
         # BFS
+        q = deque()
         for v in self.root.child:
             if v is None: continue
             v.fail = self.root
@@ -76,10 +75,17 @@ class AhoCorasick:
                 fu = u.fail
                 while fu != self.root and fu.child[i] is None:
                     fu = fu.fail
-                
                 if fu.child[i] is not None:
                     v.fail = fu.child[i]
                 else: # 如果一路找到根節點都沒有，則 fail 指向根
                     v.fail = self.root
-                
                 q.append(v)
+
+    def traverse2(self, word: str):
+        node = self.root
+        for ch in word: 
+            idx = ord(ch) - ord('a')
+            while node != self.root and node.child[idx] is None:
+                node = node.fail
+            if node.child[idx] is not None:
+                node = node.child[idx]
