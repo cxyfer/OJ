@@ -11,14 +11,16 @@ from preImport import *
 import random
 # @lcpr-template-end
 # @lc code=start
+fmin = lambda x, y: x if x < y else y
+
 class Node:
     def __init__(self):
         self.child = [None] * 26
+        self.fail = None  # fail pointer
+        self.last = None  # suffix link，用來快速跳到一定是某個 word 結尾的節點
         # self.is_end = False
         # self.depth = depth
-        self.length = 0 # 若只保存在結尾的節點，可以省略 is_end
-        self.fail = None # fail pointer
-        self.last = None # suffix link，用來快速跳到一定是某個 word 結尾的節點
+        self.length = 0  # 可以取代 is_end 和 depth
         self.cost = float('inf')
 
 class AhoCorasick:
@@ -33,32 +35,27 @@ class AhoCorasick:
                 node.child[idx] = Node()
             node = node.child[idx]
         node.length = len(word)
-        node.cost = min(node.cost, cost) # 避免相同單字有不同 cost
+        node.cost = min(node.cost, cost)  # 避免相同單字有不同 cost
 
     def build(self):
         self.root.fail = self.root.last = self.root
-        q = deque()
-        # 先處理第一層的 fail 和 last
-        for i, child in enumerate(self.root.child):
-            if child is None: # 添加虛擬子節點
-                self.root.child[i] = self.root
-            else:
-                child.fail = child.last = self.root # 第一層的失配指標都指向 root
-                q.append(child)
         # BFS
+        q = deque()
+        for i, v in enumerate(self.root.child):
+            if v is None:  
+                self.root.child[i] = self.root  # 添加虛擬子節點
+            else:
+                v.fail = v.last = self.root
+                q.append(v)
         while q:
-            node = q.popleft()
-            for i, child in enumerate(node.child):
-                if child is None: # 添加虛擬子節點
-                    # 虛擬子節點 node.child[i] 和 node.fail.child[i] 是同一個
-                    # 方便失配時直接跳到下一個可能匹配的位置（但不一定是某個 words[k] 的最后一個字母）
-                    node.child[i] = node.fail.child[i]
-                    continue
-                # 計算失配位置
-                child.fail = node.fail.child[i] 
-                # 計算 suffix link，沿著 fail 指標找到一定是某個 word 結尾的節點
-                child.last = child.fail if child.fail.length else child.fail.last
-                q.append(child)
+            u = q.popleft()
+            for i, v in enumerate(u.child):
+                if v is None:
+                    u.child[i] = u.fail.child[i]  # 添加虛擬子節點
+                else:
+                    v.fail = u.fail.child[i]  # 失配位置
+                    v.last = v.fail if v.fail.length else v.fail.last  # 上一個一定是某個 word 結尾的節點
+                    q.append(v)
 
 class Solution1:
     def minimumCost(self, target: str, words: List[str], costs: List[int]) -> int:
@@ -71,19 +68,15 @@ class Solution1:
         f = [0] + [float('inf')] * n
         node = ac.root
         for i, ch in enumerate(target, 1):
-            # 如果沒有匹配，相當於移動到 fail 的 child[ch]
             node = node.child[ord(ch) - ord('a')]
-            if node.length: # 匹配到了一個盡可能長的 words[k]
-                f[i] = min(f[i], f[i - node.length] + node.cost)
-            # 沿著 last 鏈上尋找，可能可以找到其餘更短，但可以使成本更小的 words[k]
-            match_node = node.last
-            while match_node != ac.root:
-                # f[i] = min(f[i], f[i - match_node.length] + match_node.cost)
-                tmp = f[i - match_node.length] + match_node.cost
-                if tmp < f[i]:
-                    f[i] = tmp
-                match_node = match_node.last
-        return -1 if f[n] == float('inf') else f[n]
+            if node.length:  # 匹配到了一個盡可能長的 words[k]
+                f[i] = fmin(f[i], f[i - node.length] + node.cost)
+            # 沿著 last 往上尋找，可能可以找到其餘更短，但可以使成本更小的 words[k]
+            v = node.last
+            while v != ac.root:
+                f[i] = fmin(f[i], f[i - v.length] + v.cost)
+                v = v.last
+        return f[n] if f[n] != float('inf') else -1
 
 class Solution2:
     def minimumCost(self, target: str, words: List[str], costs: List[int]) -> int:
@@ -124,13 +117,13 @@ class Solution2:
                 if tmp < f[i]:
                     f[i] = tmp
         return -1 if f[n] == float('inf') else f[n]
-    
-# class Solution(Solution1):
-class Solution(Solution2):
-    pass
+
+Solution = Solution1
+# Solution = Solution2
 # @lc code=end
 
-
+sol = Solution()
+print(sol.minimumCost("abcdef", ["abdef", "abc", "d", "def", "ef"], [100, 1, 1, 10, 5]))  # 7
 
 #
 # @lcpr case=start
