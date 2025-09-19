@@ -24,13 +24,12 @@ class Node:
         # self.is_end = False
         # self.depth = depth
         self.length = 0  # 可以取代 is_end 和 depth
-        self.cost = float('inf')
 
 class AhoCorasick:
     def __init__(self):
         self.root = Node()
 
-    def insert(self, word: str, cost: int):
+    def insert(self, word: str):
         node = self.root
         for ch in word: 
             idx = ord(ch) - ord('a')
@@ -38,7 +37,6 @@ class AhoCorasick:
                 node.child[idx] = Node()
             node = node.child[idx]
         node.length = len(word)
-        node.cost = min(node.cost, cost)  # 避免相同單字有不同 cost
 
     def build(self):  # O(|Σ|)，|Σ| 是字元集大小，n 是節點數，適合較稠密的 Trie 
         self.root.fail = self.root.last = self.root
