@@ -40,7 +40,7 @@ class AhoCorasick:
         node.length = len(word)
         node.cost = min(node.cost, cost)  # 避免相同單字有不同 cost
 
-    def build(self):
+    def build(self):  # O(|Σ|L)，|Σ| 是字元集大小，L 是單字總長度，適合較稠密的 Trie 
         self.root.fail = self.root.last = self.root
         # BFS
         q = deque()
@@ -59,3 +59,27 @@ class AhoCorasick:
                     v.fail = u.fail.child[i]  # 失配位置
                     v.last = v.fail if v.fail.length else v.fail.last  # 上一個一定是某個 word 結尾的節點
                     q.append(v)
+
+    def build2(self):  # O(L)，L 是單字總長度，適合較稀疏的 Trie
+        self.root.fail = self.root
+        q = deque()
+        
+        # BFS
+        for v in self.root.child:
+            if v is None: continue
+            v.fail = self.root
+            q.append(v)
+        while q:
+            u = q.popleft()
+            for i, v in enumerate(u.child):
+                if v is None: continue
+                fu = u.fail
+                while fu != self.root and fu.child[i] is None:
+                    fu = fu.fail
+                
+                if fu.child[i] is not None:
+                    v.fail = fu.child[i]
+                else: # 如果一路找到根節點都沒有，則 fail 指向根
+                    v.fail = self.root
+                
+                q.append(v)
