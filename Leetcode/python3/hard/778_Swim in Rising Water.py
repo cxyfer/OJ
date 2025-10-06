@@ -12,8 +12,11 @@ from preImport import *
 1. Disjoint Set
 2. Binary Search + DFS / BFS
 3. Dijkstra
+
+Similar to 1631. Path With Minimum Effort
 """
 # @lc code=start
+max = lambda a, b: a if a > b else b
 class Solution1:
     def swimInWater(self, grid: List[List[int]]) -> int:
         n = len(grid)
