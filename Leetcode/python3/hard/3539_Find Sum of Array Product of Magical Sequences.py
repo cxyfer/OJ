@@ -34,10 +34,10 @@ class Solution:
                 return 1 if cnt_m == m and cnt_k + v.bit_count() == k else 0
             res = 0
             for j in range(m + 1 - cnt_m):
-                res += pow_x[i][j] * invf[j] * dfs(i + 1, cnt_m + j, cnt_k + ((v + j) & 1), (v + j) >> 1) % MOD
-                res %= MOD
-            return res
-        return dfs(0, 0, 0, 0) * fact[m] % MOD
+                r = dfs(i + 1, cnt_m + j, cnt_k + ((v + j) & 1), (v + j) >> 1)
+                res += pow_x[i][j] * invf[j] * r % MOD
+            return res % MOD
+        return fact[m] * dfs(0, 0, 0, 0) % MOD
 # @lc code=end
 
 sol = Solution()
