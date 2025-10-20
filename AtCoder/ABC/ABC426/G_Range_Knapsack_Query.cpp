@@ -32,7 +32,7 @@ void solve() {
     for (auto &query : queries) MAX_C = max(MAX_C, query.c);
     vector<vector<LL>> fl(n + 1, vector<LL>(MAX_C + 1, 0)), fr(n + 1, vector<LL>(MAX_C + 1, 0));
     // Divide and conquer
-    auto dfs = [&](auto &&dfs, int left, int right, vector<Query> &queries) -> void {
+    auto f = [&](auto &&f, int left, int right, vector<Query> &queries) -> void {
         if (queries.empty() || left >= right) return;
         int mid = left + ((right - left) >> 1);
         // Divide into three parts: left, across middle, right
@@ -42,8 +42,6 @@ void solve() {
             else if (query.r <= mid) ql.push_back(query);
             else qr.push_back(query);
         }
-        dfs(dfs, left, mid, ql);
-        dfs(dfs, mid + 1, right, qr);
         if (!qm.empty()) {
             int C = ranges::max(qm | views::transform(&Query::c));
             for (int c = 0; c <= C; c++)
@@ -69,9 +67,11 @@ void solve() {
                 for (int cc = 0; cc <= c; cc++)
                     ans[qid] = max(ans[qid], fl[l][cc] + fr[r][c - cc]);
         }
+        f(f, left, mid, ql);
+        f(f, mid + 1, right, qr);
         return;
     };
-    dfs(dfs, 1, n, queries);
+    f(f, 1, n, queries);
     for (auto &x : ans) cout << x << endl;
     return;
 }
