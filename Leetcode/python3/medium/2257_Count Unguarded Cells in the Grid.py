@@ -24,17 +24,10 @@ class Solution:
                 dfs(x + dx, y + dy, dx, dy)
 
         for x, y in guards:
-            dfs(x, y + 1, 0, 1)
-            dfs(x + 1, y, 1, 0)
-            dfs(x, y - 1, 0, -1)
-            dfs(x - 1, y, -1, 0)
+            for dx, dy in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
+                dfs(x + dx, y + dy, dx, dy)
         
-        ans = 0
-        for i, row in enumerate(grid):
-            for j, x in enumerate(row):
-                if x == -1:
-                    ans += 1
-        return ans
+        return sum(grid[i][j] == -1 for i in range(m) for j in range(n))
 # @lc code=end
 
 sol = Solution()
