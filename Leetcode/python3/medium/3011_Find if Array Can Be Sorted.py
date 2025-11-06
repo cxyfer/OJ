@@ -17,7 +17,6 @@ class Solution1:
         while i < n:
             st = i
             cnt = nums[i].bit_count()
-            i += 1
             while i < n and nums[i].bit_count() == cnt:
                 i += 1
             nums[st:i] = sorted(nums[st:i])
@@ -27,24 +26,23 @@ class Solution2:
     def canSortArray(self, nums: List[int]) -> bool:
         n = len(nums)
         i = 0
-        pre_mx = -1
+        pre = float('-inf')  # 前一段的最大值
         while i < n:
-            mx = nums[i]
+            st = i
             cnt = nums[i].bit_count()
             while i < n and nums[i].bit_count() == cnt:
-                if nums[i] < pre_mx:
+                if nums[i] < pre:
                     return False
-                mx = max(mx, nums[i])
                 i += 1
-            pre_mx = mx
+            pre = max(nums[st:i])
         return True
     
-# class Solution(Solution1):
-class Solution(Solution2):
-    pass
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 
-
+sol = Solution()
+print(sol.canSortArray([20,16]))
 
 #
 # @lcpr case=start
