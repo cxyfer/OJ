@@ -9,7 +9,7 @@
 from preImport import *
 # @lcpr-template-end
 """
-枚舉 / 雙指標 + 資料結構
+枚舉 / 雙指標 + 資料結構 / LogTrick
 
 如果 nums 中存在 1，那麼可以用 1 來更新其他元素，因此答案為 n - cnt1
 否則我們需要找到一個區間，使得區間內的 gcd 為 1，那麼我們可以用這個 1 來更新其他元素。
@@ -23,13 +23,16 @@ from preImport import *
 故只需要從 l 開始往右找到最後一個使 [l', r] 的 gcd 為 1 的位置即可。
 但由於 gcd 是不可減的，因此需要使用 線段樹/ST表 等資料結構來維護區間的 gcd。
 時間複雜度為 O(n log n)。
+
+也能使用 LogTrick 來維護以 r 為右端點的所有區間 gcd 值，對於同樣的 gcd 值只保留左端點最大的。
+由於以 r 為右端點的區間 gcd 值最多有 log U 種，因此時間複雜度為 O(n log U)。
 """
 # @lc code=start
 class Solution1:
     def minOperations(self, nums: List[int]) -> int:
-        n = len(nums)
         if reduce(math.gcd, nums) != 1:
             return -1
+        n = len(nums)
         if (cnt1 := nums.count(1)) > 0:
             return n - cnt1
         ans = float('inf')
@@ -62,9 +65,9 @@ class SparseTable:
 
 class Solution2:
     def minOperations(self, nums: List[int]) -> int:
-        n = len(nums)
         if reduce(math.gcd, nums) != 1:
             return -1
+        n = len(nums)
         if (cnt1 := nums.count(1)) > 0:
             return n - cnt1
         ans = float('inf')
@@ -78,9 +81,40 @@ class Solution2:
                 ans = min(ans, j - i + n)
         return ans
 
+class Solution3:
+    def minOperations(self, nums: List[int]) -> int:
+        if reduce(math.gcd, nums) != 1:
+            return -1
+        n = len(nums)
+        if (cnt1 := nums.count(1)) > 0:
+            return n - cnt1
+        ans = float('inf')
+        gcds = []  # (區間 gcd，最大左端點)
+        for r, x in enumerate(nums):
+            # 維護以 r 為右端點的所有區間 gcd 值
+            for p in gcds:
+                p[0] = math.gcd(p[0], x)
+            gcds.append([x, r])
+
+            # 原地去重，相同 gcd 值只保留左端點最大的
+            idx = 1
+            for j in range(1, len(gcds)):
+                if gcds[j][0] != gcds[idx - 1][0]:
+                    gcds[idx] = gcds[j]
+                    idx += 1
+                else:
+                    gcds[idx - 1][1] = gcds[j][1]
+            del gcds[idx:]
+
+            if gcds[0][0] == 1:
+                ans = min(ans, r - gcds[0][1] + n - 1)
+        return ans
+
 # Solution = Solution1
-Solution = Solution2
+# Solution = Solution2
+Solution = Solution3
 # @lc code=end
 
 sol = Solution()
 print(sol.minOperations([6,10,15]))  # 4
+print(sol.minOperations([2,6,3,4]))  # 4
