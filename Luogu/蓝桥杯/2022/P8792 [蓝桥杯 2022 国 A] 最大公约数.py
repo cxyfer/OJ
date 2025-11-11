@@ -16,6 +16,9 @@ https://www.luogu.com.cn/problem/P8792
 故只需要從 l 開始往右找到最後一個使 [l', r] 的 gcd 為 1 的位置即可。
 但由於 gcd 是不可減的，因此需要使用 線段樹/ST表 等資料結構來維護區間的 gcd。
 時間複雜度為 O(n log n)。
+
+也能使用 LogTrick 來維護以 r 為右端點的所有區間 gcd 值，對於同樣的 gcd 值只保留左端點最大的。
+由於以 r 為右端點的區間 gcd 值最多有 log U 種，因此時間複雜度為 O(n log U)。
 """
 import math
 
@@ -37,7 +40,7 @@ class SparseTable:
         k = math.floor(math.log2(R - L + 1))
         return self.merge(self.st[L][k], self.st[R - (1 << k) + 1][k])
 
-def solve():
+def solve1():
     n = int(input())
     nums = list(map(int, input().split()))
     if (cnt1 := nums.count(1)) > 0:
@@ -54,5 +57,34 @@ def solve():
             ans = min(ans, j - i + n)
     print(ans if ans != float('inf') else -1)
 
+def solve2():
+    n = int(input())
+    nums = list(map(int, input().split()))
+    if (cnt1 := nums.count(1)) > 0:
+        print(n - cnt1)
+        return
+    ans = float('inf')
+    gcds = []  # (區間 gcd，最大左端點)
+    for r, x in enumerate(nums):
+        # 維護以 r 為右端點的所有區間 gcd 值
+        for p in gcds:
+            p[0] = math.gcd(p[0], x)
+        gcds.append([x, r])
+
+        # 原地去重，相同 gcd 值只保留左端點最大的
+        idx = 1
+        for j in range(1, len(gcds)):
+            if gcds[j][0] != gcds[idx - 1][0]:
+                gcds[idx] = gcds[j]
+                idx += 1
+            else:
+                gcds[idx - 1][1] = gcds[j][1]
+        del gcds[idx:]
+
+        if gcds[0][0] == 1:
+            ans = min(ans, r - gcds[0][1] + n - 1)
+    print(ans if ans != float('inf') else -1)
+        
 if __name__ == "__main__":
-    solve()
+    # solve1()
+    solve2()
