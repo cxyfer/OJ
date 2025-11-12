@@ -8,6 +8,10 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+TODO:
+- Modify the parameter of dfs to be a index instead of a string
+"""
 # @lc code=start
 @cache
 def dfs(x: str, y: str) -> bool:
