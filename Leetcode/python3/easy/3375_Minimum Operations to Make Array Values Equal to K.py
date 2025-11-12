@@ -12,13 +12,7 @@ from preImport import *
 # @lc code=start
 class Solution:
     def minOperations(self, nums: List[int], k: int) -> int:
-        ans = 0
-        cnt = Counter(nums)
-        for x in cnt.keys():
-            if x < k:
-                return -1
-            ans += x > k
-        return ans
+        return len(st := set(nums)) - (k in st) if all(x >= k for x in nums) else -1
 # @lc code=end
 
 
