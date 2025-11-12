@@ -44,10 +44,11 @@ class Solution:
         def dfs(d, left_e, left_s):
             if d == 10:
                 return 1 if left_e == 0 and left_s == 0 else 0
+            # assert left_e >= 0 and left_s >= 0
             res = 0
             # 枚舉當前數字 d 選擇的數量 k，則方法數為 comb(cnt[d], k)，並可以遞迴到子問題
             for k in range(0, min(cnt[d], left_e) + 1):
-                if k * d > left_s:
+                if k > left_e or k * d > left_s:
                     break
                 res = (res + dfs(d + 1, left_e - k, left_s - k * d) * comb[cnt[d]][k]) % MOD
             return res
