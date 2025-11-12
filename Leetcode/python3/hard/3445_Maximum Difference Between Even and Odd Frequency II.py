@@ -22,7 +22,7 @@ class Solution:
                 sa = [0] * (n + 1)
                 sb = [0] * (n + 1)
                 # (sa_j - sb_j) 的最小值，且 (sa_j, sb_j) 的奇偶性分別為 (0, 0), (0, 1), (1, 0), (1, 1)
-                mns = [float('inf'), float('inf'), float('inf'), float('inf')]  # (0, 0), (0, 1), (1, 0), (1, 1)
+                mns = [float('inf')] * 4  # (0, 0), (0, 1), (1, 0), (1, 1)
                 left = 0
                 for i, d in enumerate(s, 1):
                     sa[i] = sa[i - 1] + (d == a)
