@@ -11,27 +11,29 @@
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
-class Solution1 {
-    public:
-        int maximumLength(vector<int>& nums) {
-            vector<int> cnt(2, 0);
-            for (int x : nums) cnt[x & 1]++;
-            auto f = [&](int b) {
-                int res = 0;
-                for (int x : nums) {
-                    if ((x & 1) == b) {
-                        res++;
-                        b ^= 1;
-                    }
-                }
-                return res;
-            };
-            return max({f(0), f(1), cnt[0], cnt[1]});
-        }
-    };
-
 #include <ranges>
-class Solution2 {
+
+class Solution1 {
+public:
+    int maximumLength(vector<int>& nums) {
+        vector<int> cnt(2, 0);
+        for (int x : nums) cnt[x & 1]++;
+        auto f = [&](int b) {
+            int res = 0;
+            for (int x : nums) {
+                if ((x & 1) == b) {
+                    res++;
+                    b ^= 1;
+                }
+            }
+            return res;
+        };
+        // return max({f(0), f(1), cnt[0], cnt[1]});
+        return max({f(nums[0] & 1), cnt[0], cnt[1]});
+    }
+};
+
+class Solution2a {
 public:
     int maximumLength(vector<int>& nums) {
         vector<int> ans(4, 0);
@@ -44,11 +46,23 @@ public:
     }
 };
 
-// using Solution = Solution1;
-using Solution = Solution2;
+class Solution2b {
+public:
+    int maximumLength(vector<int>& nums) {
+        int flag = nums[0] & 1;
+        vector<int> ans(3, 0);
+        for (int b : nums | views::transform([](int x) { return x & 1; })) {
+            ans[b] += 1;
+            ans[2] += ((b ^ flag) == (ans[2] & 1));
+        }
+        return ranges::max(ans);
+    }
+};
+
+using Solution = Solution1;
+// using Solution = Solution2a;
+// using Solution = Solution2b;
 // @lc code=end
-
-
 
 /*
 // @lcpr case=start
