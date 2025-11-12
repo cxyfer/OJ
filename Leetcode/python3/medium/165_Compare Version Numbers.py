@@ -12,10 +12,8 @@ from preImport import *
 class Solution:
     def compareVersion(self, version1: str, version2: str) -> int:
         for x, y in zip_longest(map(int, version1.split('.')), map(int, version2.split('.')), fillvalue=0):
-            if x > y:
-                return 1
-            elif x < y:
-                return -1
+            if (v := (x > y) - (x < y)):
+                return v
         return 0
 # @lc code=end
 

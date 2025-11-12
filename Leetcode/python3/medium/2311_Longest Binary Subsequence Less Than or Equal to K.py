@@ -70,10 +70,18 @@ class Solution3b:
                 ans -= 1
         return ans
 
+
+class Solution4:
+    def longestSubsequence(self, s: str, k: int) -> int:
+        while int(s, 2) > k:
+            s = s.replace("1", "", 1)
+        return len(s)
+
 # Solution = Solution1 
 # Solution = Solution2
 # Solution = Solution3a
-Solution = Solution3b
+# Solution = Solution3b
+Solution = Solution4
 # @lc code=end
 
 sol = Solution()
@@ -82,3 +90,19 @@ print(sol.longestSubsequence(s = "00101001", k = 1))  # 6
 print(sol.longestSubsequence(s = "11111", k = int("10000", 2)))  # 4
 
 print(sol.longestSubsequence(s = "001010101011010100010101101010010", k = 93951055))  # 31
+
+import time
+
+print("Solution3")
+sol = Solution3b()
+t1 = time.time()
+print(sol.longestSubsequence(s = "0" * 50000 + "1" * 50000, k = 1))
+t2 = time.time()
+print(t2 - t1)
+
+print("Solution4")
+sol = Solution4()
+t1 = time.time()
+print(sol.longestSubsequence(s = "0" * 50000 + "1" * 50000, k = 1))
+t2 = time.time()
+print(t2 - t1)

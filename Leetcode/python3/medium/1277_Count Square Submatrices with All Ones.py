@@ -10,39 +10,18 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class Solution1:
+class Solution:
     def countSquares(self, matrix: List[List[int]]) -> int:
-        m, n = len(matrix), len(matrix[0])
-        @cache
-        def dfs(i, j): # 以 (i, j) 為右下角的最大正方形邊長
-            if i < 0 or j < 0:
-                return 0
-            if matrix[i][j] == 0:
-                return 0
-            return 1 + min(dfs(i - 1, j), dfs(i, j - 1), dfs(i - 1, j - 1))
-        ans = 0
-        for i in range(m):
-            for j in range(n):
-                ans += dfs(i, j)
-        return ans
-    
-class Solution2:
-    def countSquares(self, matrix: List[List[int]]) -> int:
-        m, n = len(matrix), len(matrix[0])
-        f = [[0] * n for _ in range(m)]
-        for i in range(m):
-            for j in range(n):
-                if matrix[i][j] == 0:
-                    continue
-                if i == 0 or j == 0:
-                    f[i][j] = 1
-                else:
-                    f[i][j] = min(f[i - 1][j], f[i][j - 1], f[i - 1][j - 1]) + 1
+        n, m = len(matrix), len(matrix[0])
+        f = [[0] * m for _ in range(n)]
+        for i, row in enumerate(matrix):
+            for j, x in enumerate(row):
+                if x == 1:
+                    if i > 0 and j > 0:
+                        f[i][j] = min(f[i - 1][j], f[i][j - 1], f[i - 1][j - 1]) + 1
+                    else:
+                        f[i][j] = 1
         return sum(sum(row) for row in f)
-    
-# class Solution(Solution1):
-class Solution(Solution2):
-    pass
 # @lc code=end
 
 
