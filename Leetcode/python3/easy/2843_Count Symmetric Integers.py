@@ -28,12 +28,10 @@ class Solution1:
 
 class Solution2:
     def countSymmetricIntegers(self, low: int, high: int) -> int:
-        low = list(map(int, str(low)))
         high = list(map(int, str(high)))
         n = len(high)
-        diff = n - len(low)
-        low = [0] * (n - len(low)) + low  # 補前導零，使 low 和 high 對齊
-
+        low = list(map(int, str(low).zfill(n)))  # 補前導零，使 low 和 high 對齊
+        
         @cache
         def dfs(i: int, j: int, s: int, limit_low: bool, limit_high: bool) -> int:
             if i == n:
