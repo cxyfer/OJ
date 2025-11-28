@@ -12,30 +12,29 @@ from preImport import *
 # @lc code=start
 class Solution:
     def maxKDivisibleComponents(self, n: int, edges: List[List[int]], values: List[int], k: int) -> int:
-        g = defaultdict(list)
+        g = [[] for _ in range(n)]
         for u, v in edges:
             g[u].append(v)
             g[v].append(u)
 
         ans = 0
-        def dfs(u, fa):
-            nonlocal ans
-            res = values[u]
+        def dfs(u: int, fa: int) -> int:
+            s = values[u] % k
             for v in g[u]:
                 if v == fa:
                     continue
-                res += dfs(v, u)
-            if res % k == 0:  # 可以刪除 (u, fa) 這條邊
+                s = (s + dfs(v, u)) % k
+            if s == 0:  # 可以刪除 (u, fa) 這條邊
+                nonlocal ans
                 ans += 1
-            return res
-        
+            return s
         dfs(0, -1)
         return ans
 # @lc code=end
 
 sol = Solution()
-print(sol.maxKDivisibleComponents(5, [[0,2],[1,2],[1,3],[2,4]], [1,8,1,4,4], 6)) # 2
-print(sol.maxKDivisibleComponents(7, [[0,1],[0,2],[1,3],[1,4],[2,5],[2,6]], [3,0,6,1,5,2,1], 3)) # 3
+print(sol.maxKDivisibleComponents(5, [[0,2],[1,2],[1,3],[2,4]], [1,8,1,4,4], 6))  # 2
+print(sol.maxKDivisibleComponents(7, [[0,1],[0,2],[1,3],[1,4],[2,5],[2,6]], [3,0,6,1,5,2,1], 3))  # 3
 
 #
 # @lcpr case=start
