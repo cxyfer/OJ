@@ -5,12 +5,14 @@ from typing import *
 from collections import *
 from functools import *
 from operator import *
+from string import *
 del pow
 
 from heapq import *
 from bisect import *
 from itertools import *
 from random import *
+from sortedcontainers import *
 
 class ListNode:
     def __init__(self, val=0, next=None):
@@ -21,7 +23,3 @@ class TreeNode:
         self.val = val
         self.left = left
         self.right = right
-class SegmentTreeNode:
-    def __init__(self, val=None, children=None):
-        self.val = val
-        self.children = children
