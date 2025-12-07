@@ -1,7 +1,7 @@
 from collections import defaultdict
 from heapq import heappush, heappop, heappushpop
 
-# 模板来源 https://leetcode.cn/circle/discuss/mOr1u6/
+# 模板來源 https://leetcode.cn/circle/discuss/mOr1u6/
 class LazyHeap:
     def __init__(self):
         self.hp = []
