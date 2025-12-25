@@ -9,19 +9,15 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+Greedy + Sort 優先選最大的
+"""
 # @lc code=start
 class Solution:
-    """
-        Greedy + Sort 優先選最大的
-    """
     def maximumHappinessSum(self, happiness: List[int], k: int) -> int:
-        happiness.sort(reverse=True) # 由大到小選擇
         ans = 0
-        for i in range(k): # k round 
-            cur = happiness[i] - i # 考慮遞減
-            if cur <= 0:
-                break
-            ans += cur
+        for i, x in enumerate(nlargest(k, happiness)):
+            ans += max(0, x - i)
         return ans
 # @lc code=end
 

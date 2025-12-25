@@ -10,15 +10,15 @@
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
+#include <ranges>
+
 class Solution {
 public:
     long long maximumHappinessSum(vector<int>& happiness, int k) {
-        sort(happiness.begin(), happiness.end(), greater<int>()); // 由大到小排序
+        ranges::sort(happiness, greater<int>());
         long long ans = 0;
-        for (int i = 0; i < k; i++){ // 選擇 k 輪
-            int cur = happiness[i] - i; // 考慮衰減，當前幸福值需減去 i
-            if (cur < 0) break; // 如果幸福值小於 0，則不選擇
-            ans += cur;
+        for (int i = 0; i < k; i++) {    // 選擇 k 輪
+            ans += max(0, happiness[i] - i);
         }
         return ans;
     }
