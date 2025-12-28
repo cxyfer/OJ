@@ -8,10 +8,10 @@ Digit DP Template v2.0
 
 class Solution:
     def beautifulNumbers(self, l: int, r: int) -> int:
+        diff = len(str(r)) - len(str(l))
         high = list(map(int, str(r)))
         n = len(high)
         low = list(map(int, str(l).zfill(n)))  # 補前導零，使 low 和 high 對齊
-        diff = n - len(low)
 
         @cache
         def dfs(i: int, s: int, m: int, limit_low: bool, limit_high: bool) -> int:
