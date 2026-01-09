@@ -6,6 +6,9 @@ def query(s: str):
     assert k == len(arr)
     return arr
 
+def answer(*args):
+    print("!", *args, flush=True)
+
 def solve():
     n = int(input())
     A = list(map(int, input().split()))
@@ -28,8 +31,7 @@ def solve():
     for i in range(1, n):
         if ans[i] == -1:
             d = A[i] - A[i - 1]
-            # if (d == 1 and ans[i - 1] == 1) or (d == 2 and ans[i - 1] == 0):
-            if (d == 1 and ans[i - 1] != 0) or (d == 2 and ans[i - 1] == 0):
+            if d == 2 or (d == 1 and ans[i - 1] != 0):
                 ans[i] = 2
 
     for i, x in enumerate(A):
@@ -40,9 +42,9 @@ def solve():
     for i in range(n - 2):
         if A[i + 1] - A[i] == A[i + 2] - A[i + 1] == 1:
             if ans[i] == 0 and ans[i + 1] != 0 and ans[i + 2] == 0:
-                print("! -1", flush=True)
+                answer(-1)
                 return
-    print("!", *ans, flush=True)
+    answer(*ans)
 
 if __name__ == "__main__":
     t = int(input())
