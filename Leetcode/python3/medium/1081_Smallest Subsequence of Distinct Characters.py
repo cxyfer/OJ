@@ -9,25 +9,25 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+Greedy + Stack
+Similar to 402. Remove K Digits
+Very similar to 3816. Lexicographically Smallest String After Deleting Duplicate Characters
+Same as 316. Remove Duplicate Letters
+"""
 # @lc code=start
 class Solution:
-    """
-        Greedy + Stack
-        Similar to 402. Remove K Digits
-        Same as 316. Remove Duplicate Letters
-    """
     def smallestSubsequence(self, s: str) -> str:
-        cnt = Counter(s)
-        st = []
+        left = Counter(s)
         selected = set()
+        st = []
         for ch in s:
-            if ch not in selected: # 這個字母還沒被選過
-                # 這個字母比前面的字母小，且前面的字母還有剩餘，就把前面的字母刪掉(反悔)
-                while st and st[-1] > ch and cnt[st[-1]] > 0:
+            if ch not in selected:
+                while st and st[-1] > ch and left[st[-1]] > 0:
                     selected.remove(st.pop())
-                st.append(ch) # 把這個字母加入答案
-                selected.add(ch) # 標記為已選擇
-            cnt[ch] -= 1
+                st.append(ch)
+                selected.add(ch)
+            left[ch] -= 1
         return ''.join(st)
 # @lc code=end
 
