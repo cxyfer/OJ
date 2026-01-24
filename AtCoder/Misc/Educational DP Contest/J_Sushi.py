@@ -14,9 +14,14 @@ def solve():
         cnt[a] += 1
 
     f = [[[0] * (n + 1) for _ in range(n + 1)] for _ in range(n + 1)]
+    # for k in range(n + 1):
+    #     for j in range(n - k + 1):
+    #         for i in range(n - k - j + 1):
+    s1 = cnt[1] + cnt[2] + cnt[3]
+    s2 = cnt[2] + cnt[3]
     for k in range(cnt[3] + 1):
-        for j in range(n - k + 1):
-            for i in range(n - k - j + 1):
+        for j in range(min(s2, n - k) + 1):
+            for i in range(min(s1, n - k - j) + 1):
                 if i == 0 and j == 0 and k == 0:
                     continue
                 v = n
