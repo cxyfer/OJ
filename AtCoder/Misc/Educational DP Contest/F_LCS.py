@@ -18,7 +18,7 @@ def solve():
             ans.append(s[i - 1])
             i, j = i - 1, j - 1
         else:
-            if f[i - 1][j] > f[i][j - 1]:
+            if f[i - 1][j] >= f[i][j - 1]:
                 i -= 1
             else:
                 j -= 1
