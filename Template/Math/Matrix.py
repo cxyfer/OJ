@@ -71,4 +71,3 @@ if __name__ == "__main__":
     x = np.array([[1], [0]])
     print(matrix_power(mat, 10, MOD) @ x % MOD)
     print(matrix_power_mul(mat, 10, x, MOD))
-
