@@ -1,3 +1,9 @@
+"""
+J. MST Problem
+https://ac.nowcoder.com/acm/contest/120561/J
+
+Boruvka's algorithm
+"""
 class UnionFind:
     __slots__ = ['n', 'pa', 'sz', 'cnt']
 
