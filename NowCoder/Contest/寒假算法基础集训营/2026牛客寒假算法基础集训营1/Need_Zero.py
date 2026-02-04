@@ -1,7 +1,7 @@
 """
 L. Need Zero
 https://ac.nowcoder.com/acm/contest/120561/L
-簽到題
+簽到題，尾數是 0 代表是 10 的倍數，因此分類討論即可
 """
 def solve():
     n = int(input())
