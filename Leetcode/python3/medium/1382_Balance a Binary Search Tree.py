@@ -12,14 +12,18 @@ from preImport import *
 # @lc code=start
 class Solution:
     def balanceBST(self, root: TreeNode) -> TreeNode:
-        nums = []
-        def inorder(node):
-            if not node:
+        # Inorder traversal to get the sorted list of values
+        nums: List[int] = []
+        def inorder(node: Optional[TreeNode]) -> None:
+            if node is None:
                 return
             inorder(node.left)
             nums.append(node.val)
             inorder(node.right)
-        def build(l, r):
+        inorder(root)
+
+        # Build the balanced BST from the sorted list
+        def build(l: int, r: int) -> Optional[TreeNode]:
             if l > r:
                 return None
             mid = (l + r) // 2
@@ -27,7 +31,6 @@ class Solution:
             node.left = build(l, mid - 1)
             node.right = build(mid + 1, r)
             return node
-        inorder(root)
         return build(0, len(nums) - 1)
 # @lc code=end
 
