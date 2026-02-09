@@ -23,7 +23,7 @@ def g(n: int) -> int:
 
 def solve():
     max_g = 0
-    ans = defaultdict(int)
+    ans = defaultdict(lambda: int(1e18))
     def dfs(x: int, pre: int) -> None:
         if x > int(1e18):
             return
@@ -34,14 +34,14 @@ def solve():
             ans.clear()
             ans[f(x)] = x
         elif gx == max_g:
-            ans[f(x)] = max(ans[f(x)], x)
+            ans[f(x)] = min(ans[f(x)], x)
             
         for d in range(pre, 10):
             dfs(x * 10 + d, d)
 
     dfs(0, 2)
     a, b = list(ans.values())[:2]
-    # a, b = 344444444666777777, 336666777779999999
+    # a, b = 277777788888899, 27777789999999999
     print(a, b)
 
     assert a <= int(1e18) and b <= int(1e18)
