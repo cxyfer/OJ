@@ -2,7 +2,7 @@
 C. Inverted World
 https://ac.nowcoder.com/acm/contest/120563/C
 
-DP
+Greedy
 
 最終只會有以0開頭或以1開頭的01交錯字串，分別計算兩種情況所需的代價即可。
 
