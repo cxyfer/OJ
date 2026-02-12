@@ -1,5 +1,9 @@
 from bisect import bisect_left, bisect_right, insort
 
+"""
+基於模仿的 sortedcontainers 的 SortedList，實現 SortedSet
+但除非必要，否則還是優先使用 sortedcontainers 的 SortedList/SortedSet/SortedDict
+"""
 class SortedList:
     def __init__(self, iterable=None, load_factor=1000):
         self._len = 0
