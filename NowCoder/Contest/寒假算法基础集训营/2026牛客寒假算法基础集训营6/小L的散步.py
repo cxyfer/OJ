@@ -13,6 +13,7 @@ https://ac.nowcoder.com/acm/contest/120566/G
 from itertools import accumulate
 from bisect import bisect_left, bisect_right
 
+
 def solve():
     n, m, l = map(int, input().split())
     A = list(map(int, input().split()))
@@ -31,6 +32,7 @@ def solve():
             break
     else:
         print("NO")
+
 
 if __name__ == "__main__":
     solve()

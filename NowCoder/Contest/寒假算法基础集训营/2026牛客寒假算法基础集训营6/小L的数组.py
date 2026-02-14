@@ -10,6 +10,8 @@ https://ac.nowcoder.com/acm/contest/120566/H
 
 由於 v 的範圍是 2^11，且兩種操作都不會改變值域，因此可以用 set 或 bitmask 維護即可。
 """
+
+
 def solve():
     n = int(input())
     A = list(map(int, input().split()))
@@ -38,6 +40,7 @@ def solve():
             nf |= 1 << (v ^ b)
         f = nf
     print(f.bit_length() - 1)
+
 
 if __name__ == "__main__":
     solve()

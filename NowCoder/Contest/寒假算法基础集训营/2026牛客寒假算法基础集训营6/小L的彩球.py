@@ -19,16 +19,19 @@ invf[MAX_N] = pow(fact[MAX_N], MOD - 2, MOD)
 for i in range(MAX_N - 1, -1, -1):
     invf[i] = (invf[i + 1] * (i + 1)) % MOD
 
+
 def comb(n, k):
     return (fact[n] * invf[k] * invf[n - k]) % MOD
 
-# 計算將 n 個物品分成 k 組，且每組至少有 1 個物品的方案數
+
 def calc(n, k):
+    """計算將 n 個物品分成 k 組，且每組至少有 1 個物品的方案數"""
     if k == 0:
         return 1 if n == 0 else 0
     if k > n:
         return 0
     return comb(n - 1, k - 1)
+
 
 def solve():
     n, x, t = map(int, input().split())
@@ -37,6 +40,7 @@ def solve():
     k1, k2 = (k + 1) // 2, k // 2
     ans = (calc(x, k1) * calc(n - x, k2) + calc(x, k2) * calc(n - x, k1)) % MOD
     print(ans)
+
 
 if __name__ == "__main__":
     t = int(input())

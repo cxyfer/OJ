@@ -5,15 +5,18 @@ https://ac.nowcoder.com/acm/contest/120566/A
 注意到操作次數最多只有 1e6，因此可以對每個物品維護操作一次後對答案的貢獻，用 Min Heap 維護即可。
 有點卡常，賽時迅速改用 C++ 是對的，不然大概又要紅溫了。
 """
-import sys
 import math
 from heapq import heappush, heappop
 
+# fmt: off
+import sys
 it = iter(sys.stdin.read().splitlines())
 def input():
     return next(it)
 def print(*args, sep=' ', end='\n'):
     sys.stdout.write(sep.join(map(str, args)) + end)
+# fmt: on
+
 
 def solve():
     n, w = map(int, input().split())
@@ -41,6 +44,7 @@ def solve():
             heappush(hp, (-v, i))
         w -= 1
     print(f"{ans:.10f}")
+
 
 if __name__ == "__main__":
     solve()
