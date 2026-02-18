@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, Optional
 
 """
 Lazy Segment Tree (array-based, recursive)
@@ -142,8 +142,8 @@ def solve():
     for _ in range(q):
         op, *args = map(int, input().split())
         if op == 1:
-            l, r, x = args
-            seg.apply(l, r, x)
+            l, r, k = args
+            seg.apply(l, r, k)
         else:
             l, r = args
             outs.append(seg.prod(l, r))
