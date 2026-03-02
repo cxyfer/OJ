@@ -9,11 +9,11 @@ use std::cmp::max;
 
 impl Solution {
     pub fn min_partitions(n: String) -> i32 {
-        let mut ans = 0;
+        let mut ans: i32 = 0;
         for c in n.chars() {
-            ans = max(ans, c as u8 - b'0');
+            ans = max(ans, (c as u8 - b'0') as i32);
         }
-        ans as i32
+        ans
     }
 }
 // @lc code=end
