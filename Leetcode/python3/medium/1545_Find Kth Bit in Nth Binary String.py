@@ -1,4 +1,4 @@
-#
+ #
 # @lc app=leetcode id=1545 lang=python3
 # @lcpr version=30204
 #
@@ -10,22 +10,25 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
+MAX_N = 20
+ln = [0] * (MAX_N + 1)
+for i in range(1, MAX_N + 1):
+    ln[i] = ln[i - 1] * 2 + 1
+
 class Solution:
     def findKthBit(self, n: int, k: int) -> str:
-        ln = [0] # ln[i] = length of S_i
-        for _ in range(n):
-            ln.append(ln[-1] * 2 + 1)
         def find(n, k):
             if n == 1:
-                return "0"
-            mid = ln[n-1] + 1
-            if k < mid:
+                return 0
+            m = ln[n - 1] + 1
+            if k < m:
                 return find(n - 1, k)
-            elif k == mid:
-                return "1"
+            elif k == m:
+                return 1
             else:
-                return "1" if find(n-1, mid - (k - mid)) == "0" else "0"
-        return find(n, k)
+                return find(n - 1, m - (k - m)) ^ 1
+
+        return str(find(n, k))
 # @lc code=end
 
 sol = Solution()
