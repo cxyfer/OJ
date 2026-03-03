@@ -14,13 +14,13 @@ using namespace std;
 class Solution {
 public:
     vector<int> shuffle(vector<int>& nums, int n) {
-        n = nums.size() / 2;
-        vector<int> ans(2*n);
-        for (int i=0; i<n; i++){
-            ans[2*i] = nums[i];
-            ans[2*i+1] = nums[i+n];
+        int msk = (1 << 10) - 1;
+        for (int i = 0; i < n; i++) {
+            nums[i << 1] |= (nums[i] & msk) << 10;
+            nums[(i << 1) | 1] |= (nums[i + n] & msk) << 10;
         }
-        return ans;
+        for (auto& x : nums) x >>= 10;
+        return nums;
     }
 };
 // @lc code=end
