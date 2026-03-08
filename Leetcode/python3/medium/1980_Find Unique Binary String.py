@@ -17,23 +17,26 @@ from preImport import *
 class Solution1:
     def findDifferentBinaryString(self, nums: List[str]) -> str:
         n = len(nums)
-        upper = 1 << n - 1
-        st = set([int(num, 2) for num in nums])
-        for x in range(upper + 1):
+        st = set([int(x, 2) for x in nums])
+        for x in range(1 << n):
             if x in st:
                 continue
-            return bin(x)[2:].zfill(n)
+            return f"{x:b}".zfill(n)
+        return ""
+
 
 class Solution2:
     def findDifferentBinaryString(self, nums: List[str]) -> str:
+        # return ''.join('1' if num[i] == '0' else '0' for i, num in enumerate(nums))
         n = len(nums)
-        ans = ""
-        for i in range(n):
-            ans += "1" if nums[i][i] == "0" else "0"
-        return ans
-    
-class Solution(Solution2):
-    pass
+        ans = [''] * n
+        for i, num in enumerate(nums):
+            ans[i] = '1' if num[i] == '0' else '0'
+        return "".join(ans)
+
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 
 sol = Solution()
