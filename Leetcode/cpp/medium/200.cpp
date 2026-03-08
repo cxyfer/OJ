@@ -8,9 +8,11 @@
 
 // @lcpr-template-start
 #include <bits/stdc++.h>
+#include <algorithm>
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
+#include <ranges>
 class Solution1 {
     const vector<pair<int, int>> dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 public:
@@ -40,31 +42,28 @@ public:
 };
 
 class Solution2 {
-    const vector<pair<int, int>> dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    // 只需檢查右邊和下邊，避免重複合併
+    const vector<pair<int, int>> dirs = {{1, 0}, {0, 1}};
 public:
     int numIslands(vector<vector<char>>& grid) {
         int m = grid.size(), n = grid[0].size();
 
-        int ans = 0;
-        vector<int> pa(m * n, -1), sz(m * n, 1);
+        vector<int> sz(m * n, 1);
+        auto fa = ranges::iota_view(0, m * n) | ranges::to<vector<int>>();
 
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == '0') continue;
-                pa[i * n + j] = i * n + j;
-                ans++;
-            }
-        }
+        int ans = ranges::fold_left(grid, 0, [&](int acc, const auto& row) -> int {
+            return acc + ranges::count(row, '1');
+        });
 
         auto find = [&](this auto&& find, int x) -> int {
-            return x == pa[x] ? x : pa[x] = find(pa[x]);
+            return x == fa[x] ? x : fa[x] = find(fa[x]);
         };
 
         auto merge = [&](int x, int y) -> void {
             x = find(x), y = find(y);
             if (x == y) return;
             if (sz[x] < sz[y]) swap(x, y);
-            pa[y] = x;
+            fa[y] = x;
             sz[x] += sz[y];
             ans--;
         };
@@ -72,7 +71,6 @@ public:
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid[i][j] == '0') continue;
-                grid[i][j] = '0';
                 for (auto [dx, dy] : dirs) {
                     int nx = i + dx, ny = j + dy;
                     if (nx < 0 || nx >= m || ny < 0 || ny >= n || grid[nx][ny] == '0') continue;
@@ -84,8 +82,8 @@ public:
     }
 };
 
-using Solution = Solution1;
-// using Solution = Solution2;
+// using Solution = Solution1;
+using Solution = Solution2;
 // @lc code=end
 
 
