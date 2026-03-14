@@ -12,7 +12,7 @@ class Solution:
         diff = len(str(r)) - len(str(l))
         high = list(map(int, str(r)))
         n = len(high)
-        low = list(map(int, str(l).zfill(n)))
+        low = list(map(int, str(l).zfill(n)))  # 補前導零，使 low 和 high 對齊
 
         def is_good(n: int):
             s = list(map(int, str(n)))
