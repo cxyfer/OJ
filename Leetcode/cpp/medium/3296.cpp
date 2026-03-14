@@ -10,18 +10,22 @@
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     long long minNumberOfSeconds(int mountainHeight, vector<int>& workerTimes) {
-        function<bool(long long)> check = [&](long long m) -> bool {
+        int n = workerTimes.size();
+        auto check = [&](long long m) -> bool {
             long long tot = 0;
             for (int t : workerTimes) {
-                long long x = (-1 + sqrt(1 + 8 * m / t)) / 2;
-                tot += x;
+                tot += (-1 + sqrt(1 + 8 * m / t)) / 2;
+                if (tot >= mountainHeight) return true;
             }
-            return tot >= mountainHeight;
+            return false;
         };
-        long long left = 0, right = 1e18;
+
+        long long h = ceil(double(mountainHeight) / n);
+        long long left = 0;
+        long long right = ranges::max(workerTimes) * h * (h + 1) / 2;
         while (left <= right) {
             long long mid = left + (right - left) / 2;
             if (check(mid)) right = mid - 1;
@@ -30,29 +34,26 @@ public:
         return left;
     }
 };
-// @lc code=end
 
-class Solution:
-    def minNumberOfSeconds(self, mountainHeight: int, workerTimes: List[int]) -> int:
-        def check(m: int) -> bool:
-            tot = 0 # 降低的總高度
-            for t in workerTimes: # 枚舉每個工人
-                # 計算工人可以降低的高度
-                """
-                    t + 2t + 3t + ... + xt <= m
-                    t * (x * (x + 1) // 2) <= m
-                    x^2 + x - (2m / t) <= 0
-                    x <= (-1 + sqrt(1 + 8 * m / t)) / 2
-                """
-                x = (-1 + math.isqrt(int(1 + 8 * m // t))) // 2
-                tot += x
-            return tot >= mountainHeight
-        
-        left, right = 0, 1e18
-        while left <= right:
-            mid = (left + right) // 2
-            if check(mid):
-                right = mid - 1
-            else:
-                left = mid + 1
-        return left
+class Solution2 {
+public:
+    long long minNumberOfSeconds(int mountainHeight, vector<int>& workerTimes) {
+        priority_queue<array<long long, 3>, vector<array<long long, 3>>, greater<>> pq;
+        for (int t : workerTimes) {
+            pq.emplace(array<long long, 3>{t, t, 1});
+        }
+
+        long long ans = 0;
+        while (mountainHeight--) {
+            auto [t, d, m] = pq.top(); pq.pop();
+            m += 1;
+            ans = t;
+            pq.push({t + d * m, d, m});
+        }
+        return ans;
+    }
+};
+
+// using Solution = Solution1;
+using Solution = Solution2;
+// @lc code=end
