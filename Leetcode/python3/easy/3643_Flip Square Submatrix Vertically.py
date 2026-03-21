@@ -11,10 +11,10 @@ from preImport import *
 # @lc code=start
 class Solution:
     def reverseSubmatrix(self, grid: List[List[int]], x: int, y: int, k: int) -> List[List[int]]:
-        ans = [[x for x in row] for row in grid]
-        for i in range(x, x + k):
-            for j in range(y, y + k):
-                ans[i][j] = grid[(x + k - 1) - (i - x)][j]
-        return ans
+        for i in range(k // 2):
+            row1 = grid[x + i]
+            row2 = grid[x + k - 1 - i]
+            row1[y:y+k], row2[y:y+k] = row2[y:y+k], row1[y:y+k]
+        return grid
 # @lc code=end
 
