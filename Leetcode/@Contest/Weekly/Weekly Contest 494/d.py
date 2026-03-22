@@ -23,7 +23,7 @@ class Solution:
                 else:
                     L[i] = max(L[i], last[b] + 1)
             mp[x] = i
-            
+
         R = [n - 1] * n
         last = [n] * B
         for i in range(n - 1, -1, -1):
