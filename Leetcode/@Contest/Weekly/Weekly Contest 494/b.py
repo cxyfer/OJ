@@ -13,6 +13,7 @@ class Solution1:
         for x in nums1:
             arr[x & 1].append(x)
         arr[1].sort()
+
         def check(b: int) -> bool:
             for x in nums1:
                 if x & 1 == b:
@@ -21,6 +22,7 @@ class Solution1:
                 if idx < 0:
                     return False
             return True
+
         return check(0) or check(1)
 
 class Solution2:

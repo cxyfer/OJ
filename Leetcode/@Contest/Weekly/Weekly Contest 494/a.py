@@ -12,6 +12,7 @@ class Solution1:
         cnt = [0, 0]
         for x in nums1:
             cnt[x & 1] += 1
+
         def check(b: int) -> bool:
             for x in nums1:
                 if x & 1 == b:
@@ -19,6 +20,7 @@ class Solution1:
                 if cnt[1] - (x & 1) == 0:
                     return False
             return True
+
         return check(0) or check(1)
 
 class Solution2:
