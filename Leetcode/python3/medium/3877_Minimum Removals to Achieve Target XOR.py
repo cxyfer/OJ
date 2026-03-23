@@ -35,9 +35,6 @@ class Solution1:
 class Solution2:
     def minRemovals(self, nums: List[int], target: int) -> int:
         n = len(nums)
-        B = max(nums).bit_length()
-        if target >= (1 << B):
-            return -1
 
         f = defaultdict(lambda: float("-inf"))
         f[0] = 0
