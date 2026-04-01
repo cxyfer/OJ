@@ -1,5 +1,6 @@
 from typing import Optional
 
+
 class WeightedDSU:
     """
     帶權並查集
@@ -25,6 +26,18 @@ class WeightedDSU:
             self.dis[x] += self.dis[fa[x]]
             fa[x] = rt
         return fa[x]
+        """迭代式寫法"""
+        # path = []
+        # curr = x
+        # while fa[curr] != curr:
+        #     path.append(curr)
+        #     curr = fa[curr]
+
+        # root = curr
+        # for node in reversed(path):
+        #     self.dis[node] += self.dis[fa[node]]
+        #     fa[node] = root
+        # return root
 
     def potential(self, x: int) -> int:
         """回傳 potential(x) - potential(fa[x])"""
@@ -49,7 +62,7 @@ class WeightedDSU:
             # |           |
             # | dx        | dy
             # ↓           ↓
-            # x --------> y   (約束 w = pot(y) - pot(x))
+            # x --------> y
             # => pot(rx) - pot(ry) = dy - w - dx
             self.fa[rx] = ry
             self.dis[rx] = dy - w - dx
@@ -58,8 +71,8 @@ class WeightedDSU:
             # rx -------> ry
             # |           |
             # | dx        | dy
-            # ↓           ↓
-            # x --------> y   (約束 w = pot(y) - pot(x))
+            # ↓     w     ↓
+            # x --------> y
             # => pot(ry) - pot(rx) = w - dy + dx
             self.fa[ry] = rx
             self.dis[ry] = w - dy + dx
