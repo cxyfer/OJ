@@ -1,7 +1,7 @@
 from typing import Optional
 
 
-class WeightedDSU:
+class DSU:
     """
     帶權並查集
     維護條件：potential(y) - potential(x) = w
