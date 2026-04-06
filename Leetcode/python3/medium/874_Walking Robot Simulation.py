@@ -12,18 +12,19 @@ from preImport import *
 # @lc code=start
 class Solution:
     def robotSim(self, commands: List[int], obstacles: List[List[int]]) -> int:
-        DIRS = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+        DIRS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
         x, y, d = 0, 0, 0
-        st = set([(x, y) for x, y in obstacles])
+        obstacles = set((x, y) for x, y in obstacles)
         ans = 0
         for command in commands:
             if command < 0:
                 d = (d + (1 if command == -1 else -1)) % 4
             else:
                 for _ in range(command):
-                    if (x + DIRS[d][0], y + DIRS[d][1]) in st:
+                    nx, ny = x + DIRS[d][0], y + DIRS[d][1]
+                    if (nx, ny) in obstacles:
                         break
-                    x, y = x + DIRS[d][0], y + DIRS[d][1]
+                    x, y = nx, ny
                     ans = max(ans, x * x + y * y)
         return ans
 # @lc code=end
