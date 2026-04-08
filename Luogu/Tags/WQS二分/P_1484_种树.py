@@ -1,3 +1,12 @@
+"""
+P1484 种树
+https://www.luogu.com.cn/problem/P1484
+
+Similar:
+- P1792 [国家集训队] 种树
+- 3892. Minimum Operations to Achieve At Least K Peaks
+"""
+
 from heapq import heappush, heappop
 from itertools import accumulate
 
