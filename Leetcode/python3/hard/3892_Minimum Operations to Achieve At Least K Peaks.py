@@ -112,7 +112,49 @@ class Solution2:
             else:
                 return
 
+class Solution3:
+    def minOperations(self, nums: list[int], k: int) -> int:
+        n = len(nums)
+
+        if k > n // 2:
+            return -1
+
+        A = [max(max(nums[(i - 1) % n], nums[(i + 1) % n]) + 1 - nums[i], 0) for i in range(n)]
+
+        def f(nums: list[int], k: int) -> int:
+            """使用 WQS Binary Search (Aliens Trick) 計算最少操作次數"""
+
+            def check(c: int):
+                """檢查當 f_c(S) = cost(S) + c * |S| 時的最小成本，其中 S 為選擇的元素集合"""
+                # 維護 (cost, cnt)，為滿足單調性，在 cost 相同時選擇 cnt 較小的
+                f0, f1 = (0, 0), (float('inf'), 0)  # 不選/選 當前元素
+                for x in nums:
+                    f0, f1 = min(f0, f1), (f0[0] + x + c, f0[1] + 1)
+                return min(f0, f1)
+
+            # 極端情況下從選 k - 1 個增加到 k 個需要 k * mx 的成本 
+            mx = max(nums)
+            left, right = -mx * k, mx * k
+            while left <= right:
+                mid = (left + right) // 2
+                _, cnt = check(mid)
+                if cnt <= k:  # 要多選，成本需要降低
+                    right = mid - 1
+                else:  # 要少選，成本需要升高
+                    left = mid + 1
+            return check(left)[0] - k * left
+
+        # 分別計算不選擇第一個元素和最後一個元素的情況，兩者取最小值
+        return min(f(A[1:], k), f(A[:-1], k))
+
 # Solution = Solution1
-Solution = Solution2
+# Solution = Solution2
+Solution = Solution3
 # @lc code=end
 
+sol = Solution()
+print(sol.minOperations([2,1,2], 1)) # 1
+print(sol.minOperations([4,5,3,6], 2)) # 0
+print(sol.minOperations([3,7,3], 2)) # -1
+print(sol.minOperations([-14,-2,-14], 0)) # 0
+print(sol.minOperations([-3,-8,8,5], 1)) # 0
