@@ -17,6 +17,7 @@ class Solution1:
         mp = defaultdict(lambda: defaultdict(list))
         BLK_SZ = int(math.sqrt(q))
         for l, r, k, v in queries:
+            # 其實這裡也能拿掉，分組後大區間的差分和暴力是差不多的
             if k > BLK_SZ:
                 for idx in range(l, r + 1, k):
                     nums[idx] = (nums[idx] * v) % MOD
