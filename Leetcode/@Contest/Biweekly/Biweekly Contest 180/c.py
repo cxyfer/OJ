@@ -15,18 +15,17 @@ for i in range(2, math.isqrt(MAX_N) + 1):
         for j in range(i * i, MAX_N + 1, i):
             is_prime[j] = False
 primes = [x for x in range(2, MAX_N) if is_prime[x]]
-st = set(primes)
 
 class Solution:
     def minOperations(self, nums: list[int]) -> int:
         ans = 0
         for i, x in enumerate(nums):
             if i & 1:
-                while x in st:
+                while is_prime[x]:
                     ans += 1
                     x += 1
             else:
-                if x not in st:
+                if not is_prime[x]:
                     idx = bisect_left(primes, x)
                     ans += primes[idx] - x
         return ans
