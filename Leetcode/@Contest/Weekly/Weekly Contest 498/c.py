@@ -30,9 +30,9 @@ class Solution:
         while q:
             r, c, t = q.popleft()
             v = ans[r][c]
+            nt = t + 1
             for nx, ny in [(r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)]:
                 if 0 <= nx < n and 0 <= ny < m:
-                    nt = t + 1
                     if vis[nx][ny] == -1:
                         ans[nx][ny] = v
                         vis[nx][ny] = nt

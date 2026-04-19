@@ -40,14 +40,14 @@ class Solution:
             hi = high[i] if limit_high else 9
 
             res = 0
-            if i in idxs:
+            if i in idxs:  # 當前位是指定的下標，需受到 last 的限制
                 for d in range(max(lo, last), hi + 1):
                     res += dfs(i + 1, d, limit_low and (d == lo), limit_high and (d == hi))
-            else:
+            else:  # 當前位不是指定的下標，只需受到 [lo, hi] 的限制
                 for d in range(lo, hi + 1):
                     res += dfs(i + 1, last, limit_low and (d == lo), limit_high and (d == hi))
             return res
-        return dfs(0, -1, True, True)
+        return dfs(0, 0, True, True)
 
 sol = Solution()
 print(sol.countGoodIntegersOnPath(8, 10, "DDDRRR"))  # 2
