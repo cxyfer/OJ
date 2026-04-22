@@ -1,21 +1,26 @@
 """
-    HashString 模板
+HashString 模板
 
-    多項式字串雜湊（方便計算子字串雜湊值）
-    雜湊函數： hash(s) = s[0] * BASE^(n-1) + s[1] * BASE^(n-2) + ... + s[n-2] * BASE + s[n-1]
+多項式字串雜湊（方便計算子字串雜湊值）
+雜湊函數： hash(s) = s[0] * BASE^(n-1) + s[1] * BASE^(n-2) + ... + s[n-2] * BASE + s[n-1]
 
-    Problem:
-    - 3213. Construct String with Minimum Cost
+Problem:
+- 3213. Construct String with Minimum Cost
 
-    Reference:
-    - https://leetcode.cn/problems/construct-string-with-minimum-cost/solutions/2833949/hou-zhui-shu-zu-by-endlesscheng-32h9
-    - https://leetcode.cn/problems/minimum-number-of-valid-strings-to-form-target-ii/solutions/2917834/liang-chong-jie-fa-tan-xin-ac-zi-dong-ji-u6wc
+Reference:
+- https://leetcode.cn/problems/construct-string-with-minimum-cost/solutions/2833949/hou-zhui-shu-zu-by-endlesscheng-32h9
+- https://leetcode.cn/problems/minimum-number-of-valid-strings-to-form-target-ii/solutions/2917834/liang-chong-jie-fa-tan-xin-ac-zi-dong-ji-u6wc
 """
 
 from random import randint
 
 MOD = 1070777777
 BASE = randint(int(1e8), int(1e9))
+
+# Python 可以用大模數來避免碰撞，因此不需要雙模
+# MOD = int(1e18 + 3)
+# BASE = randint(int(8e17), int(9e17))
+
 class HashString:
     # 初始化 HashString ，預計算所有冪次和前綴雜湊
     def __init__(self, s: str):
