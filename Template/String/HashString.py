@@ -18,7 +18,7 @@ MOD = 1070777777
 BASE = randint(int(1e8), int(1e9))
 
 # Python 可以用大模數來避免碰撞，因此不需要雙模
-# MOD = int(1e18 + 3)
+# MOD = int(1e18) + 3
 # BASE = randint(int(8e17), int(9e17))
 
 class HashString:
