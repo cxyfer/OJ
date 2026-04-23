@@ -19,11 +19,17 @@ class Solution:
         ans = [0] * n
         for x, idxs in pos.items():
             m = len(idxs)
-            s = list(accumulate(idxs, initial=0))
+            # s = list(accumulate(idxs, initial=0))
+            pre = 0
+            suf = sum(idxs)
             for i, idx in enumerate(idxs, start=1):
-                L = idx * (i - 1) - s[i - 1]
-                R = (s[m] - s[i]) - idx * (m - i)
+                # L = idx * (i - 1) - s[i - 1]
+                # R = (s[m] - s[i]) - idx * (m - i)
+                suf -= idx
+                L = idx * (i - 1) - pre
+                R = suf - idx * (m - i)
                 ans[idx] = L + R
+                pre += idx
         return ans
 # @lc code=end
 
