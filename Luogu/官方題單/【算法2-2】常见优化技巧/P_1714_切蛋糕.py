@@ -24,7 +24,7 @@ def solve():
     s = list(accumulate(A, initial=0))
     for r, x in enumerate(s):
         # 1. 移除過期元素
-        while q and q[0] <= r - k - 1:
+        while q and q[0] < r - k:
             q.popleft()
         # 2. 更新答案
         if q:
