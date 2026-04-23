@@ -29,8 +29,10 @@ def solve():
     ans = 0
     sa = sb = 0
     i = j = 0
-    while i < n and j < n or (i < n and sa < sb) or (j < n and sa > sb):
-        if sa < sb:
+    # 只要目前較小的一側還能繼續補，就還可能讓答案變大
+    while (i < n and sa <= sb) or (j < n and sa > sb):
+        # 補目前總和較小的一側；補較大的一側只會增加成本
+        if sa <= sb:
             sa += A[i]
             i += 1
         else:
