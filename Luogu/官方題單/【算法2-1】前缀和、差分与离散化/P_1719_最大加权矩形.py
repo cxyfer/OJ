@@ -41,18 +41,16 @@ def solve2():
     n = int(input())
     grid = [list(map(int, input().split())) for _ in range(n)]
 
-    ss = [[0] * (n + 1) for _ in range(n + 1)]
-    for i, row in enumerate(grid, start=1):
-        for j, val in enumerate(row, start=1):
-            ss[i][j] = ss[i - 1][j] + ss[i][j - 1] - ss[i - 1][j - 1] + val
-
     ans = float("-inf")
-    for x1 in range(1, n + 1):
-        for x2 in range(x1, n + 1):
+    for x1 in range(n):
+        A = [0] * n
+        for x2 in range(x1, n):
+            for j in range(n):
+                A[j] += grid[x2][j]
             # 53. Maximum Subarray
             s = mn = 0
-            for j in range(1, n + 1):
-                s += ss[x2][j] - ss[x1 - 1][j] - ss[x2][j - 1] + ss[x1 - 1][j - 1]
+            for x in A:
+                s += x
                 ans = max(ans, s - mn)
                 mn = min(mn, s)
     print(ans)
