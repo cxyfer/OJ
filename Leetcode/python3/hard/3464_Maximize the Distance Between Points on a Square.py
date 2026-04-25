@@ -27,18 +27,24 @@ class Solution:
         A.sort()
 
         def check(mid: int) -> bool:
+            nxt = [n] * n
+            j = 0
+            for i, x in enumerate(A):
+                while j < n and A[j] - x < mid:
+                    j += 1
+                nxt[i] = j
             # 枚舉第一個點
             # 注意不用考慮循環，因為循環後的點在前面就枚舉過了
             # 如果循環後能找到k個點，則在前面的枚舉就能找到了
             for i in range(n - k + 1):
-                cur = A[i]
+                j = i
                 for _ in range(k - 1):
-                    j = bisect_left(A, cur + mid)
+                    j = nxt[j]
+                    # j = bisect_left(A, A[j] + mid)
                     if j == len(A):
                         break
-                    cur = A[j]
                 else:
-                    if 4 * side - cur + A[i] >= mid:
+                    if 4 * side - A[j] + A[i] >= mid:
                         return True
             return False
 
