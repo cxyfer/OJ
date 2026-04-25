@@ -13,7 +13,7 @@ class Solution:
     def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
         n = len(points)
 
-        # w0 
+        # 轉換成一維
         A = []
         for x, y in points:
             if x == 0:
