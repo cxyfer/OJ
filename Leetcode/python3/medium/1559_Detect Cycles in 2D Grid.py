@@ -43,6 +43,8 @@ class Solution:
         for i, row in enumerate(grid):
             for j, x in enumerate(row):
                 if i > 0 and x == grid[i - 1][j]:
+                    # 若加上這條邊之前就已經連通，則有環
+                    # 由於網格圖中的環至少為 4，因此不用判斷環的大小
                     if not uf.union(i * m + j, (i - 1) * m + j):
                         return True
                 if j > 0 and x == grid[i][j - 1]:
