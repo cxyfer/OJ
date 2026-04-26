@@ -43,10 +43,10 @@ class Solution:
         for i, row in enumerate(grid):
             for j, x in enumerate(row):
                 if i > 0 and x == grid[i - 1][j]:
-                    if not uf.union(i * m + j, (i - 1) * m + j) and uf.sz[uf.find(i * m + j)] >= 4:
+                    if not uf.union(i * m + j, (i - 1) * m + j):
                         return True
                 if j > 0 and x == grid[i][j - 1]:
-                    if not uf.union(i * m + j, i * m + j - 1) and uf.sz[uf.find(i * m + j)] >= 4:
+                    if not uf.union(i * m + j, i * m + j - 1):
                         return True
         return False
 # @lc code=end
