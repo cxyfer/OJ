@@ -1,13 +1,14 @@
 """
 P1496 火烧赤壁
 https://www.luogu.com.cn/problem/P1496
-離散化 + 差分
+1. 離散化 + 差分
+2. 合併區間
 """
 
 from itertools import pairwise
 
 
-def solve():
+def solve1():
     q = int(input())
     queries = [tuple(map(int, input().split())) for _ in range(q)]
 
@@ -34,6 +35,25 @@ def solve():
 
     print(ans)
 
+
+def solve2():  #  Merge Interval
+    q = int(input())
+    intervals = [tuple(map(int, input().split())) for _ in range(q)]
+    intervals.sort()
+
+    merged = []
+    for l, r in intervals:
+        if not merged or l > merged[-1][1]:
+            merged.append([l, r])
+        else:
+            merged[-1][1] = max(merged[-1][1], r)
+
+    ans = sum(r - l for l, r in merged)
+    print(ans)
+
+
+# solve = solve1
+solve = solve2
 
 if __name__ == "__main__":
     solve()
