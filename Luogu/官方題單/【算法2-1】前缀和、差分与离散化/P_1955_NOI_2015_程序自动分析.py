@@ -17,6 +17,7 @@ class UnionFind:
         self.cnt = n  # 連通分量數量
 
     def find(self, x: int) -> int:
+        """Iterative version, path halving"""
         while self.pa[x] != x:
             self.pa[x] = self.pa[self.pa[x]]
             x = self.pa[x]
@@ -77,15 +78,10 @@ def solve2():
     diffs = [set() for _ in range(m)]  # diffs[u] 表示與需與 u 不同的節點集合
 
     def find(x):
-        path = []
-        curr = x
-        while fa[curr] != curr:
-            path.append(curr)
-            curr = fa[curr]
-        root = curr
-        for node in reversed(path):
-            fa[node] = root
-        return root
+        while fa[x] != x:
+            fa[x] = fa[fa[x]]
+            x = fa[x]
+        return x
 
     for a, b, e in constraints:
         x, y = mp[a], mp[b]
@@ -101,6 +97,7 @@ def solve2():
                 break
             fa[fy] = fx
             diffs[fx].update(diffs[fy])
+            diffs[fy].clear()
         else:  # 相異關係
             if fx == fy:
                 print("NO")
