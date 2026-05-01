@@ -1,11 +1,11 @@
 #
-# @lc app=leetcode id=2615 lang=python3
+# @lc app=leetcode id=2121 lang=python3
 #
-# [2615] Sum of Distances
+# [2121] Intervals Between Identical Elements
 #
 
 """
-本題同 2121. Intervals Between Identical Elements
+本題同 2615. Sum of Distances
 """
 
 # @lcpr-template-start
@@ -13,10 +13,10 @@ from preImport import *
 # @lcpr-template-end
 # @lc code=start
 class Solution:
-    def distance(self, nums: List[int]) -> List[int]:
-        n = len(nums)
+    def getDistances(self, arr: List[int]) -> List[int]:
+        n = len(arr)
         pos = defaultdict(list)
-        for i, x in enumerate(nums):
+        for i, x in enumerate(arr):
             pos[x].append(i)
         
         ans = [0] * n
