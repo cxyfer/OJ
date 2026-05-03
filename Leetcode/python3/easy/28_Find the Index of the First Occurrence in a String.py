@@ -10,7 +10,7 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class Solution1:
+class Solution1a:
     def strStr(self, s: str, t: str) -> int:
         n, m = len(s), len(t)
         pi = [0] * m
@@ -31,38 +31,60 @@ class Solution1:
                 return i - m + 1
         return -1
 
+
+class Solution1b:
+    def strStr(self, s: str, t: str) -> int:
+        n, m = len(s), len(t)
+        s = t + "#" + s
+        n = len(s)
+        pi = [0] * n
+        ln = 0
+        for i in range(1, n):
+            while ln and s[i] != s[ln]:
+                ln = pi[ln - 1]
+            if s[i] == s[ln]:
+                ln += 1
+            if ln == m:
+                return i - (2 * m)
+            pi[i] = ln
+        return -1
+
+
 from random import randint
 
 MOD = 1070777777
 BASE = randint(int(1e8), int(1e9))
 
+
 class Solution2:
-    def strStr(self, text: str, t: str) -> int:
-        n, m = len(text), len(t)
+    def strStr(self, s: str, t: str) -> int:
+        n, m = len(s), len(t)
         if n < m:
             return -1
 
-        # Rabin-Karp Rolling Hash
+        # Rolling Hash
         P = [1] * (m + 1)  # P[i] = BASE^i % MOD
-        H = [0] * (m + 1)  # H[i] = hash(s[:i])
+        H = [0] * (m + 1)  # H[i] = hash(t[:i])
         for i in range(m):
             P[i + 1] = (P[i] * BASE) % MOD
             H[i + 1] = (H[i] * BASE + ord(t[i])) % MOD
- 
+
         # Sliding window
         hs = 0
-        for i, ch in enumerate(text):
+        for i, ch in enumerate(s):
             hs = (hs * BASE + ord(ch)) % MOD  # 入窗口
             if i >= m:  # 出窗口，維持窗口大小為 m
-                hs = (hs - ord(text[i - m]) * P[m]) % MOD
+                hs = (hs - ord(s[i - m]) * P[m]) % MOD
             # 比較雜湊值和子字串，若不考慮碰撞則比較雜湊值即可
-            if i >= m - 1 and hs == H[m] and text[i - m + 1:i + 1] == t:
+            # if i >= m - 1 and hs == H[m]:
+            if i >= m - 1 and hs == H[m] and s[i - m + 1 : i + 1] == t:
                 return i - m + 1
         return -1
 
-# class Solution(Solution1):
-class Solution(Solution2):
-    pass
+
+Solution = Solution1a
+# Solution = Solution1b
+# Solution = Solution2
 # @lc code=end
 
 sol = Solution()
