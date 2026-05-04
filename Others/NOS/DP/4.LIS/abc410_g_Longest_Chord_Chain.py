@@ -10,14 +10,17 @@ https://atcoder.jp/contests/abc410/tasks/abc410_g
 from bisect import bisect_left
 
 
-def solve():
+def solve1():
     n = int(input())
+
     A = []
     for _ in range(n):
         l, r = map(int, input().split())
         l, r = min(l, r), max(l, r)
         A.append((l, r))
         A.append((r, l + (n << 1)))
+
+    # 第一維 LIS，第二維 LDS
     A.sort()
     f = []
     for _, r in A:
@@ -28,6 +31,29 @@ def solve():
             f[idx] = -r
     print(len(f))
 
+
+def solve2():
+    n = int(input())
+
+    pos = [-1] * (n << 1)
+    for _ in range(n):
+        l, r = map(lambda x: int(x) - 1, input().split())
+        l, r = min(l, r), max(l, r)
+        pos[l] = r
+        pos[r] = l + (n << 1)
+
+    f = []
+    for r in pos:
+        idx = bisect_left(f, -r)
+        if idx == len(f):
+            f.append(-r)
+        else:
+            f[idx] = -r
+    print(len(f))
+
+
+# solve = solve1
+solve = solve2
 
 if __name__ == "__main__":
     solve()
