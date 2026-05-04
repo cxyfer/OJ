@@ -256,11 +256,9 @@ def solve():
     for _ in range(n):
         l, r = map(int, input().split())
         idx = f.bisect_right(r)
-        if idx == len(f):
-            f.add(l)
-        else:
+        if idx != len(f):
             f.pop(idx)
-            f.add(l)
+        f.add(l)
         ans.append(len(f))
     print(*ans)
 
