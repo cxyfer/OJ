@@ -102,7 +102,7 @@ public:
 
     // 插入一個值
     // 若 Treap 中已存在相同值，仍會插入新節點
-    Node* insert(Node* root, T value) {
+    Node* add(Node* root, T value) {
         auto [a, b] = split(root, value);
         Node* mid = make(value);
         return merge(merge(a, mid), b);
@@ -111,14 +111,14 @@ public:
     // 刪除一個值
     // 若存在多個相同 value，只會刪除其中一個
     // 若 value 不存在，Treap 內容不變
-    Node* erase(Node* root, T value) {
+    Node* remove(Node* root, T value) {
         if (!root) return nullptr;
         pushdown(root);
         if (root->val == value) return merge(root->left, root->right);
         if (value < root->val)
-            root->left = erase(root->left, value);
+            root->left = remove(root->left, value);
         else
-            root->right = erase(root->right, value);
+            root->right = remove(root->right, value);
         pushup(root);
         return root;
     }
@@ -239,9 +239,9 @@ void solve() {
     while (n--) {
         cin >> op >> x;
         if (op == 1) {
-            root = tr.insert(root, x);
+            root = tr.add(root, x);
         } else if (op == 2) {
-            root = tr.erase(root, x);
+            root = tr.remove(root, x);
         } else if (op == 3) {
             cout << tr.bisect_left(root, x) + 1 << endl;
         } else if (op == 4) {
