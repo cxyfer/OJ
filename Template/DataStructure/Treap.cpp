@@ -175,3 +175,45 @@ public:
         return root->val;
     }
 };
+
+// CF809D Hitchhiking in the Baltic States
+void solve() {
+    int n, l, r;
+    cin >> n;
+
+    FHQTreap tr(n);
+
+    using Node = FHQTreap::Node;
+
+    Node* f = nullptr;
+
+    for (int i = 0; i < n; i++) {
+        cin >> l >> r;
+
+        // A: < l, B: >= l
+        auto [A, B] = tr.split(f, l);
+        // C: [l, r), D: >= r
+        auto [C, D] = tr.split(B, r);
+
+        // [l, r) 這段全部 +1
+        C = tr.update(C, l, r, 1);  // 其實 tr.apply(C, 1) 就可以了
+
+        // 刪掉第一個 >= r 的 DP 值
+        D = tr.popmin(D);
+
+        // 插入新的 l
+        C = tr.insert(C, l);
+
+        // 合併
+        f = tr.merge(tr.merge(A, C), D);
+    }
+
+    cout << tr.size(f) << endl;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}
