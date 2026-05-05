@@ -1,3 +1,8 @@
+"""
+FHQ Treap 的節點引用版實作，以 OOP 方式封裝節點與操作，較方便理解。
+但 Python 建立大量物件較慢；建議使用陣列模擬節點的 memory pool 版本。
+"""
+
 from __future__ import annotations
 from random import getrandbits
 

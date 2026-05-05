@@ -1,3 +1,8 @@
+"""
+FHQ Treap 的節點引用版實作，使用 OOP 方式封裝節點與操作。
+相同權值會合併到同一個節點，並用 cnt 記錄出現次數（詞頻壓縮）。
+"""
+
 from __future__ import annotations
 from random import getrandbits
 
@@ -12,12 +17,13 @@ def print(*args, sep=' ', end='\n'):
 
 class FHQTreap:
     class Node:
-        __slots__ = ("left", "right", "sz", "pri", "val", "lazy")
+        __slots__ = ("left", "right", "sz", "cnt", "pri", "val", "lazy")
 
         def __init__(self, val: int, pri: int) -> None:
             self.left: FHQTreap.Node | None = None
             self.right: FHQTreap.Node | None = None
             self.sz = 1
+            self.cnt = 1  # 相同權值的節點數
             self.pri = pri
             self.val = val
             self.lazy = 0
@@ -31,7 +37,7 @@ class FHQTreap:
     def pushup(self, root: Node | None) -> None:
         if root is None:
             return
-        root.sz = self.size(root.left) + self.size(root.right) + 1
+        root.sz = self.size(root.left) + self.size(root.right) + root.cnt
 
     def apply(self, root: Node | None, value: int) -> None:
         if root is None:
@@ -58,14 +64,14 @@ class FHQTreap:
             root.right = a
             self.pushup(root)
             return root, b
-
-        a, b = self.split(root.left, key)
-        root.left = b
-        self.pushup(root)
-        return a, root
+        else:
+            a, b = self.split(root.left, key)
+            root.left = b
+            self.pushup(root)
+            return a, root
 
     def merge(self, a: Node | None, b: Node | None) -> Node | None:
-        """Merge two trees where every value in a is <= every value in b."""
+        """Merge two trees where every value in a is < every value in b."""
         if a is None or b is None:
             return a if a is not None else b
 
@@ -80,11 +86,26 @@ class FHQTreap:
             self.pushup(b)
             return b
 
+    def find(self, root: Node | None, value: int) -> Node | None:
+        if root is None:
+            return None
+        self.pushdown(root)
+        if root.val == value:
+            return root
+        if value < root.val:
+            return self.find(root.left, value)
+        return self.find(root.right, value)
+
     def add(self, root: Node | None, value: int) -> Node | None:
-        """Insert one value. Duplicates are allowed."""
+        """Insert one value. Equal keys are stored in cnt."""
         a, b = self.split(root, value)
-        mid = self.make(value)
-        return self.merge(self.merge(a, mid), b)
+        c, d = self.split(b, value + 1)
+        if c is None:
+            c = self.make(value)
+        else:
+            c.cnt += 1
+            self.pushup(c)
+        return self.merge(self.merge(a, c), d)
 
     def remove(self, root: Node | None, value: int) -> Node | None:
         """Erase one occurrence of value if it exists."""
@@ -92,6 +113,10 @@ class FHQTreap:
             return None
         self.pushdown(root)
         if root.val == value:
+            if root.cnt > 1:
+                root.cnt -= 1
+                self.pushup(root)
+                return root
             return self.merge(root.left, root.right)
         if value < root.val:
             root.left = self.remove(root.left, value)
@@ -103,7 +128,10 @@ class FHQTreap:
     def update(
         self, root: Node | None, left: int, right: int, value: int
     ) -> Node | None:
-        """Add value to all keys in [left, right)."""
+        """Add value to all keys in [left, right).
+
+        Requires the shifted middle range to stay disjoint from outside keys.
+        """
         a, b = self.split(root, left)
         c, d = self.split(b, right)
         self.apply(c, value)
@@ -115,6 +143,10 @@ class FHQTreap:
             return None
         self.pushdown(root)
         if root.left is None:
+            if root.cnt > 1:
+                root.cnt -= 1
+                self.pushup(root)
+                return root
             return root.right
         root.left = self.popmin(root.left)
         self.pushup(root)
@@ -126,6 +158,10 @@ class FHQTreap:
             return None
         self.pushdown(root)
         if root.right is None:
+            if root.cnt > 1:
+                root.cnt -= 1
+                self.pushup(root)
+                return root
             return root.left
         root.right = self.popmax(root.right)
         self.pushup(root)
@@ -153,7 +189,7 @@ class FHQTreap:
             return 0
         self.pushdown(root)
         if root.val < key:
-            return self.size(root.left) + 1 + self.bisect_left(root.right, key)
+            return self.size(root.left) + root.cnt + self.bisect_left(root.right, key)
         else:
             return self.bisect_left(root.left, key)
 
@@ -163,7 +199,7 @@ class FHQTreap:
             return 0
         self.pushdown(root)
         if root.val <= key:
-            return self.size(root.left) + 1 + self.bisect_right(root.right, key)
+            return self.size(root.left) + root.cnt + self.bisect_right(root.right, key)
         else:
             return self.bisect_right(root.left, key)
 
@@ -173,10 +209,10 @@ class FHQTreap:
         left_size = self.size(root.left)
         if k < left_size:
             return self.kth(root.left, k)
-        elif k == left_size:
+        elif k < left_size + root.cnt:
             return root.val
         else:
-            return self.kth(root.right, k - left_size - 1)
+            return self.kth(root.right, k - left_size - root.cnt)
 
     def predecessor(self, root: Node | None, key: int) -> int:
         """Return the largest value < key. Requires the answer to exist."""
@@ -211,3 +247,6 @@ def P3369():
             ans.append(tr.successor(root, x))
 
     print(*ans, sep="\n")
+
+
+P3369()

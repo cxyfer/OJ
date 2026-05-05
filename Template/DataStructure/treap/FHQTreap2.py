@@ -1,6 +1,6 @@
 """
-FHQ Treap 模板
-使用 pool 管理節點，避免重複分配和釋放記憶體
+FHQ Treap 的 memory pool 版本，使用陣列與整數下標模擬節點。
+相較於 OOP 節點引用版，可減少大量物件建立的開銷。
 """
 
 from __future__ import annotations
