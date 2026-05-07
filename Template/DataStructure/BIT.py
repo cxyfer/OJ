@@ -2,7 +2,7 @@ from typing import *
 
 
 class BIT:  # PURQ, 1-based
-    __slots__ = ['tree']
+    __slots__ = ["tree"]
 
     def __init__(self, n: int):
         self.tree = [0] * (n + 1)
@@ -12,14 +12,14 @@ class BIT:  # PURQ, 1-based
             self.tree[k] += x
             k += k & -k
 
-    def preSum(self, k: int) -> int:  # 求 nums[:k+1] 之和
+    def preSum(self, k: int) -> int:  # 求 nums[1...k] 之和
         res = 0
         while k > 0:
             res += self.tree[k]
-            k -= (k & -k)
+            k -= k & -k
         return res
 
-    def query(self, l: int, r: int) -> int:  # 求 nums[l:r+1] 之和
+    def query(self, l: int, r: int) -> int:  # 求 nums[l...r] 之和
         if l > r:
             return 0
         return self.preSum(r) - self.preSum(l - 1)
