@@ -3,8 +3,7 @@ using namespace std;
 const int INF = 0x3f3f3f3f;
 #define endl '\n'
 
-int main() {
-    ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
+void solve() {
     int n, w;
     cin >> n >> w;
     vector<int> A(n);
@@ -20,6 +19,12 @@ int main() {
         }
     }
     cout << f[w] << endl;
+    return;
+}
 
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
     return 0;
 }
