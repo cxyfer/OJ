@@ -8,7 +8,7 @@ def solve():
     ans = 0
     bit = FenwickTree(n + 1)
     for x in A:
-        ans += bit.sum(min(x + 1, n), n + 1)
+        ans += bit.sum(x + 1, n + 1)
         bit.add(x, 1)
 
     print(max(ans - k, 0))
