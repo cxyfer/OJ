@@ -1,3 +1,8 @@
+"""
+P2842 纸币问题_1
+https://www.luogu.com.cn/problem/P2842
+"""
+
 from functools import cache
 
 
