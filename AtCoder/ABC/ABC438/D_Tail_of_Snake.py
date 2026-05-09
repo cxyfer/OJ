@@ -4,11 +4,10 @@ def solve1():
     B = list(map(int, input().split()))
     C = list(map(int, input().split()))
 
-    ans = A[0] + sum(B[1:-1]) + C[-1]
-    pre_a, pre_b = A[0], B[0]
-    suf_c = sum(C) - C[0]
-    mx = pre_a - pre_b
-    for i in range(1, n - 1):
+    ans = mx = float("-inf")
+    pre_a = pre_b = 0
+    suf_c = sum(C)
+    for i in range(n - 1):
         a, b, c = A[i], B[i], C[i]
         pre_a += a
         pre_b += b
