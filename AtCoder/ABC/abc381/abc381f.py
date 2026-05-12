@@ -1,32 +1,34 @@
 from bisect import bisect_left
 
+M = 20
+
 
 def solve():
     n = int(input())
     A = list(map(int, input().split()))
     assert len(A) == n
 
-    pos = [[] for _ in range(21)]
-    for i, x in enumerate(A):
-        pos[x].append(i)
+    pos = [[] for _ in range(M + 1)]
+    for i, v in enumerate(A):
+        pos[v - 1].append(i)
 
-    f = [n] * (1 << 20)
+    # 令 f[s] 表示選擇已經選擇的數字集合為 s 時，最後一個數字的位置
+    f = [n] * (1 << M)
     f[0] = -1
-    U = (1 << 20) - 1
 
     ans = 0
-    for s1 in range(1 << 20):
-        if f[s1] == n:
-            continue
-        ans = max(ans, s1.bit_count())
-        s2 = U ^ s1
-        while s2:
-            lb = s2 & -s2
-            v = lb.bit_length()
-            idx = bisect_left(pos[v], f[s1]) + 1
-            if idx < len(pos[v]):
-                f[s1 | lb] = min(f[s1 | lb], pos[v][idx])
-            s2 ^= lb
+    for s in range(1 << M):
+        # 枚舉轉移來源
+        t = s
+        while t:
+            lb = t & -t
+            j = lb.bit_length() - 1
+            idx = bisect_left(pos[j], f[s ^ lb]) + 1
+            if idx < len(pos[j]):
+                f[s] = min(f[s], pos[j][idx])
+            t ^= lb
+        if f[s] < n:
+            ans = max(ans, s.bit_count())
     print(ans << 1)
 
 
