@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <ranges>
 using namespace std;
 #define endl '\n'
 
@@ -8,18 +9,17 @@ void solve() {
     vector<pair<int, int>> movies(n);
     for (auto& [s, e] : movies) cin >> s >> e;
 
-    sort(movies.begin(), movies.end(),
-         [](auto& a, auto& b) { return a.second < b.second; });
+    ranges::sort(movies, [](auto& a, auto& b) { return a.second < b.second; });
 
-    multiset<int> end_times;
-    for (int i = 0; i < k; i++) end_times.insert(0);
+    multiset<int> ends;
+    for (int i = 0; i < k; i++) ends.insert(0);
 
     int ans = 0;
     for (auto& [s, e] : movies) {
-        auto it = end_times.upper_bound(s);
-        if (it == end_times.begin()) continue;
-        end_times.erase(--it);
-        end_times.insert(e);
+        auto it = ends.upper_bound(s);
+        if (it == ends.begin()) continue;
+        ends.erase(--it);
+        ends.insert(e);
         ans++;
     }
     cout << ans << endl;
