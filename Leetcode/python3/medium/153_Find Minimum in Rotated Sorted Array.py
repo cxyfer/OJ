@@ -10,6 +10,15 @@ from preImport import *
 
 
 # @lcpr-template-end
+"""
+由於在旋轉後會形成一段或兩段遞增的數列，且本題保證元素皆不相同，
+我們可以利用 nums[x] 與最後一個元素的比較來判斷最小值在 x 的左側還是右側。
+- nums[x] <= nums[-1]：最小值在 x 的左側或 x 是最小值本身
+- nums[x] > nums[-1]：最小值在 x 的右側
+
+類題：
+- 154. Find Minimum in Rotated Sorted Array II (元素可重複)
+"""
 # @lc code=start
 class Solution:
     def findMin(self, nums: List[int]) -> int:
