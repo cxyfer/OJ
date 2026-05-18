@@ -5,10 +5,14 @@
 #
 
 # @lcpr-template-start
-from tokenize import group
-
 from preImport import *
 # @lcpr-template-end
+
+"""
+Similar:
+- 3629. Minimum Jumps to Reach End via Prime Teleportation
+- ABC436D Teleport Maze
+"""
 
 # @lc code=start
 class Solution1:

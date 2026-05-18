@@ -9,6 +9,13 @@
 from preImport import *
 
 # @lcpr-template-end
+
+"""
+Similar:
+- 1345. Jump Game IV
+- ABC436D Teleport Maze
+"""
+
 # @lc code=start
 MAX_N = int(1e3 + 5)
 is_prime = [True] * (MAX_N + 1)
