@@ -9,13 +9,15 @@ from operator import *
 from random import *
 
 """
-Q4. ||Binary Search + Rolling Hash||
-||對於要比對有沒有重複子陣列(字串)的問題，直覺想到 Rolling Hash，但顯然逐長度檢查會超時。
-注意到當存在為 ln 的子陣列滿足條件時，在該子陣列延伸一個元素也一定滿足條件，
-因此具有單調性，可以使用 Binary Search 來解決。||
-||O(n log n)||
+Q4. Binary Search + Rolling Hash  /  Suffix Array
 
-fun fact: 因為測試時為了驗證滑動窗口沒有寫錯，把對雜湊值取模先刪了，結果後面忘了加回來，導致被硬控了30+分鐘。
+對於要比對有沒有重複子陣列(字串)的問題，直覺想到 Rolling Hash，但顯然逐長度檢查會超時。
+注意到當存在為 ln 的子陣列滿足條件時，在該子陣列延伸一個元素也一定滿足條件，
+因此具有單調性，可以使用 Binary Search 來解決。
+O(n log n)
+
+Similar:
+- P2852 [USACO06DEC] Milk Patterns G
 """
 
 MOD = 1070777777
