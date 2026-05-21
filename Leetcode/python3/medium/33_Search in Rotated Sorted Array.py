@@ -9,6 +9,17 @@
 from preImport import *
 
 # @lcpr-template-end
+
+"""
+1. ||兩次二分搜尋||
+||對於做過 153. Find Minimum in Rotated Sorted Array 的人來說還是比較容易想到的，
+先找到最小值的位置，再根據 target 和 nums[-1] 的大小關係，確定 target 在左段還是右段，再進行二分搜尋。
+- 當 x > nums[-1] 時，x 在 **兩段遞增的左段**
+- 當 x <= nums[-1] 時，x 在 **兩段遞增的右段** 或 **只有一段遞增**||
+
+2. ||一次二分搜尋||
+||同理，我們也能判斷 target 在哪一段，進而得出 nums[mid] 和 target 的位置關係，進而找到第一個在 target 以右的位置，最後再檢查該位置是否為 target 即可。||
+"""
 # @lc code=start
 """
 1. 兩次二分查找
