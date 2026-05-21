@@ -52,9 +52,9 @@ public:
 
         auto check = [&](int mid) {
             if (nums[mid] <= nums[n - 1])
-                return target > nums[n - 1] || target < nums[mid];
+                return target > nums[n - 1] || target <= nums[mid];
             else
-                return target > nums[n - 1] && target < nums[mid];
+                return target > nums[n - 1] && target <= nums[mid];
         };
 
         int left = 0, right = n - 1;  // [left, right]
@@ -65,7 +65,7 @@ public:
             else
                 left = mid + 1;
         }
-        return right >= 0 && nums[right] == target ? right : -1;
+        return left < n && nums[left] == target ? left : -1;
     }
 };
 

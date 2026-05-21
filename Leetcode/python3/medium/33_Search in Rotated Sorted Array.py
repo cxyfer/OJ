@@ -58,6 +58,7 @@ class Solution1:
 再根據 nums[mid] 和 target 的位置關係，可以決定 target 是否在 nums[mid] 右側：
 - F: nums[mid] 在 target 左側的位置
 - T: nums[mid] 是 target 以右的位置
+則第一個滿足的位置就是第一個 >= target 的位置，最後再檢查該位置是否為 target 即可。
 """
 
 
@@ -65,15 +66,15 @@ class Solution2:
     def search(self, nums: List[int], target: int) -> int:
         n = len(nums)
 
-        def check(mid: int) -> bool:  # 檢查 nums[mid] 是否為target或其右側 (藍色)
+        def check(mid: int) -> bool:  # 檢查 nums[mid] 是否在 target 以右的位置
             # nums[mid] 在兩段遞增的右段 或 只有一段遞增
             if nums[mid] <= nums[-1]:
-                # target 在兩段遞增的左段，或在 nums[mid] 左側
-                return target > nums[-1] or target < nums[mid]
+                # target 在兩段遞增的左段，或在 nums[mid] 以左的位置
+                return target > nums[-1] or target <= nums[mid]
             # nums[mid] 在 兩段遞增的左段
             else:
-                # target 也在左段，且在 nums[mid] 的左側
-                return target > nums[-1] and target < nums[mid]
+                # target 也在左段，且在 nums[mid] 以左的位置
+                return target > nums[-1] and target <= nums[mid]
 
         left, right = 0, n - 1  # [left, right]
         while left <= right:
@@ -82,7 +83,7 @@ class Solution2:
                 right = mid - 1
             else:
                 left = mid + 1
-        return right if nums[right] == target else -1
+        return left if left < n and nums[left] == target else -1
 
 
 # Solution = Solution1
