@@ -8,8 +8,12 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+Similar:
+- 3212. Count Submatrices With Equal Frequency of X and Y
+"""
 # @lc code=start
-class Solution1:
+class Solution1a:
     def countSubmatrices(self, grid: List[List[int]], k: int) -> int:
         m, n = len(grid), len(grid[0])
         ans = 0
@@ -21,7 +25,7 @@ class Solution1:
                     ans += 1
         return ans
 
-class Solution2:
+class Solution1b:
     def countSubmatrices(self, grid: List[List[int]], k: int) -> int:
         n = len(grid[0])
         ans = 0
@@ -34,7 +38,26 @@ class Solution2:
             f, nf = nf, f
         return ans
 
-# Solution = Solution1
+class Solution2:
+    def countSubmatrices(self, grid: List[List[int]], k: int) -> int:
+        n = len(grid[0])
+        ans = 0
+        col = [0] * n
+        for row in grid:
+            cnt = 0
+            for j, val in enumerate(row):
+                col[j] += val
+                cnt += col[j]
+                # if cnt <= k:
+                #     ans += 1
+                if cnt > k:  # 可以提前退出，後續的 col 也沒必要修改了
+                    break
+                ans += 1
+        return ans
+
+
+# Solution = Solution1a
+# Solution = Solution1b
 Solution = Solution2
 # @lc code=end
 

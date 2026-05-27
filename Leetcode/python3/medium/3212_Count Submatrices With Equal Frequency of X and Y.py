@@ -8,6 +8,10 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+Similar:
+- 3070. Count Submatrices with Top-Left Element and Sum Less Than k
+"""
 # @lc code=start
 from array import array
 
@@ -20,7 +24,7 @@ class Solution1a:
             for j, ch in enumerate(row, start=1):
                 for b in range(2):
                     s[i][j][b] = s[i - 1][j][b] + s[i][j - 1][b] - s[i - 1][j - 1][b] + (ord(ch) - ord('X') == b)
-                if s[i][j][0] == s[i][j][1] > 0:
+                if s[i][j][0] == s[i][j][1] > 0:  # chained comparison
                     ans += 1
         return ans
 

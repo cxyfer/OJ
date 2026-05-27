@@ -7,38 +7,44 @@
 
 
 # @lcpr-template-start
+from re import S
+
 from preImport import *
 # @lcpr-template-end
+"""
+二維前綴異或和 + Sort/Heap
+"""
 # @lc code=start
-class Solution:
-    """
-        二維前綴異或和 + Sort/Heap
-    """
+class Solution1:
     def kthLargestValue(self, matrix: List[List[int]], k: int) -> int:
-        # return self.solve1(matrix, k)
-        return self.solve2(matrix, k)
-    def solve1(self, matrix: List[List[int]], k: int) -> int:
         m, n = len(matrix), len(matrix[0])
-        pre = [[0] * (n + 1) for _ in range(m + 1)] # Prefix Sum
+        s = [[0] * (n + 1) for _ in range(m + 1)]  # Prefix Sum
         res = []
-        for i, row in enumerate(matrix):
-            for j, val in enumerate(row):
-                pre[i+1][j+1] = pre[i+1][j] ^ pre[i][j+1] ^ pre[i][j] ^ val
-                res.append(pre[i+1][j+1])
+        for i, row in enumerate(matrix, start=1):
+            for j, val in enumerate(row, start=1):
+                s[i][j] = s[i - 1][j] ^ s[i][j - 1] ^ s[i - 1][j - 1] ^ val
+                res.append(s[i][j])
         res.sort(reverse=True)
-        return res[k-1]
-    def solve2(self, matrix: List[List[int]], k: int) -> int:
+        return res[k - 1]
+
+
+class Solution2:
+    def kthLargestValue(self, matrix: List[List[int]], k: int) -> int:
         m, n = len(matrix), len(matrix[0])
-        pre = [[0] * (n + 1) for _ in range(m + 1)] # Prefix Sum
-        hp = [] # Min Heap
-        for i, row in enumerate(matrix):
-            for j, val in enumerate(row):
-                pre[i+1][j+1] = pre[i+1][j] ^ pre[i][j+1] ^ pre[i][j] ^ val
+        s = [[0] * (n + 1) for _ in range(m + 1)]  # Prefix Sum
+        hp = []  # Min Heap
+        for i, row in enumerate(matrix, start=1):
+            for j, val in enumerate(row, start=1):
+                s[i][j] = s[i - 1][j] ^ s[i][j - 1] ^ s[i - 1][j - 1] ^ val
                 if len(hp) < k:
-                    heappush(hp, pre[i+1][j+1])
+                    heappush(hp, s[i][j])
                 else:
-                    heappushpop(hp, pre[i+1][j+1])
+                    heappushpop(hp, s[i][j])
         return hp[0]
+
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 sol = Solution()
 print(sol.kthLargestValue([[5,2],[1,6]], 1)) # 7
