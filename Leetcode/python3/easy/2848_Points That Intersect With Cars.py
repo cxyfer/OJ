@@ -9,22 +9,24 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+1. Merge intervals
+2. Difference array
+"""
 # @lc code=start
-class Solution1:
-    """
-        Similar to 56. Merge Intervals
-    """
+class Solution1a:
     def numberOfPoints(self, nums: List[List[int]]) -> int:
         nums.sort(key=lambda x: x[0])
         intervals = []
         for x, y in nums:
-            if not intervals or x > intervals[-1][1]: # not overlap
+            if not intervals or x > intervals[-1][1]:  # not overlap
                 intervals.append([x, y])
             else:
-                intervals[-1][1] = max(intervals[-1][1], y) # overlap, update interval
+                intervals[-1][1] = max(intervals[-1][1], y)  # overlap, update interval
         return sum([y - x + 1 for x, y in intervals])
-    
-class Solution2:
+
+
+class Solution1b:
     def numberOfPoints(self, nums: List[List[int]]) -> int:
         nums.sort(key=lambda x: x[0])
         ans = 0
@@ -38,8 +40,20 @@ class Solution2:
         ans += ed - st + 1
         return ans
 
-class Solution(Solution2):
-    pass
+
+class Solution2:
+    def numberOfPoints(self, nums: List[List[int]]) -> int:
+        mx = max(r for _, r in nums)
+        diff = [0] * (mx + 2)
+        for l, r in nums:
+            diff[l] += 1
+            diff[r + 1] -= 1
+        return sum(s > 0 for s in accumulate(diff))
+
+
+# Solution = Solution1a
+# Solution = Solution1b
+Solution = Solution2
 # @lc code=end
 
 
