@@ -16,10 +16,6 @@ class Solution:
         for l, r in queries:
             diff[l] += 1
             diff[r + 1] -= 1
-        for i in range(n):
-            if diff[i] < nums[i]:
-                return False
-            diff[i + 1] += diff[i]
-        return True
+        return all(s >= x for s, x in zip(accumulate(diff), nums))
 # @lc code=end
 
