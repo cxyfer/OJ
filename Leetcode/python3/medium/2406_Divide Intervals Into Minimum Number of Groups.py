@@ -9,6 +9,12 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+1. 貪心
+2. 差分
+Same as 253. Meeting Rooms II (Premium)
+只是本題的區間是 [s, e]，而 253 是 [s, e)，所以差分或貪心的時候要注意。
+"""
 # @lc code=start
 class Solution1:
     def minGroups(self, intervals: List[List[int]]) -> int:
