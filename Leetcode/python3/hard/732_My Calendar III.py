@@ -8,51 +8,66 @@
 
 # @lcpr-template-start
 from preImport import *
+
 # @lcpr-template-end
 # @lc code=start
+from sortedcontainers import SortedDict
+
+
+class MyCalendarThree1:
+    def __init__(self):
+        self.diff = SortedDict()
+
+    def book(self, start: int, end: int) -> int:
+        self.diff[start] = self.diff.setdefault(start, 0) + 1
+        self.diff[end] = self.diff.setdefault(end, 0) - 1
+
+        ans = s = 0
+        for v in self.diff.values():
+            s += v
+            ans = max(ans, s)
+        return ans
+
+
 class SegNode:
     def __init__(self) -> None:
-        self.ls = self.rs = None # left and right child
-        self.val = self.lazy = 0 # value, lazy tag
+        self.ls = self.rs = None  # left and right child
+        self.val = self.lazy = 0  # value, lazy tag
+
 
 class SegmentTree:
     def __init__(self):
         self.root = SegNode()
-    
+
     # update the range [l, r] with value v
-    @staticmethod
-    def update(node: SegNode, left: int, right: int, l: int, r: int, v: int) -> None:
+    def update(self, node: SegNode, left: int, right: int, l: int, r: int, v: int) -> None:  # fmt: skip
         if l <= left and right <= r:
             node.lazy += v
             node.val += v
             return
-        SegmentTree.pushdown(node) # push down lazy tags
+        self.pushdown(node)  # push down lazy tags
         mid = (left + right) // 2
         if l <= mid:
-            SegmentTree.update(node.ls, left, mid, l, r, v)
+            self.update(node.ls, left, mid, l, r, v)
         if r > mid:
-            SegmentTree.update(node.rs, mid + 1, right, l, r, v)
-        SegmentTree.pushup(node) # push up node value
- 
+            self.update(node.rs, mid + 1, right, l, r, v)
+        self.pushup(node)  # push up node value
+
     # query the range [l, r]
-    @staticmethod
-    def query(node: SegNode, left: int, right: int, l: int, r: int) -> int:
+    def query(self, node: SegNode, left: int, right: int, l: int, r: int) -> int:  # fmt: skip
         if l <= left and right <= r:
             return node.val
-        # Ensure all lazy tags have been pushed down
-        SegmentTree.pushdown(node) 
-        # Calculate answer: maximum value in this problem
+        self.pushdown(node)
         ans = 0
         mid = (left + right) // 2
         if l <= mid:
-            ans = SegmentTree.query(node.ls, left, mid, l, r)
+            ans = self.query(node.ls, left, mid, l, r)
         if r > mid:
-            ans = max(ans, SegmentTree.query(node.rs, mid + 1, right, l, r))
+            ans = max(ans, self.query(node.rs, mid + 1, right, l, r))
         return ans
-    
+
     # push down lazy tags
-    @staticmethod
-    def pushdown(node: SegNode) -> None:
+    def pushdown(self, node: SegNode) -> None:
         if node.ls is None:
             node.ls = SegNode()
         if node.rs is None:
@@ -63,33 +78,35 @@ class SegmentTree:
             node.ls.val += node.lazy
             node.rs.val += node.lazy
             node.lazy = 0
-    
+
     # push up node value
-    @staticmethod
-    def pushup(node: SegNode) -> None:
-        # Update method: maximum value in this problem
+    def pushup(self, node: SegNode) -> None:
         node.val = max(node.ls.val, node.rs.val)
 
-class MyCalendarThree:
 
+class MyCalendarThree2:
     def __init__(self):
-        self.tree = SegmentTree()
-        self.root = self.tree.root
-        self.MAX = 10 ** 9
+        self.seg = SegmentTree()
+        self.root = self.seg.root
+        self.MAX = int(1e9)
 
     def book(self, startTime: int, endTime: int) -> int:
-        SegmentTree.update(self.root, 0, self.MAX, startTime, endTime - 1, 1)
+        self.seg.update(self.root, 0, self.MAX, startTime, endTime - 1, 1)
         return self.root.val
-    
+
+
+# MyCalendarThree = MyCalendarThree1
+MyCalendarThree = MyCalendarThree2
+
 # Your MyCalendarThree object will be instantiated and called as such:
 # obj = MyCalendarThree()
 # param_1 = obj.book(startTime,endTime)
 # @lc code=end
 
 obj = MyCalendarThree()
-print(obj.book(10, 20)) # 1
-print(obj.book(50, 60)) # 1
-print(obj.book(10, 40)) # 2
-print(obj.book(5, 15)) # 3
-print(obj.book(5, 10)) # 3
-print(obj.book(25, 55)) # 3
+print(obj.book(10, 20))  # 1
+print(obj.book(50, 60))  # 1
+print(obj.book(10, 40))  # 2
+print(obj.book(5, 15))  # 3
+print(obj.book(5, 10))  # 3
+print(obj.book(25, 55))  # 3
