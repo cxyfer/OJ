@@ -19,8 +19,8 @@ class MyCalendarThree1:
         self.diff = SortedDict()
 
     def book(self, start: int, end: int) -> int:
-        self.diff[start] = self.diff.setdefault(start, 0) + 1
-        self.diff[end] = self.diff.setdefault(end, 0) - 1
+        self.diff[start] = self.diff.get(start, 0) + 1
+        self.diff[end] = self.diff.get(end, 0) - 1
 
         ans = s = 0
         for v in self.diff.values():
