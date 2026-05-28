@@ -24,13 +24,13 @@ class Solution1:
 
 class Solution2:
     def minGroups(self, intervals: List[List[int]]) -> int:
-        diff = SortedDict()
+        diff = defaultdict(int)
         for l, r in intervals:
-            diff[l] = diff.get(l, 0) + 1
-            diff[r + 1] = diff.get(r + 1, 0) - 1
+            diff[l] += 1
+            diff[r + 1] -= 1
 
         ans = s = 0
-        for v in diff.values():
+        for _, v in sorted(diff.items()):
             s += v
             ans = max(ans, s)
         return ans
