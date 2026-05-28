@@ -9,7 +9,7 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class Solution:
+class Solution1:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
         ans = []
         intervals.sort(key=lambda p: p[0])  # sort by left endpoint
@@ -19,4 +19,31 @@ class Solution:
             else:
                 ans[-1][1] = max(ans[-1][1], r)  # overlap, update interval
         return ans
+
+
+class Solution2:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        mx = max(r for _, r in intervals)
+
+        diff = [0] * (mx * 2 + 2)
+        for l, r in intervals:
+            diff[l * 2] += 1
+            diff[r * 2 + 1] -= 1
+
+        ans = []
+        s = 0
+        st = -1
+        for i, d in enumerate(diff):
+            s += d
+            if s > 0:
+                if st < 0:  # 開始一個新的區間
+                    st = i
+            elif st >= 0:
+                ans.append([st // 2, i // 2])
+                st = -1
+        return ans
+
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
