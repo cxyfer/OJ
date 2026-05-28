@@ -10,15 +10,34 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class Solution:
+class Solution1:
     def minGroups(self, intervals: List[List[int]]) -> int:
-        intervals.sort(key = lambda x : x[0])
+        intervals.sort(key=lambda x: x[0])
         hp = []
         for left, right in intervals:
-            if hp and left > hp[0]:
-                heappop(hp)
-            heappush(hp, right)
+            if hp and left > hp[0]:  # 可以接在堆頂那組的後面
+                heapreplace(hp, right)
+            else:
+                heappush(hp, right)
         return len(hp)
+
+
+class Solution2:
+    def minGroups(self, intervals: List[List[int]]) -> int:
+        diff = SortedDict()
+        for l, r in intervals:
+            diff[l] = diff.get(l, 0) + 1
+            diff[r + 1] = diff.get(r + 1, 0) - 1
+
+        ans = s = 0
+        for v in diff.values():
+            s += v
+            ans = max(ans, s)
+        return ans
+
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 
 
