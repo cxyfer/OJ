@@ -59,115 +59,63 @@ class Solution2:
         return k
 
 
-class LazySegmentTree:
-    def __init__(
-        self,
-        v: Optional[Any] = None,
-        op: Optional[Callable[[Any, Any], Any]] = None,
-        e: Any = 0,
-        mapping: Optional[Callable[[Any, Any, int], Any]] = None,
-        composition: Optional[Callable[[Any, Any], Any]] = None,
-        id_: Any = 0,
-    ):
-        if v is None:
-            self.nums = None
-            self.n = 0
-        elif isinstance(v, int):
-            self.nums = None
-            self.n = v
-        else:
-            self.nums = list(v)
-            self.n = len(self.nums)
-
-        self.op = (lambda a, b: a + b) if op is None else op
-        self.e = e
-        # mapping(f, x, seglen)
-        self.mapping = (
-            (lambda f, x, seglen: x + f * seglen) if mapping is None else mapping
-        )
-        self.composition = (lambda f, g: f + g) if composition is None else composition
-        self.id = id_
-
-        self.root = 1
-        size = 1 << (self.n.bit_length() + 1)
-        self.val = [self.e] * size
-        self.lazy = [self.id] * size
-
-        if self.nums is not None and self.n > 0:
-            self.build(self.root, 1, self.n)
-
-    def build(self, o: int, left: int, right: int) -> None:
-        """Build tree from self.nums on interval [left, right]."""
-        if left == right:
-            self.val[o] = self.nums[left - 1]
-            return
-        mid = (left + right) // 2
-        self.build(o * 2, left, mid)
-        self.build(o * 2 + 1, mid + 1, right)
-        self.pushup(o)
-
-    def _update(self, o: int, left: int, right: int, f: Any) -> None:
-        """Apply lazy tag f to node o covering [left, right]."""
-        seglen = right - left + 1
-        self.val[o] = self.mapping(f, self.val[o], seglen)
-        self.lazy[o] = self.composition(f, self.lazy[o])
-
-    def pushdown(self, o: int, left: int, right: int) -> None:
-        """Push lazy tag at node o down to its children."""
-        if self.lazy[o] == self.id or left == right:
-            return
-        mid = (left + right) // 2
-        f = self.lazy[o]
-        self._update(o * 2, left, mid, f)
-        self._update(o * 2 + 1, mid + 1, right, f)
-        self.lazy[o] = self.id
-
-    def pushup(self, o: int) -> None:
-        """Recompute node value from children."""
-        self.val[o] = self.op(self.val[o * 2], self.val[o * 2 + 1])
-
-    def update(self, o: int, left: int, right: int, l: int, r: int, f: Any) -> None:
-        """Range apply: apply tag f on interval [l, r]."""
-        if l <= left and right <= r:
-            self._update(o, left, right, f)
-            return
-        self.pushdown(o, left, right)
-        mid = (left + right) // 2
-        if l <= mid:
-            self.update(o * 2, left, mid, l, r, f)
-        if r > mid:
-            self.update(o * 2 + 1, mid + 1, right, l, r, f)
-        self.pushup(o)
-
-    # ---------------- external aliases (public API) ----------------
-    def apply(self, l: int, r: int, f: Any) -> None:
-        """Apply tag f to interval [l, r], 1-indexed."""
-        if self.n <= 0 or l > r:
-            return
-        self.update(self.root, 1, self.n, l, r, f)
-
-    def all_prod(self) -> Any:
-        """Return aggregate on [1, n]."""
-        if self.n <= 0:
-            return self.e
-        return self.val[self.root]
-
-
 class Solution3:
     def minZeroArray(self, nums: List[int], queries: List[List[int]]) -> int:
-        seg = LazySegmentTree(
-            nums, max, 0, lambda f, x, _: x + f, lambda f, g: f + g, 0
-        )
+        n = len(nums)
+        sz = 2 << n.bit_length()
+        tree = [0] * sz
+        lazy = [0] * sz
 
-        if seg.all_prod() <= 0:
+        def build(o: int, left: int, right: int) -> None:
+            if left == right:
+                tree[o] = nums[left]
+                return
+            mid = (left + right) // 2
+            build(o * 2, left, mid)
+            build(o * 2 + 1, mid + 1, right)
+            pushup(o)
+
+        def pushup(o: int) -> None:
+            tree[o] = max(tree[o * 2], tree[o * 2 + 1])
+
+        def _update(o: int, left: int, right: int, v: int) -> None:
+            tree[o] += v
+            lazy[o] += v
+
+        def pushdown(o: int, left: int, right: int) -> None:
+            if lazy[o] == 0 or left == right:
+                return
+            mid = (left + right) // 2
+            _update(o * 2, left, mid, lazy[o])
+            _update(o * 2 + 1, mid + 1, right, lazy[o])
+            lazy[o] = 0
+
+        def update(o: int, left: int, right: int, l: int, r: int, f: Any) -> None:
+            if l <= left and right <= r:
+                _update(o, left, right, f)
+                return
+            pushdown(o, left, right)
+            mid = (left + right) // 2
+            if l <= mid:
+                update(o * 2, left, mid, l, r, f)
+            if r > mid:
+                update(o * 2 + 1, mid + 1, right, l, r, f)
+            pushup(o)
+
+        def apply(l: int, r: int, f: Any) -> None:
+            if l > r:
+                return
+            update(1, 0, n - 1, l, r, f)
+
+        build(1, 0, n - 1)
+        if tree[1] <= 0:
             return 0
 
         for i, (l, r, v) in enumerate(queries, start=1):
-            seg.apply(l + 1, r + 1, -v)
-            if seg.all_prod() <= 0:
+            apply(l, r, -v)
+            if tree[1] <= 0:
                 return i
         return -1
-
 
 # Solution = Solution1
 # Solution = Solution2
