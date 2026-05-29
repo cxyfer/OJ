@@ -8,6 +8,12 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+
+"""
+Similar
+- 759. Employee Free Time (Premium)
+- 2931. Maximum Spending After Buying Items
+"""
 # @lc code=start
 class Solution:
     def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
