@@ -51,64 +51,60 @@ class SegNode:
         return SegNode(dl, dr, mx, sz)
 
 
-class SegmentTree:
-    def __init__(self, n: int):
-        self.n = n
-        # 注意我們實際上是維護 [0, n] 的 n + 1 個位置
-        sz = 1 << ((n + 1).bit_length() + 1)
-        self.tree = [None for _ in range(sz)]
-        self.build(1, 0, self.n)
-
-    def build(self, o: int, left: int, right: int) -> None:
-        if left == right:  # leaf
-            self.tree[o] = SegNode()
-            return
-        mid = (left + right) // 2
-        self.build(2 * o, left, mid)
-        self.build(2 * o + 1, mid + 1, right)
-        self.pushup(o)
-
-    def pushup(self, o: int) -> None:
-        self.tree[o] = self.tree[2 * o] + self.tree[2 * o + 1]
-
-    # 將 idx 位置標記為已放置障礙物
-    def update(self, o: int, left: int, right: int, idx: int) -> None:
-        if left == right:  # leaf
-            node = self.tree[o]
-            node.dl = node.dr = node.mx = 0
-            return
-        mid = (left + right) // 2
-        if idx <= mid:
-            self.update(2 * o, left, mid, idx)
-        else:
-            self.update(2 * o + 1, mid + 1, right, idx)
-        self.pushup(o)
-
-    def query(self, o: int, left: int, right: int, l: int, r: int) -> SegNode:
-        if left == l and r == right:
-            return self.tree[o]
-        mid = (left + right) // 2
-        if r <= mid:  # 只需查詢左子樹
-            return self.query(2 * o, left, mid, l, r)
-        if mid < l:  # 只需查詢右子樹
-            return self.query(2 * o + 1, mid + 1, right, l, r)
-        ls = self.query(2 * o, left, mid, l, mid)  # 左半部分
-        rs = self.query(2 * o + 1, mid + 1, right, mid + 1, r)  # 右半部分
-        return ls + rs
-
-
 class Solution:
     def getResults(self, queries: List[List[int]]) -> List[bool]:
         n = max(q[1] for q in queries)
-        seg = SegmentTree(n)
+        # 注意我們實際上是維護 [0, n] 的 n + 1 個位置
+        sz = 1 << ((n + 1).bit_length() + 1)
+        tree = [None for _ in range(sz)]
+
+        def build(o: int, left: int, right: int) -> None:
+            if left == right:  # leaf
+                tree[o] = SegNode()
+                return
+            mid = (left + right) // 2
+            build(2 * o, left, mid)
+            build(2 * o + 1, mid + 1, right)
+            pushup(o)
+
+        def pushup(o: int) -> None:
+            tree[o] = tree[2 * o] + tree[2 * o + 1]
+
+        # 將 idx 位置標記為已放置障礙物
+        def update(o: int, left: int, right: int, idx: int) -> None:
+            if left == right:  # leaf
+                node = tree[o]
+                node.dl = node.dr = node.mx = 0
+                return
+            mid = (left + right) // 2
+            if idx <= mid:
+                update(2 * o, left, mid, idx)
+            else:
+                update(2 * o + 1, mid + 1, right, idx)
+            pushup(o)
+
+        def query(o: int, left: int, right: int, l: int, r: int) -> SegNode:
+            if left == l and r == right:
+                return tree[o]
+            mid = (left + right) // 2
+            if r <= mid:  # 只需查詢左子樹
+                return query(2 * o, left, mid, l, r)
+            if mid < l:  # 只需查詢右子樹
+                return query(2 * o + 1, mid + 1, right, l, r)
+            ls = query(2 * o, left, mid, l, mid)  # 左半部分
+            rs = query(2 * o + 1, mid + 1, right, mid + 1, r)  # 右半部分
+            return ls + rs
+
+        build(1, 0, n)
+
         ans = []
         for op, *args in queries:
             if op == 1:
                 (x,) = args
-                seg.update(1, 0, n, x)
+                update(1, 0, n, x)
             else:
                 x, sz = args
-                ans.append(True if seg.query(1, 0, n, 0, x).mx >= sz else False)
+                ans.append(True if query(1, 0, n, 0, x).mx >= sz else False)
         return ans
 # @lc code=end
 
