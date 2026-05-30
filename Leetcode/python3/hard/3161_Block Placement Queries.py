@@ -8,93 +8,113 @@
 
 # @lcpr-template-start
 from preImport import *
+
 # @lcpr-template-end
+"""
+維護三個性質
+- ld: left distance, 從左邊到最近的障礙物的距離，無障礙物為 -1
+- rd: right distance, 從右邊到最近的障礙物的距離，無障礙物為 -1
+- mx: 最大可放置的連續物體長度，單點為 0
+    - 若無障礙物， [1, 2] 區間可放置的最大長度為 1
+"""
 # @lc code=start
-"""
-    維護三個性質
-    - ld: left distance, 從左邊到最近的障礙物的距離，無障礙物為 -1
-    - rd: right distance, 從右邊到最近的障礙物的距離，無障礙物為 -1
-    - mx: 最大可放置的連續物體長度，單點為 0
-        - 若無障礙物， [1, 2] 區間可放置的最大長度為 1
-"""
+class SegNode:
+    def __init__(self, ld=1, rd=1, mx=0, sz=1) -> None:
+        self.ls = self.rs = None
+        # 從左端點/右端點到最近的障礙物的距離，無障礙物時設為 sz
+        self.ld, self.rd = ld, rd
+        # [left, right] 區間最大可放置的連續物體長度
+        self.mx = mx
+        self.sz = sz
+
+    def __add__(ls, rs):
+        ld, rd = ls.ld, rs.rd
+        sz = ls.sz + rs.sz
+
+        mid_gap = 1  # 考慮中間的間隙
+        mid_gap += ls.sz - 1 if ls.rd == ls.sz else ls.rd  # 從中間往左延伸
+        mid_gap += rs.sz - 1 if rs.ld == rs.sz else rs.ld  # 從中間往右延伸
+        mx = max(mid_gap, ls.mx, rs.mx)
+
+        if ls.ld == ls.sz:  # 左區間無障礙物
+            ld = sz if rs.ld == rs.sz else (ls.sz + rs.ld)  # 往右延伸
+        if rs.rd == rs.sz:  # 右區間無障礙物
+            rd = sz if ls.rd == ls.sz else (rs.sz + ls.rd)  # 往左延伸
+
+        return SegNode(ld, rd, mx, sz)
+
+
 class SegmentTree:
     def __init__(self, n: int):
-        self.tree = [[0, 0, 0] for _ in range(4 * n)]  # (ld, rd, mx)
-        self.build(1, 0, n)
- 
-    def build(self, o, left, right): # node, left, right
-        if left == right: # Leaf node initialization
-            self.tree[o] = [-1, -1, 0] # (ld, rd, mx)
+        self.n = n
+        # 注意我們實際上是維護 [0, n] 的 n + 1 個位置
+        sz = 1 << ((n + 1).bit_length() + 1)
+        self.tree = [None for _ in range(sz)]
+        self.build(1, 0, self.n)
+
+    def build(self, o: int, left: int, right: int):
+        if left == right:  # leaf
+            self.tree[o] = SegNode()
             return
         mid = (left + right) // 2
-        self.build(2*o, left, mid) # left child
-        self.build(2*o+1, mid + 1, right) # right child
-        self.tree[o] = self.merge(self.tree[2*o], self.tree[2*o+1], left, mid, right)
-        
-    """
-        合併 [left, mid] 和 [mid+1, right] 兩部分的結果
-    """
-    def merge(self, left_part, right_part, left, mid, right):
-        lld, lrd, lmx = left_part
-        rld, rrd, rmx = right_part
-        res = [lld, rrd, 0]
+        self.build(2 * o, left, mid)
+        self.build(2 * o + 1, mid + 1, right)
+        self.pushup(o)
 
-        t = 1 # 中間的部分最大可放置的連續物體長度
-        t += (mid - left) if lrd == -1 else lrd # 從中間往左延伸
-        t += (right - (mid+1)) if rld == -1 else rld # 從中間往右延伸
-        res[2] = max(lmx, rmx, t) # [left, right] 區間最大可放置的連續物體長度
+    def pushup(self, o: int) -> None:
+        self.tree[o] = self.tree[2 * o] + self.tree[2 * o + 1]
 
-        if lld == -1:
-            res[0] = -1 if rld == -1 else (mid - left + 1 + rld) # 往右延伸
-        if rrd == -1:
-            res[1] = -1 if lrd == -1 else (right - (mid+1) + 1 + lrd) # 往左延伸
-        return res
-
-    def update(self, o, left, right, idx): # 將 idx 位置標記為已放置障礙物
-        if left == right: # leaf
-            self.tree[o] = [0, 0, 0] # (ld, rd, mx)
+    def update(self, o: int, left, right, idx):  # 將 idx 位置標記為已放置障礙物
+        if left == right:  # leaf
+            node = self.tree[o]
+            node.ld = node.rd = node.mx = 0
             return
         mid = (left + right) // 2
         if idx <= mid:
-            self.update(2*o, left, mid, idx)
+            self.update(2 * o, left, mid, idx)
         else:
-            self.update(2*o+1, mid + 1, right, idx)
-        self.tree[o] = self.merge(self.tree[2*o], self.tree[2*o+1], left, mid, right)
- 
+            self.update(2 * o + 1, mid + 1, right, idx)
+        self.pushup(o)
+
     def query(self, o, left, right, l, r):
         if left == l and r == right:
             return self.tree[o]
         mid = (left + right) // 2
-        if r <= mid: # 只需要查詢左半部分
-            return self.query(2*o, left, mid, l, r)
-        if mid < l: # 只需要查詢右半部分
-            return self.query(2*o+1, mid + 1, right, l, r)
-        left_part = self.query(2*o, left, mid, l, mid) # 左半部分
-        right_part = self.query(2*o+1, mid + 1, right, mid + 1, r) # 右半部分
-        return self.merge(left_part, right_part, l, mid, r) # 合併左右兩部分
+        if r <= mid:  # 只需查詢左子樹
+            return self.query(2 * o, left, mid, l, r)
+        if mid < l:  # 只需查詢右子樹
+            return self.query(2 * o + 1, mid + 1, right, l, r)
+        ls = self.query(2 * o, left, mid, l, mid)  # 左半部分
+        rs = self.query(2 * o + 1, mid + 1, right, mid + 1, r)  # 右半部分
+        return ls + rs
+
 
 class Solution:
     def getResults(self, queries: List[List[int]]) -> List[bool]:
-        n = min(int(5e4), 3 * len(queries))
+        n = max(q[1] for q in queries)
         seg = SegmentTree(n)
         ans = []
         for op, *args in queries:
             if op == 1:
-                x, = args
+                (x,) = args
                 seg.update(1, 0, n, x)
             else:
                 x, sz = args
-                ans.append(True if seg.query(1, 0, n, 0, x)[2] >= sz else False)
+                ans.append(True if seg.query(1, 0, n, 0, x).mx >= sz else False)
         return ans
 # @lc code=end
 
 sol = Solution()
-print(sol.getResults([[1,2],[2,3,3],[2,3,1],[2,2,2]])) # [False, True, True]
-print(sol.getResults([[1,7],[2,7,6],[1,2],[2,7,5],[2,7,6]])) # [True, True, False]
-print(sol.getResults([[2,1,1]])) # [True]
-print(sol.getResults([[2,1,2]])) # [False]
-print(sol.getResults([[1,4],[2,1,2]])) # [False]
-print(sol.getResults([[1,1],[2,4,3]])) # [True]
+print(sol.getResults([[1, 2], [2, 3, 3], [2, 3, 1], [2, 2, 2]]))  # [False, True, True]
+print(
+    sol.getResults([[1, 7], [2, 7, 6], [1, 2], [2, 7, 5], [2, 7, 6]])
+)  # [True, True, False]
+print(sol.getResults([[2, 1, 1]]))  # [True]
+print(sol.getResults([[2, 1, 2]]))  # [False]
+print(sol.getResults([[1, 4], [2, 1, 2]]))  # [False]
+print(sol.getResults([[1, 1], [2, 4, 3]]))  # [True]
+print(sol.getResults([[2,2,3]]))  # [False]
+
 
 #
 # @lcpr case=start
@@ -106,4 +126,3 @@ print(sol.getResults([[1,1],[2,4,3]])) # [True]
 # @lcpr case=end
 
 #
-
