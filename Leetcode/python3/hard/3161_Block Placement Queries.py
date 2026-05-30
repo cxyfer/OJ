@@ -34,7 +34,7 @@ class SegNode:
         self.mx = mx
         self.sz = sz
 
-    def __add__(ls, rs):
+    def __add__(ls, rs: "SegNode") -> "SegNode":
         dl, dr = ls.dl, rs.dr
         sz = ls.sz + rs.sz
 
@@ -57,21 +57,22 @@ class SegmentTree:
         # 注意我們實際上是維護 [0, n] 的 n + 1 個位置
         sz = 1 << ((n + 1).bit_length() + 1)
         self.tree = [None for _ in range(sz)]
-        self.buidl(1, 0, self.n)
+        self.build(1, 0, self.n)
 
-    def buidl(self, o: int, left: int, right: int):
+    def build(self, o: int, left: int, right: int) -> None:
         if left == right:  # leaf
             self.tree[o] = SegNode()
             return
         mid = (left + right) // 2
-        self.buidl(2 * o, left, mid)
-        self.buidl(2 * o + 1, mid + 1, right)
+        self.build(2 * o, left, mid)
+        self.build(2 * o + 1, mid + 1, right)
         self.pushup(o)
 
     def pushup(self, o: int) -> None:
         self.tree[o] = self.tree[2 * o] + self.tree[2 * o + 1]
 
-    def update(self, o: int, left, right, idx):  # 將 idx 位置標記為已放置障礙物
+    # 將 idx 位置標記為已放置障礙物
+    def update(self, o: int, left: int, right: int, idx: int) -> None:
         if left == right:  # leaf
             node = self.tree[o]
             node.dl = node.dr = node.mx = 0
@@ -83,7 +84,7 @@ class SegmentTree:
             self.update(2 * o + 1, mid + 1, right, idx)
         self.pushup(o)
 
-    def query(self, o, left, right, l, r):
+    def query(self, o: int, left: int, right: int, l: int, r: int) -> SegNode:
         if left == l and r == right:
             return self.tree[o]
         mid = (left + right) // 2
