@@ -39,8 +39,8 @@ class SegNode:
         sz = ls.sz + rs.sz
 
         mid_gap = 1  # 考慮中間的間隙
-        mid_gap += ls.sz - 1 if ls.dr == ls.sz else ls.dr  # 從中間往左延伸
-        mid_gap += rs.sz - 1 if rs.dl == rs.sz else rs.dl  # 從中間往右延伸
+        mid_gap += (ls.sz - 1) if ls.dr == ls.sz else ls.dr  # 從中間往左延伸
+        mid_gap += (rs.sz - 1) if rs.dl == rs.sz else rs.dl  # 從中間往右延伸
         mx = max(mid_gap, ls.mx, rs.mx)
 
         if ls.dl == ls.sz:  # 左區間無障礙物
