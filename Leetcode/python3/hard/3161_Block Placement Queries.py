@@ -11,37 +11,44 @@ from preImport import *
 
 # @lcpr-template-end
 """
-維護三個性質
-- ld: left distance, 從左邊到最近的障礙物的距離，無障礙物為 -1
-- rd: right distance, 從右邊到最近的障礙物的距離，無障礙物為 -1
-- mx: 最大可放置的連續物體長度，單點為 0
-    - 若無障礙物， [1, 2] 區間可放置的最大長度為 1
+本題的狀態設計其實和 53. Maximum Subarray 蠻類似的，可以
+
+對於每個區間 [left, right]，維護四個性質：
+- sz: 區間長度
+- dl: 從 left 往右到最近的障礙物的距離，無障礙物為 sz
+- dr: 從 right 往左到最近的障礙物的距離，無障礙物為 sz
+- mx: 最大可放置的連續物體長度，單點為 0，若無障礙物為 sz - 1
+
+合併兩個區間 [left, mid] 和 [mid + 1, right] 時，中間會產生一個新的間隔 mid_gap：
+- mid_gap 可以由 ls.dr 和 rs.dl 共同決定，加上原本兩側的最大間隔，因此 mx = max(ls.mx, rs.mx, mid_gap)
+- dl 和 dr 的更新則需要考慮是否有障礙物，以及是否能從一側延伸到另一側。
+
+跑很慢是因為為了方便展示邏輯，我把合併寫在 SegNode.__add__ 裡面了，想必各位大神有的是方法優化。
 """
 # @lc code=start
 class SegNode:
-    def __init__(self, ld=1, rd=1, mx=0, sz=1) -> None:
-        self.ls = self.rs = None
+    def __init__(self, dl=1, dr=1, mx=0, sz=1) -> None:
         # 從左端點/右端點到最近的障礙物的距離，無障礙物時設為 sz
-        self.ld, self.rd = ld, rd
+        self.dl, self.dr = dl, dr
         # [left, right] 區間最大可放置的連續物體長度
         self.mx = mx
         self.sz = sz
 
     def __add__(ls, rs):
-        ld, rd = ls.ld, rs.rd
+        dl, dr = ls.dl, rs.dr
         sz = ls.sz + rs.sz
 
         mid_gap = 1  # 考慮中間的間隙
-        mid_gap += ls.sz - 1 if ls.rd == ls.sz else ls.rd  # 從中間往左延伸
-        mid_gap += rs.sz - 1 if rs.ld == rs.sz else rs.ld  # 從中間往右延伸
+        mid_gap += ls.sz - 1 if ls.dr == ls.sz else ls.dr  # 從中間往左延伸
+        mid_gap += rs.sz - 1 if rs.dl == rs.sz else rs.dl  # 從中間往右延伸
         mx = max(mid_gap, ls.mx, rs.mx)
 
-        if ls.ld == ls.sz:  # 左區間無障礙物
-            ld = sz if rs.ld == rs.sz else (ls.sz + rs.ld)  # 往右延伸
-        if rs.rd == rs.sz:  # 右區間無障礙物
-            rd = sz if ls.rd == ls.sz else (rs.sz + ls.rd)  # 往左延伸
+        if ls.dl == ls.sz:  # 左區間無障礙物
+            dl = sz if rs.dl == rs.sz else (ls.sz + rs.dl)  # 往右延伸
+        if rs.dr == rs.sz:  # 右區間無障礙物
+            dr = sz if ls.dr == ls.sz else (rs.sz + ls.dr)  # 往左延伸
 
-        return SegNode(ld, rd, mx, sz)
+        return SegNode(dl, dr, mx, sz)
 
 
 class SegmentTree:
@@ -50,15 +57,15 @@ class SegmentTree:
         # 注意我們實際上是維護 [0, n] 的 n + 1 個位置
         sz = 1 << ((n + 1).bit_length() + 1)
         self.tree = [None for _ in range(sz)]
-        self.build(1, 0, self.n)
+        self.buidl(1, 0, self.n)
 
-    def build(self, o: int, left: int, right: int):
+    def buidl(self, o: int, left: int, right: int):
         if left == right:  # leaf
             self.tree[o] = SegNode()
             return
         mid = (left + right) // 2
-        self.build(2 * o, left, mid)
-        self.build(2 * o + 1, mid + 1, right)
+        self.buidl(2 * o, left, mid)
+        self.buidl(2 * o + 1, mid + 1, right)
         self.pushup(o)
 
     def pushup(self, o: int) -> None:
@@ -67,7 +74,7 @@ class SegmentTree:
     def update(self, o: int, left, right, idx):  # 將 idx 位置標記為已放置障礙物
         if left == right:  # leaf
             node = self.tree[o]
-            node.ld = node.rd = node.mx = 0
+            node.dl = node.dr = node.mx = 0
             return
         mid = (left + right) // 2
         if idx <= mid:
