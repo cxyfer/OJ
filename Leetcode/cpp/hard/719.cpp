@@ -4,49 +4,95 @@
  * [719] 找出第 K 小的数对距离
  */
 
-
 // @lcpr-template-start
 #include <bits/stdc++.h>
+
+#include <ranges>
+
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     int smallestDistancePair(vector<int>& nums, int k) {
         int n = nums.size();
-        sort(nums.begin(), nums.end()); // 由小到大排序
+        int U = ranges::max(nums) - ranges::min(nums);
 
-        // 1. Binary Search
-        function<int(int)> check1 = [&](int mid) { // 計算距離 <= mid 的 pair 數量
+        vector<int> cnt(U + 1, 0);
+        for (auto [i, x] : views::enumerate(nums))
+            for (int j = i + 1; j < n; ++j) ++cnt[abs(x - nums[j])];
+
+        for (int i = 0; i <= U; ++i)
+            if (k > cnt[i])
+                k -= cnt[i];
+            else
+                return i;
+        return -1;
+    }
+};
+
+class Solution2 {
+public:
+    int smallestDistancePair(vector<int>& nums, int k) {
+        int n = nums.size();
+        ranges::sort(nums);
+
+        // 計算距離 <= mid 的 pair 數量
+        auto check = [&](int mid) {
             int res = 0;
-            for (int j = 0; j < n; j++) { // 枚舉右端點 j
-                int i = lower_bound(nums.begin(), nums.begin() + j, nums[j] - mid) - nums.begin();
-                res += j - i; // (i, j), (i+1, j), ..., (j-1, j) 距離都小於等於 mid
+            for (int j = 0; j < n; j++) {  // 枚舉右端點 j
+                int i =
+                    lower_bound(nums.begin(), nums.begin() + j, nums[j] - mid) -
+                    nums.begin();
+                res += j - i;  // [i, j) 可以做為左端點
             }
             return res;
         };
 
-        // 2. Sliding Window
-        function<int(int)> check2 = [&](int mid) { // 計算距離 <= mid 的 pair 數量
-            int res = 0, l = 0;
-            for (int r = 0; r < n; r++) { // 枚舉右端點 r
-                while (nums[r] - nums[l] > mid) { // 移動左端點直到滿足條件為止
-                    l++;
-                }
-                res += r - l; // (l, r), (l+1, r), ..., (r-1, r) 距離都小於等於 mid
-            }
-            return res;
-        };
-
-        // 對答案做二分搜尋
-        int left = 0, right = nums[n-1] - nums[0]; 
+        int left = 0, right = nums[n - 1] - nums[0];
         while (left <= right) {
             int mid = left + (right - left) / 2;
-            // if (check1(mid) >= k) right = mid - 1;
-            if (check2(mid) >= k) right = mid - 1;
-            else left = mid + 1;
+            if (check(mid) >= k)
+                right = mid - 1;
+            else
+                left = mid + 1;
         }
         return left;
     }
 };
+
+class Solution3 {
+public:
+    int smallestDistancePair(vector<int>& nums, int k) {
+        int n = nums.size();
+        ranges::sort(nums);
+
+        // 計算距離 <= mid 的 pair 數量
+        auto check = [&](int mid) -> bool {
+            int cnt = 0;
+            for (int l = 0, r = 0; r < n; r++) {  // 枚舉右端點 r
+                // 移動左端點直到滿足條件為止
+                while (nums[r] - nums[l] > mid) {
+                    l++;
+                }
+                cnt += r - l;  // [l, r) 可以做為左端點
+            }
+            return cnt >= k;
+        };
+
+        int left = 0, right = nums[n - 1] - nums[0];
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (check(mid))
+                right = mid - 1;
+            else
+                left = mid + 1;
+        }
+        return left;
+    }
+};
+
+// using Solution = Solution1;
+// using Solution = Solution2;
+using Solution = Solution3;
 // @lc code=end
