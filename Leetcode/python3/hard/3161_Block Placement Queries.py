@@ -11,19 +11,22 @@ from preImport import *
 
 # @lcpr-template-end
 """
-本題的狀態設計其實和 53. Maximum Subarray 蠻類似的，可以
+本題的狀態設計其實和 53. Maximum Subarray 蠻類似的，可以先參考 LCCN 官解的 O(n) 分治解法 獲得一些啟發
 
 對於每個區間 [left, right]，維護四個性質：
-- sz: 區間長度
-- dl: 從 left 往右到最近的障礙物的距離，無障礙物為 sz
-- dr: 從 right 往左到最近的障礙物的距離，無障礙物為 sz
-- mx: 最大可放置的連續物體長度，單點為 0，若無障礙物為 sz - 1
+sz: 區間長度
+dl / dl: 從 left 往右 /  從 right 往左 到最近的障礙物的距離，無障礙物時記為 sz
+mx: 最大可放置的連續物體長度，單點為 0，若無障礙物為 sz - 1
+
 
 合併兩個區間 [left, mid] 和 [mid + 1, right] 時，中間會產生一個新的間隔 mid_gap：
-- mid_gap 可以由 ls.dr 和 rs.dl 共同決定，加上原本兩側的最大間隔，因此 mx = max(ls.mx, rs.mx, mid_gap)
-- dl 和 dr 的更新則需要考慮是否有障礙物，以及是否能從一側延伸到另一側。
+mid_gap 可以由 ls.dr 和 rs.dl 共同決定，加上原本兩側的最大間隔，因此 mx = max(ls.mx, rs.mx, mid_gap)
+注意 mid 和 mid + 1 本身就會有 1 的距離
+dl 和 dr 的更新則需要考慮是否有障礙物，若無障礙物可以從一側延伸到另一側。
 
-跑很慢是因為為了方便展示邏輯，我把合併寫在 SegNode.__add__ 裡面了，想必各位大神有的是方法優化。
+
+跑很慢是因為為了方便展示邏輯，我把合併寫在 SegNode.__add__ 裡面了，
+另外這種寫法相比之下比較通用，可以處理任意區間的詢問 
 """
 # @lc code=start
 class SegNode:
@@ -44,9 +47,9 @@ class SegNode:
         mx = max(mid_gap, ls.mx, rs.mx)
 
         if ls.dl == ls.sz:  # 左區間無障礙物
-            dl = sz if rs.dl == rs.sz else (ls.sz + rs.dl)  # 往右延伸
+            dl = (ls.sz + rs.dl)  # 往右延伸
         if rs.dr == rs.sz:  # 右區間無障礙物
-            dr = sz if ls.dr == ls.sz else (rs.sz + ls.dr)  # 往左延伸
+            dr = (rs.sz + ls.dr)  # 往左延伸
 
         return SegNode(dl, dr, mx, sz)
 
