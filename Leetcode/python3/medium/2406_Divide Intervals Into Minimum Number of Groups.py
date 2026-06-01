@@ -30,6 +30,21 @@ class Solution1:
 
 class Solution2:
     def minGroups(self, intervals: List[List[int]]) -> int:
+        events = []
+        for l, r in intervals:
+            events.append((l, 1))
+            events.append((r + 1, -1))
+        events.sort()  # 同一時間點先處理 -1 (結束) 再處理 +1 (開始)
+
+        ans = s = 0
+        for _, v in events:
+            s += v
+            ans = max(ans, s)
+        return ans
+
+
+class Solution3:
+    def minGroups(self, intervals: List[List[int]]) -> int:
         diff = defaultdict(int)
         for l, r in intervals:
             diff[l] += 1
@@ -42,11 +57,13 @@ class Solution2:
         return ans
 
 
-# Solution = Solution1
-Solution = Solution2
+Solution = Solution1
+# Solution = Solution2
+# Solution = Solution3
 # @lc code=end
 
-
+sol = Solution()
+print(sol.minGroups([[5,10],[6,8],[1,5],[2,3],[1,10]]))  # 3
 
 #
 # @lcpr case=start
