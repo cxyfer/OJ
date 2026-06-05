@@ -8,6 +8,10 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+Similar
+- 956. Tallest Billboard
+"""
 # @lc code=start
 class Solution1:
     def minRemovals(self, nums: List[int], target: int) -> int:
