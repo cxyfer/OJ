@@ -12,6 +12,8 @@ from preImport import *
 """
 Similar
 - 209. Minimum Size Subarray Sum - 全正數版本的本題，可以用雙指標維護，相對簡單許多
+- P1714 切蛋糕
+- 3938. Maximum Path Intersection Sum in a Grid
 """
 # @lc code=start
 class Solution:
