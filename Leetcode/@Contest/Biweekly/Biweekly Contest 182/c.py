@@ -22,9 +22,9 @@ class Solution:
 
         ans = 0
         while target not in vis:
-            new = set()
             P = list(vis)
             n = len(P)
+            added = 0
             for i, (x1, y1, z1) in enumerate(P):
                 for j in range(i + 1, n):
                     x2, y2, z2 = P[j]
@@ -32,10 +32,10 @@ class Solution:
                     y = (y1 + y2) // 2
                     z = (z1 + z2) // 2
                     if (x, y, z) not in vis:
-                        new.add((x, y, z))
-            if not new:
+                        added += 1
+                        vis.add((x, y, z))
+            if added == 0:
                 return -1
-            vis.update(new)
             ans += 1
         return ans
 
