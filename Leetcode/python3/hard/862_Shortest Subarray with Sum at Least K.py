@@ -9,25 +9,28 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+Similar
+- 209. Minimum Size Subarray Sum - 全正數版本的本題，可以用雙指標維護，相對簡單許多
+"""
 # @lc code=start
 class Solution:
     def shortestSubarray(self, nums: List[int], k: int) -> int:
         n = len(nums)
-        s = list(accumulate(nums, initial=0))
-        
+        s = list(accumulate(nums, initial = 0))
 
-        q = deque()
         ans = n + 1
-        for j in range(n + 1):
-            while q and s[j] - s[q[0]] >= k:
-                ans = min(ans, j - q[0])
+        q = deque()
+        for r, sr in enumerate(s):
+            while q and sr - s[q[0]] >= k:
+                ans = min(ans, r - q[0])
                 q.popleft()
             
-            while q and s[j] <= s[q[-1]]:
+            while q and sr <= s[q[-1]]:
                 q.pop()
-            
-            q.append(j)
-        
+
+            q.append(r)
+
         return ans if ans <= n else -1
 # @lc code=end
 
