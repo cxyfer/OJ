@@ -10,66 +10,70 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class DSU: # Disjoint Set Union
-    __slots__ = ['n', 'pa']
-
-    def __init__(self, n: int):
-        self.n = n
-        self.pa = list(range(n)) # 父節點
-
-    def find(self, x: int) -> int:
-        if self.pa[x] != x:
-            self.pa[x] = self.find(self.pa[x])
-        return self.pa[x]
-    
-    def union(self, x: int, y: int) -> bool:
-        px, py = self.find(x), self.find(y)
-        if px == py:
-            return False
-        self.pa[py] = px
-        return True
-    
 class Solution1:
     def createBinaryTree(self, descriptions: List[List[int]]) -> Optional[TreeNode]:
-        N = int(1e5 + 5)
-        dsu = DSU(N)
-        mp = {} # <val, TreeNode>
-        for u, v, is_left in descriptions:
-            dsu.union(u, v)
-            if u not in mp:
-                mp[u] = TreeNode(u)
-            if v not in mp:
-                mp[v] = TreeNode(v)
+        mp = dict()  # val -> TreeNode
+        fa = dict()  # fa[child] = parent
+        for pa, ch, is_left in descriptions:
+            if pa not in mp:
+                mp[pa] = TreeNode(val=pa)
+            if ch not in mp:
+                mp[ch] = TreeNode(val=ch)
             if is_left:
-                mp[u].left = mp[v]
+                mp[pa].left = mp[ch]
             else:
-                mp[u].right = mp[v]
-        root = dsu.find(descriptions[0][0])
-        return mp[root]
-    
+                mp[pa].right = mp[ch]
+            fa[ch] = pa
+
+        rt = descriptions[0][0]
+        while rt in fa:
+            rt = fa[rt]
+        return mp[rt]
+
+
 class Solution2:
     def createBinaryTree(self, descriptions: List[List[int]]) -> Optional[TreeNode]:
-        mp = {} # val -> TreeNode
-        pa = {} # child -> parent
-        for u, v, is_left in descriptions:
-            pa[v] = u
-            if u not in mp:
-                mp[u] = TreeNode(u)
-            if v not in mp:
-                mp[v] = TreeNode(v)
+        n = len(descriptions) + 1
+
+        nodes = set()
+        for pa, ch, is_left in descriptions:
+            nodes.add(pa)
+            nodes.add(ch)
+        nodes = list(nodes)
+        val_to_idx = {u: i for i, u in enumerate(nodes)}
+
+        fa = list(range(n))
+
+        def find(x: int) -> int:
+            while fa[x] != x:
+                fa[x] = fa[fa[x]]
+                x = fa[x]
+            return x
+
+        def union(x: int, y: int) -> bool:
+            fx, fy = find(x), find(y)
+            if fx == fy:
+                return False
+            fa[fy] = fx
+            return True
+
+        mp = dict()  # val -> TreeNode
+        for pa, ch, is_left in descriptions:  # u -> v
+            if pa not in mp:
+                mp[pa] = TreeNode(val=pa)
+            if ch not in mp:
+                mp[ch] = TreeNode(val=ch)
             if is_left:
-                mp[u].left = mp[v]
+                mp[pa].left = mp[ch]
             else:
-                mp[u].right = mp[v]
+                mp[pa].right = mp[ch]
+            union(val_to_idx[pa], val_to_idx[ch])
+        rt = find(val_to_idx[descriptions[0][0]])
+        return mp[nodes[rt]]
 
-        root = descriptions[0][0]
-        while root in pa:
-            root = pa[root]
-        return mp[root]
 
-# class Solution(Solution1):
-class Solution(Solution2):
-    pass
+Solution = Solution1
+# Solution = Solution2
 # @lc code=end
 
 
