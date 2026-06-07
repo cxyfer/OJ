@@ -11,9 +11,7 @@ from preImport import *
 """
 類似於從 153. Find Minimum in Rotated Sorted Array I 到 154. Find Minimum in Rotated Sorted Array II 的轉變，
 當陣列中有重複元素時，會影響我們判斷在左段和右段的，只有前綴中與 nums[-1] 相同的元素，
-在保持區間不為空的前提下，將這些元素移除即可。
-
-本題也可以在 33. Search in Rotated Sorted Array 的基礎上，移除前綴中與 nums[-1] 相同的元素。
+因此本題也可以在 33. Search in Rotated Sorted Array 的基礎上，在保持區間不為空的前提下，將這些元素移除即可。
 """
 # @lc code=start
 class Solution:
