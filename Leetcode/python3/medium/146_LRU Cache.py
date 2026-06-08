@@ -12,63 +12,66 @@ from preImport import *
     Double Linked List + Hashmap
 """
 # @lc code=start
-class Node:
-    __slots__ = ['key', 'value', 'prev', 'next']
+from collections import defaultdict
 
-    def __init__(self, key=0, value=0):
+
+class Node:
+    __slot__ = ["key", "val", "prev", "next"]
+
+    def __init__(self, key=int, val=int):
         self.key = key
-        self.value = value
-        self.prev = None
-        self.next = None
+        self.val = val
+        self.prev = self.next = None
+
 
 class LRUCache:
     def __init__(self, capacity: int):
+        self.cnt = 0
         self.capacity = capacity
-        self.size = 0
-        self.cache = dict()
-        self.dummy = Node()  # dummy head
-        self.dummy.prev = self.dummy
-        self.dummy.next = self.dummy
+        self.mp = defaultdict(Node)
+        self.head = Node()  # head->next = first
+        self.tail = Node()  # tail->prev = last
+        self.head.next = self.tail
+        self.tail.prev = self.head
 
     def get(self, key: int) -> int:
-        if key not in self.cache:
+        if key not in self.mp:
             return -1
-        node = self.cache[key]
-        self.moveToHead(node)
-        return node.value
-    
-    def put(self, key: int, value: int) -> None:
-        if key in self.cache:
-            node = self.cache[key]
-            node.value = value
-            self.moveToHead(node)
-        else:
-            node = Node(key, value)
-            self.cache[key] = node
-            self.addToHead(node)
-            self.size += 1
-            if self.size > self.capacity:
-                del self.cache[self.removeTail().key]
-                self.size -= 1
+        node = self.mp[key]
+        self.moveToFront(node)
+        return node.val
 
-    def removeNode(self, node: Node) -> None:
+    def put(self, key: int, val: int):
+        if key in self.mp:
+            node = self.mp[key]
+            node.val = val
+            self.moveToFront(node)
+        else:
+            node = self.mp[key] = Node(key=key, val=val)
+            self.addFront(node)
+            self.cnt += 1
+            if self.cnt > self.capacity:
+                self.removeLast()
+                self.cnt -= 1
+
+    def addFront(self, node: Node) -> None:
+        node.prev = self.head
+        node.next = self.head.next
+        self.head.next.prev = node
+        self.head.next = node
+
+    def moveToFront(self, node: Node):
+        self.remove(node)
+        self.addFront(node)
+
+    def remove(self, node: Node):
         node.prev.next = node.next
         node.next.prev = node.prev
 
-    def addToHead(self, node: Node) -> None:
-        node.prev = self.dummy
-        node.next = self.dummy.next
-        node.prev.next = node
-        node.next.prev = node
-
-    def moveToHead(self, node: Node) -> None:
-        self.removeNode(node)
-        self.addToHead(node)
-
-    def removeTail(self) -> Node:
-        node = self.dummy.prev
-        self.removeNode(node)
-        return node
+    def removeLast(self):
+        node = self.tail.prev
+        self.remove(node)
+        del self.mp[node.key]
 # @lc code=end
 
 obj = LRUCache(2)
