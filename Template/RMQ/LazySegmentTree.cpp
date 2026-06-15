@@ -18,22 +18,22 @@ Lazy Segment Tree (array-based, recursive)
 
 template <class S, S (*op)(S, S), S (*e)(), class F, S (*mapping)(F, S, int),
           F (*composition)(F, F), F (*id)()>
-class LazySegmentTree {
+class LazySegTree {
 public:
     int n = 0;
     int root = 1;
     vector<S> val;
     vector<F> lazy;
 
-    LazySegmentTree() : LazySegmentTree(0) {}
+    LazySegTree() : LazySegTree(0) {}
 
-    // LazySegmentTree(n)
-    explicit LazySegmentTree(int n_) {
+    // LazySegTree(n)
+    explicit LazySegTree(int n_) {
         init_n(n_);
     }
 
-    // LazySegmentTree(nums)
-    explicit LazySegmentTree(const vector<S>& nums) {
+    // LazySegTree(nums)
+    explicit LazySegTree(const vector<S>& nums) {
         init_n((int)nums.size());
         if (n > 0) build(root, 1, n, nums);
     }
@@ -135,7 +135,7 @@ void solve() {
     auto composition = [](i64 f, i64 g) -> i64 { return f + g; };
     auto id = []() -> i64 { return 0; };
 
-    LazySegmentTree<i64, op, e, i64, mapping, composition, id> seg(nums);
+    LazySegTree<i64, op, e, i64, mapping, composition, id> seg(nums);
     while (q--) {
         int op, l, r;
         i64 k;

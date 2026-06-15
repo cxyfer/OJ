@@ -14,7 +14,7 @@ Lazy Segment Tree (array-based, recursive)
 """
 
 
-class LazySegmentTree:
+class LazySegTree:
     def __init__(
         self,
         v: Optional[Any] = None,
@@ -136,7 +136,7 @@ def solve():
     nums = list(map(int, input().split()))
     assert len(nums) == n
 
-    seg = LazySegmentTree(nums)
+    seg = LazySegTree(nums)
     for _ in range(q):
         op, *args = map(int, input().split())
         if op == 1:
