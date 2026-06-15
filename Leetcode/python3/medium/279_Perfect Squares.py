@@ -9,19 +9,22 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+Dynamic Programming
+dp[i] 表示和為i的完全平方數的最小個數
+"""
 # @lc code=start
+N = int(1e4)
+f = [inf] * (N + 1)
+f[0] = 0
+for i in range(1, isqrt(N) + 1):
+    for j in range(i * i, N + 1):
+        f[j] = min(f[j], f[j - i * i] + 1)
+
+
 class Solution:
-    """
-        Dynamic Programming
-        dp[i] 表示和為i的完全平方數的最小個數
-    """
     def numSquares(self, n: int) -> int:
-        dp = [0] * (n + 1)
-        for i in range(1, n + 1):
-            dp[i] = i # i = (1^2) * i
-            for j in range(1, math.isqrt(i) + 1): # j*j <= i
-                dp[i] = min(dp[i], dp[i - j * j] + 1)
-        return dp[n]
+        return f[n]
 # @lc code=end
 
 
