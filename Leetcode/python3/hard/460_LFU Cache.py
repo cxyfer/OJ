@@ -8,6 +8,10 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+在 146. LRU Cache 的基礎上，增加了對不同頻率的維護
+也就是需要改成對每個頻率維護一組 Double Linked List
+"""
 # @lc code=start
 class Node:
     __slots__ = "prev", "next", "key", "value", "freq"
@@ -77,11 +81,11 @@ class LFUCache:
         x.prev.next = x.next
         x.next.prev = x.prev
 
-    def removeLast(self, dummy: Node) -> None:
+    def removeLast(self, dummy: Node) -> None:  # 刪除 list 的最後一個節點
         node = dummy.prev
+        self.remove(node)
         del self.cache[node.key]
         self.size -= 1
-        self.remove(node)
         if dummy.next == dummy:
             del self.freq_map[self.min_freq]
 # @lc code=end
