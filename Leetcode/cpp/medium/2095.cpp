@@ -20,6 +20,7 @@ struct ListNode {
 class Solution {
 public:
     ListNode* deleteMiddle(ListNode* head) {
+        if (!head || !head->next) return nullptr;
         ListNode dummy(0, head);
         ListNode *prev = &dummy, *slow = head, *fast = head;
         while (fast && fast->next) {
@@ -28,7 +29,9 @@ public:
             fast = fast->next->next;
         }
         prev->next = slow->next;
-        // delete slow;
+        // 只有單點時不能 delete slow，因為 slow 是 head，可能會被外部持有
+        // 對於這種情況可以直接 return nullptr
+        delete slow;  
         return dummy.next;
     }
 };
