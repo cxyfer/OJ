@@ -1,3 +1,8 @@
+"""
+P11228 [CSP-J 2024] 地图探险
+https://www.luogu.com.cn/problem/P11228
+"""
+
 DIRS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
 
