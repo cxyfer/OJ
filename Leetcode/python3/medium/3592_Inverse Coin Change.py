@@ -15,11 +15,11 @@ class Solution:
         ans = []
         f = [1] + [0] * n
         for i, w in enumerate(numWays, 1):
-            if w - f[i] == 1:
+            if w - f[i] == 1:  # 此時意味著存在面額為 i 的硬幣
                 ans.append(i)
                 for j in range(i, n + 1):
                     f[j] += f[j - i]
-            elif w - f[i] != 0:
+            elif w - f[i] != 0:  # 此時說明 numWays 中的值與 f[i] 不匹配
                 return []
         return ans
 # @lc code=end
