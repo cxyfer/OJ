@@ -16,7 +16,7 @@ from collections import deque
 因此所求的 vj 必定在下凸包上，且 vj 的投影長度會隨著 x 值的增加而先減後增。
 因此可以做對 vj 做二分來找出最小的 p·vj，即 852. Peak Index in a Mountain Array 中的找山峰問題。
 
-另外如果最佳點只會往右移動，可以使用單調隊列維護，見 ConvexHullMono 的 query()。
+另外如果最佳點只會往右移動，可以使用單調隊列維護，見 query_mono()。
 例如在 3826. Minimum Partition Score 中，查詢向量 p = (-2 * s, 1) 是只會往左旋轉的，因此最佳點只會往右移動，可以使用單調隊列維護。
 
 Problems:
