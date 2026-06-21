@@ -12,13 +12,13 @@ from preImport import *
 class Solution:
     def maxIceCream(self, costs: List[int], coins: int) -> int:
         # return bisect_right(list(accumulate(sorted(costs))), coins)
+        n = len(costs)
         costs.sort()
-        ans = s = 0
-        for i, c in enumerate(costs, start=1):
+        s = 0
+        for i, c in enumerate(costs):
             s += c
             if s > coins:
-                break
-            ans = i
-        return ans
+                return i
+        return n
 # @lc code=end
 
