@@ -52,74 +52,8 @@ class ConvexHull:
 
     注意：
     - add() 的點需要依 x 遞增加入。
-    - query() 不要求查詢向量單調，使用二分搜尋。
-    """
-
-    def __init__(self, mode: str = "min"):
-        assert mode in ("min", "max")
-        self.mode = mode
-        self.hull = []  # min 維護下凸包，max 維護上凸包
-
-    def _bad(self, a: Vec, b: Vec, c: Vec) -> bool:
-        cross = (b - a).det(c - b)
-
-        if self.mode == "min":
-            # 順時針方向或共線，此時 b 點不會是「下凸包」的一部分
-            return cross <= 0
-        else:
-            # 逆時針方向或共線，此時 b 點不會是「上凸包」的一部分
-            return cross >= 0
-
-    def add(self, v: Vec) -> None:
-        hull = self.hull
-
-        # 如果新點與最後一個點 x 相同，只保留對應 mode 下較優的 y
-        if hull and hull[-1].x == v.x:
-            if self.mode == "min":
-                if hull[-1].y <= v.y:
-                    return
-            else:
-                if hull[-1].y >= v.y:
-                    return
-            hull.pop()
-
-        # 維護凸包性質，移除不可能成為凸包的中間點
-        while len(hull) >= 2 and self._bad(hull[-2], hull[-1], v):
-            hull.pop()
-
-        hull.append(v)
-
-    def query(self, p: Vec) -> int:
-        hull = self.hull
-
-        # 使用二分搜尋找到最佳點
-        left, right = 0, len(hull) - 2
-        while left <= right:
-            mid = (left + right) // 2
-            curr = p.dot(hull[mid])
-            nxxt = p.dot(hull[mid + 1])
-            if self.mode == "min":
-                if curr >= nxxt:
-                    left = mid + 1
-                else:
-                    right = mid - 1
-            else:
-                if curr <= nxxt:
-                    left = mid + 1
-                else:
-                    right = mid - 1
-
-        return p.dot(hull[left])
-
-
-class ConvexHullMono:
-    """
-    mode='min'：維護下凸包，查詢 min p·v
-    mode='max'：維護上凸包，查詢 max p·v
-
-    注意：
-    - add() 的點需要依 x 遞增加入。
-    - query() 使用單調隊列優化，因此查詢向量 p 需要滿足最佳點索引單調往前移動。
+    - query_bisect() 不要求查詢向量單調，使用二分搜尋。
+    - query_mono() 使用單調隊列優化，因此查詢向量 p 需要滿足最佳點索引單調往前移動。
     - 若查詢不具單調性，請使用 ConvexHull 的二分 query()。
     """
 
@@ -171,7 +105,29 @@ class ConvexHullMono:
 
         hull.append(v)
 
-    def query(self, p: Vec) -> int:
+    def query_bisect(self, p: Vec) -> int:
+        hull = self.hull
+
+        # 使用二分搜尋找到最佳點
+        left, right = 0, len(hull) - 2
+        while left <= right:
+            mid = (left + right) // 2
+            curr = p.dot(hull[mid])
+            nxxt = p.dot(hull[mid + 1])
+            if self.mode == "min":
+                if curr >= nxxt:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+            else:
+                if curr <= nxxt:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+
+        return p.dot(hull[left])
+
+    def query_mono(self, p: Vec) -> int:
         hull = self.hull
 
         # 使用單調隊列維護
