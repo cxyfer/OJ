@@ -151,15 +151,12 @@ class Solution2:
                 # 因為查詢向量 (-2 * s, 1) 是只會往左旋轉的，因此最佳點只會往右移動，可以使用單調隊列維護
                 while len(q) > 1 and p.dot(q[0]) >= p.dot(q[1]):
                     q.popleft()
-
-                v = Vec(s, f[i] + s * s - s)
                 nf[i] = p.dot(q[0]) + s * s + s
 
+                v = Vec(s, f[i] + s * s - s)
                 while len(q) > 1 and (q[-1] - q[-2]).det(v - q[-1]) <= 0:
                     q.pop()
-
                 q.append(v)
-
             f = nf
 
         return f[n] // 2
