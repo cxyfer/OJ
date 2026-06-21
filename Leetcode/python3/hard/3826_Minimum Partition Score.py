@@ -9,6 +9,8 @@
 from re import S
 
 from preImport import *
+
+
 # @lcpr-template-end
 # @lc code=start
 class Vec:
@@ -118,40 +120,6 @@ class Solution1:
         return f[n] // 2
 
 
-class Solution2:
-    def minPartitionScore(self, nums: List[int], k: int) -> int:
-        n = len(nums)
-        pre = list(accumulate(nums, initial=0))
-
-        f = [inf] * (n + 1)
-        f[0] = 0
-
-        for K in range(1, k + 1):
-            nf = [inf] * (n + 1)
-            q = deque()
-
-            s = pre[K - 1]
-            q.append(Vec(s, f[K - 1] + s * s - s))
-
-            max_i = n - (k - K)
-            for i in range(K, max_i + 1):
-                s = pre[i]
-                p = Vec(-2 * s, 1)
-
-                # 因為查詢向量 (-2 * s, 1) 是只會往左旋轉的，因此最佳點只會往右移動，可以使用單調隊列維護
-                while len(q) > 1 and p.dot(q[0]) >= p.dot(q[1]):
-                    q.popleft()
-                nf[i] = p.dot(q[0]) + s * s + s
-
-                v = Vec(s, f[i] + s * s - s)
-                while len(q) > 1 and (q[-1] - q[-2]).det(v - q[-1]) <= 0:
-                    q.pop()
-                q.append(v)
-            f = nf
-
-        return f[n] // 2
-
-
 class Solution3:
     def minPartitionScore(self, nums: List[int], k: int) -> int:
         n = len(nums)
@@ -161,8 +129,8 @@ class Solution3:
             v = s[r] - s[l]
             return v * (v + 1) // 2
 
-        f = [float('inf')] * (n + 1)
-        nf = [float('inf')] * (n + 1)
+        f = [float("inf")] * (n + 1)
+        nf = [float("inf")] * (n + 1)
         f[0] = 0
 
         def solve(l: int, r: int, opt_l: int, opt_r: int):
@@ -189,12 +157,11 @@ class Solution3:
 
 
 Solution = Solution1
-# Solution = Solution2
 # Solution = Solution3
 # @lc code=end
 
 sol = Solution()
-print(sol.minPartitionScore([5,1,2,1], 2))  # 25
-print(sol.minPartitionScore([1,2,3,4], 1))  # 55
-print(sol.minPartitionScore([1,1,1], 3))  # 3
-print(sol.minPartitionScore([13,8,19], 2))  # 421
+print(sol.minPartitionScore([5, 1, 2, 1], 2))  # 25
+print(sol.minPartitionScore([1, 2, 3, 4], 1))  # 55
+print(sol.minPartitionScore([1, 1, 1], 3))  # 3
+print(sol.minPartitionScore([13, 8, 19], 2))  # 421
