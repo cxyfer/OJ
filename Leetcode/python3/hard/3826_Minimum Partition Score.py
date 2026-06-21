@@ -35,7 +35,9 @@ class ConvexHull:
     """
     注意：
     - add() 的點需要依 x 遞增加入。
-    - query() 不要求查詢向量單調，使用二分搜尋。
+    - query_bisect() 不要求查詢向量單調，使用二分搜尋。
+    - query_mono() 使用單調隊列優化，因此查詢向量 p 需要滿足最佳點索引單調往前移動。
+    - 若查詢不具單調性，請使用 ConvexHull 的二分 query()。
     """
 
     def __init__(self):
