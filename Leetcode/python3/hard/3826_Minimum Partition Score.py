@@ -161,6 +161,7 @@ class Solution2:
                 q.append(v)
 
             f = nf
+
         return f[n] // 2
 
 
