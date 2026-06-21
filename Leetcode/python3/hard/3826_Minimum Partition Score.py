@@ -174,8 +174,8 @@ class Solution3:
             v = s[r] - s[l]
             return v * (v + 1) // 2
 
-        f = [float("inf")] * (n + 1)
-        nf = [float("inf")] * (n + 1)
+        f = [float('inf')] * (n + 1)
+        nf = [float('inf')] * (n + 1)
         f[0] = 0
 
         def solve(l: int, r: int, opt_l: int, opt_r: int):
@@ -184,7 +184,7 @@ class Solution3:
             mid = (l + r) // 2
 
             best_val = float("inf")
-            opt = -1
+            opt = -1  # opt[mid]
             for p in range(opt_l, min(opt_r, mid - 1) + 1):
                 val = f[p] + cost(p, mid)
                 if val < best_val:
@@ -192,13 +192,12 @@ class Solution3:
                     opt = p
             nf[mid] = best_val
 
-            solve(l, mid - 1, opt_l, opt)
-            solve(mid + 1, r, opt, opt_r)
+            solve(l, mid - 1, opt_l, opt)  # 左側的決策點一定 <= opt[mid]
+            solve(mid + 1, r, opt, opt_r)  # 右側的決策點一定 >= opt[mid]
 
         for j in range(1, k + 1):
-            nf = f.copy()
-            solve(j, n, j - 1, n - 1)
-            f = nf
+            solve(j, n, j - 1, n - 1)  # 在 D&C 的過程中計算 nf
+            f = nf.copy()
         return f[n]
 
 
