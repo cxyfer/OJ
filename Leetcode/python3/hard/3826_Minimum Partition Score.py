@@ -190,8 +190,9 @@ class Solution3:
             solve(mid + 1, r, opt, opt_r)
 
         for j in range(1, k + 1):
+            nf = f.copy()
             solve(j, n, j - 1, n - 1)
-            f = nf[:]
+            f = nf
         return f[n]
 
 
