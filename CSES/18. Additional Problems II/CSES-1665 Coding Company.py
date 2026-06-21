@@ -16,7 +16,9 @@ https://codeforces.com/blog/entry/47764
 3. 加入現有組 (j -> j)：A[i] 既不是最小也不是最大，或者是單獨一組（開啟後立刻關閉），有 j + 1 種選擇。
 從 A[i] - A[i - 1] 的距離 d，這段距離會被當前開啟的 j 個組跨越，因此 tot 增加 j * d。
 """
+
 MOD = int(1e9 + 7)
+
 
 def solve():
     n, V = map(int, input().split())
@@ -35,15 +37,19 @@ def solve():
             cost = j * d
             for s in range(V - cost + 1):
                 v = f[j][s] % MOD
-                if not v: continue
+                if not v:
+                    continue
                 # 1. 開啟新組 (j -> j + 1)
-                if j + 1 <= m: nf[j + 1][s + cost] += v
+                if j + 1 <= m:
+                    nf[j + 1][s + cost] += v
                 # 2. 關閉舊組 (j -> j - 1)
-                if j > 0: nf[j - 1][s + cost] += v * j
+                if j > 0:
+                    nf[j - 1][s + cost] += v * j
                 # 3. 加入現有組或單獨一組 (j -> j)
                 nf[j][s + cost] += v * (j + 1)
         f = nf
     print(sum(f[0]) % MOD)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     solve()
