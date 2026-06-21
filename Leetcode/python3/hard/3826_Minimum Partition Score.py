@@ -37,7 +37,7 @@ class ConvexHull:
     mode='max'：維護上凸包，查詢 max p·v
 
     注意：
-    - add_point() 的點需要依 x 遞增加入。
+    - add() 的點需要依 x 遞增加入。
     - query() 不要求查詢向量單調，使用二分搜尋。
     """
 
@@ -54,7 +54,7 @@ class ConvexHull:
 
         return cross >= 0
 
-    def add_point(self, v: Vec) -> None:
+    def add(self, v: Vec) -> None:
         hull = self.hull
 
         if hull and hull[-1].x == v.x:
@@ -106,7 +106,7 @@ class Solution1:
             cht = ConvexHull(mode="min")
 
             s = pre[K - 1]
-            cht.add_point(Vec(s, f[K - 1] + s * s - s))
+            cht.add(Vec(s, f[K - 1] + s * s - s))
 
             max_i = n - (k - K)
             for i in range(K, max_i + 1):
@@ -116,7 +116,7 @@ class Solution1:
                 nf[i] = cht.query(p) + s * s + s
 
                 if f[i] < inf:
-                    cht.add_point(Vec(s, f[i] + s * s - s))
+                    cht.add(Vec(s, f[i] + s * s - s))
 
             f = nf
 
