@@ -1,6 +1,7 @@
 from typing import List
 from itertools import accumulate
 from math import inf
+from collections import deque
 
 """
 斜率優化DP (Convex Hull Trick, CHT)
@@ -13,7 +14,16 @@ from math import inf
 根據內積的幾何性質（||p|| * ||vj|| * cos(theta)，其中 theta 是 p 與 vj 的夾角），
 而 ||vj|| * cos(theta) 就是 vj 在 p 上的投影（即從原點到 vj 的向量在 p 方向上的投影），
 因此所求的 vj 必定在下凸包上，且 vj 的投影長度會隨著 x 值的增加而先減後增。
+因此可以做對 vj 做二分來找出最小的 p·vj，即 852. Peak Index in a Mountain Array 中的找山峰問題。
+
+另外如果最佳點只會往右移動，可以使用單調隊列維護，見 ConvexHullMono 的 query()。
+例如在 3826. Minimum Partition Score 中，查詢向量 p = (-2 * s, 1) 是只會往左旋轉的，因此最佳點只會往右移動，可以使用單調隊列維護。
+
+Problems:
+- 3500. Minimum Cost to Divide Array Into Subarrays
+- 3826. Minimum Partition Score
 """
+
 
 class Vec:
     __slots__ = "x", "y"
@@ -55,7 +65,7 @@ class ConvexHull:
 
         if self.mode == "min":
             # 順時針方向或共線，此時 b 點不會是「下凸包」的一部分
-            return cross <= 0 
+            return cross <= 0
         else:
             # 逆時針方向或共線，此時 b 點不會是「上凸包」的一部分
             return cross >= 0
@@ -63,7 +73,7 @@ class ConvexHull:
     def add(self, v: Vec) -> None:
         hull = self.hull
 
-        # 如果新點與最後一個點的 x 坐標相同，則保留 y 坐標更小（min）或更大（max）的點
+        # 如果新點與最後一個點 x 相同，只保留對應 mode 下較優的 y
         if hull and hull[-1].x == v.x:
             if self.mode == "min":
                 if hull[-1].y <= v.y:
@@ -73,7 +83,7 @@ class ConvexHull:
                     return
             hull.pop()
 
-        # 檢查最後兩個點與新點是否形成凸包，如果不是凸包，則移除最後一個點
+        # 維護凸包性質，移除不可能成為凸包的中間點
         while len(hull) >= 2 and self._bad(hull[-2], hull[-1], v):
             hull.pop()
 
@@ -102,6 +112,74 @@ class ConvexHull:
         return p.dot(hull[left])
 
 
+class ConvexHullMono:
+    """
+    mode='min'：維護下凸包，查詢 min p·v
+    mode='max'：維護上凸包，查詢 max p·v
+
+    注意：
+    - add() 的點需要依 x 遞增加入。
+    - query() 使用單調隊列優化，因此查詢向量 p 需要滿足最佳點索引單調往前移動。
+    - 若查詢不具單調性，請使用 ConvexHull 的二分 query()。
+    """
+
+    def __init__(self, mode: str = "min"):
+        assert mode in ("min", "max")
+        self.mode = mode
+        self.hull = deque()
+
+    def empty(self) -> bool:
+        return not self.hull
+
+    def _bad(self, a: Vec, b: Vec, c: Vec) -> bool:
+        cross = (b - a).det(c - b)
+
+        if self.mode == "min":
+            # 順時針方向或共線，此時 b 不會是下凸包的一部分
+            return cross <= 0
+        else:
+            # 逆時針方向或共線，此時 b 不會是上凸包的一部分
+            return cross >= 0
+
+    def _should_pop_front(self, p: Vec, a: Vec, b: Vec) -> bool:
+        va = p.dot(a)
+        vb = p.dot(b)
+
+        if self.mode == "min":
+            # 若下一個點 b 更好或一樣好，移除目前的 a
+            return va >= vb
+        else:
+            # 若下一個點 b 更好或一樣好，移除目前的 a
+            return va <= vb
+
+    def add(self, v: Vec) -> None:
+        hull = self.hull
+
+        # 如果新點與最後一個點 x 相同，只保留對應 mode 下較優的 y
+        if hull and hull[-1].x == v.x:
+            if self.mode == "min":
+                if hull[-1].y <= v.y:
+                    return
+            else:
+                if hull[-1].y >= v.y:
+                    return
+            hull.pop()
+
+        # 維護凸包性質，移除不可能成為凸包的中間點
+        while len(hull) >= 2 and self._bad(hull[-2], hull[-1], v):
+            hull.pop()
+
+        hull.append(v)
+
+    def query(self, p: Vec) -> int:
+        hull = self.hull
+
+        # 使用單調隊列維護
+        while len(hull) >= 2 and self._should_pop_front(p, hull[0], hull[1]):
+            hull.popleft()
+        return p.dot(hull[0])
+
+
 class Solution3826:
     def minPartitionScore(self, nums: List[int], k: int) -> int:
         n = len(nums)
@@ -122,12 +200,10 @@ class Solution3826:
                 s = pre[i]
                 p = Vec(-2 * s, 1)
 
-                best = cht.query(p)
-                nf[i] = best + s * s + s
+                nf[i] = cht.query(p) + s * s + s
 
                 if f[i] < inf:
                     cht.add(Vec(s, f[i] + s * s - s))
-
             f = nf
 
         return f[n] // 2
