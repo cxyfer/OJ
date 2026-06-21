@@ -27,18 +27,20 @@ class Solution:
             if i == n:
                 return 1
 
-            lo = low[i] if limit_low else 0
+            st = lo = low[i] if limit_low else 0
             hi = high[i] if limit_high else 9
 
             res = 0
             if i < diff and limit_low:
                 res += dfs(i + 1, -1, True, False)
-            for d in range(1 if i < diff and limit_low else lo, hi + 1):
-                if pre == -1 or abs(pre - d) <= k:
+                st = 1
+            is_first_digit = i <= diff and limit_low
+            for d in range(st, hi + 1):
+                if is_first_digit or abs(pre - d) <= k:
                     res += dfs(i + 1, d, limit_low and d == lo, limit_high and d == hi)
             return res
 
-        ans = dfs(0, -1, True, True)
+        ans = dfs(0, 0, True, True)
         dfs.cache_clear()
         return ans
 # @lc code=end
