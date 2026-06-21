@@ -177,10 +177,8 @@ public:
         i64 ans = INF;
         for (int K = 1; K <= n; K++) {
             fill(nf.begin(), nf.end(), INF);
-            // ConvexHull<i64> cht(ConvexHull<i64>::Mode::Min);  // O(log n)
-            // query
-            ConvexHullMono<i64> cht(
-                ConvexHullMono<i64>::Mode::Min);  // O(1) query
+            // ConvexHull<i64> cht(ConvexHull<i64>::Mode::Min);
+            ConvexHullMono<i64> cht(ConvexHullMono<i64>::Mode::Min);
             if (f[K - 1] < INF) {
                 cht.add(Vec<i64>(sumCost[K - 1], f[K - 1]));
             }
