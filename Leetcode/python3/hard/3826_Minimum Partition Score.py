@@ -122,7 +122,6 @@ class Solution1:
 
                 if f[i] < inf:
                     cht.add(Vec(s, f[i] + s * s - s))
-
             f = nf
 
         return f[n] // 2
