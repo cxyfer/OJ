@@ -48,7 +48,7 @@ class ConvexHull:
     def __init__(self, mode: str = "min"):
         assert mode in ("min", "max")
         self.mode = mode
-        self.hull = []
+        self.hull = []  # min 維護下凸包，max 維護上凸包
 
     def _bad(self, a: Vec, b: Vec, c: Vec) -> bool:
         cross = (b - a).det(c - b)
@@ -63,6 +63,7 @@ class ConvexHull:
     def add(self, v: Vec) -> None:
         hull = self.hull
 
+        # 如果新點與最後一個點的 x 坐標相同，則保留 y 坐標更小（min）或更大（max）的點
         if hull and hull[-1].x == v.x:
             if self.mode == "min":
                 if hull[-1].y <= v.y:
@@ -72,6 +73,7 @@ class ConvexHull:
                     return
             hull.pop()
 
+        # 檢查最後兩個點與新點是否形成凸包，如果不是凸包，則移除最後一個點
         while len(hull) >= 2 and self._bad(hull[-2], hull[-1], v):
             hull.pop()
 
@@ -80,6 +82,7 @@ class ConvexHull:
     def query(self, p: Vec) -> int:
         hull = self.hull
 
+        # 使用二分搜尋找到最佳點
         left, right = 0, len(hull) - 2
         while left <= right:
             mid = (left + right) // 2
