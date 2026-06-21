@@ -7,6 +7,7 @@ from typing import *
 Problems:
 - 3826. Minimum Partition Score
 - 3500. Minimum Cost to Divide Array Into Subarrays (Python TLE, C++ AC)
+- 1478. Allocate Mailboxes
 """
 
 class Solution:
@@ -40,8 +41,8 @@ class Solution:
             solve(mid + 1, r, opt, opt_r)  # 右側的決策點一定 >= opt[mid]
         
         for j in range(1, k + 1):
-            solve(j, n, j - 1, n - 1)
-            f = nf[:]
+            solve(j, n, j - 1, n - 1)  # 在 D&C 的過程中計算 nf
+            f = nf.copy()
         return f[n]
 
 
