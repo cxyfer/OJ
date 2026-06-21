@@ -28,7 +28,7 @@ class Solution:
             mid = (l + r) // 2
 
             best_val = float('inf')
-            opt = -1
+            opt = -1  # opt[mid]
             for p in range(opt_l, min(opt_r, mid - 1) + 1):
                 val = f[p] + cost(p, mid)
                 if val < best_val:
@@ -36,8 +36,8 @@ class Solution:
                     opt = p
             nf[mid] = best_val
 
-            solve(l, mid - 1, opt_l, opt)
-            solve(mid + 1, r, opt, opt_r)
+            solve(l, mid - 1, opt_l, opt)  # 左側的決策點一定 <= opt[mid]
+            solve(mid + 1, r, opt, opt_r)  # 右側的決策點一定 >= opt[mid]
         
         for j in range(1, k + 1):
             solve(j, n, j - 1, n - 1)
