@@ -23,6 +23,9 @@
 令 p = (D[v_i], 1), vj = (C[u_j], f[j])，查詢 min(p·vj)。
 
 但有個問題是 C[u_j] 是遞減的，為了能夠使用 Andrew 求下凸包，可以對 x 取負，令 p = (-D[v_i], 1)，vj = (-C[u_j], f[j])
+自此可以用對下凸包二分的方式來查詢 min(p·vj)，見 query_bisect()。
+
+但由於 p 的 x 值也是遞減的，因此最佳點索引會單調往前移動，因此也可以使用單調隊列來維護最佳點索引的單調性，見 query_mono()。
 """
 
 from itertools import accumulate
