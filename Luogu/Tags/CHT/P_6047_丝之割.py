@@ -1,31 +1,33 @@
 """
-題意說了，當選擇切 (i, j) 時，所有 u > i, v < j 的弦 (u, v) 都會被消除，
-反過來說就是想要消除弦 (u, v) 時，需要選擇 i < u, j > v。
+若選擇切割點 (i, j)，所有滿足 u > i 且 v < j 的弦 (u, v) 都會被消除。
+反過來看，若要消除弦 (u, v)，切割點必須滿足 i < u 且 j > v。
 
-當消除弦 (u, v) 時，只要其他弦 (u', v') 滿足 u' >= u, v' <= v 就會被同時消除，
-為方便說明，以下稱能在消除其他弦時被順帶消除的弦是「被支配」的。
-用圖形來理解就是交叉的兩條線，其中右上左下的這條會被另外一條支配。
+因此，消除弦 (u, v) 時，所有滿足 u' >= u 且 v' <= v 的弦 (u', v') 也會被同時消除。
+稱這些能被其他弦順帶消除的弦為「被支配」的弦。
 
-注意到對於 u 相同的若干組弦，消除最大的 (u, max_v[u]) 就會同時消除其他 (u, v) (v < max_v[u])，
-且僅考慮相同 u 時，最大的 v 也是無法被支配的，因此我們只需要保留每個 u 對應的最大 v 即可。
+對於相同上方端點 u 的所有弦，只需要保留最大的 max_v[u]。
+接著按 u 遞增掃描，只保留下方端點能刷新前綴最大值的弦。
+最後得到一組保留弦 (u_1, v_1), (u_2, v_2), ..., (u_k, v_k)，滿足
+u_1 < u_2 < ... < u_k 且 v_1 < v_2 < ... < v_k。
 
-這樣對 u 排序後可以自然得到 u1 < u2，此時若發現 v2 <= v1，則 (u2, v2) 就會被 (u1, v1) 支配，因此也可以刪除 (u2, v2)。
-最後會得到一組沒有交叉的弦 (u1, v1), (u2, v2), ..., (uk, vk)，其中 u1 < u2 < ... < uk 且 v1 < v2 < ... < vk。
+刪除第 l 到第 r 條保留弦時，需要選擇 i < u_l 且 j > v_r，
+所以 cost(l, r) = min_{i < u_l, j > v_r} A[i] * B[j]。
+預處理 C[l] = min_{1 <= x < u_l} A[x]，D[r] = min_{v_r < x <= n} B[x]，
+則 cost(l, r) = C[l] * D[r]。
 
-那麼如果要刪除 [l, r] 的弦，則需要選擇 i < ul, j > vr，此時 cost(l, r) = min_{i < ul, j > vr} A[i] * B[j]。
-這裡可以分別用前綴和後綴最小值來遇處理，定義 C[i] = min_{1 <= x < i} A[x]，D[i] = min_{i < x <= n} B[x]，
-則 cost(l, r) = C[ul] * D[vr]。
+令 f[i] 表示刪掉前 i 條保留弦的最小成本，則
+f[i] = min_{0 <= j < i} f[j] + cost(j + 1, i)
+    = min_{0 <= j < i} f[j] + C[j + 1] * D[i]
 
-令 f[i] 是消除前 i 條弦的最小成本，
-則轉移式為 f[i] = min_{j < i} f[j] + cost(j + 1, i)
-               = min_{j < i} f[j] + C[u_j] * D[v_i]
-這種兩項相乘的 DP 就可以使用 CHT 來優化，
-令 p = (D[v_i], 1), vj = (C[u_j], f[j])，查詢 min(p·vj)。
+把每個決策 j 看成候選點 v_j = (C[j + 1], f[j])，目前右端點 i 看成查詢向量 p_i = (D[i], 1)，
+則要查詢 min(p_i · v_j)。
 
-但有個問題是 C[u_j] 是遞減的，為了能夠使用 Andrew 求下凸包，可以對 x 取負，令 p = (-D[v_i], 1)，vj = (-C[u_j], f[j])
-自此可以用對下凸包二分的方式來查詢 min(p·vj)，見 query_bisect()。
+由於 C[j + 1] 單調不增，為了用 Andrew 式維護下凸包，對第一維同時取反：
+v_j = (-C[j + 1], f[j])，p_i = (-D[i], 1)。
+內積不變，仍是 C[j + 1] * D[i] + f[j]。
 
-但由於 p 的 x 值也是遞減的，因此最佳點索引會單調往前移動，因此也可以使用單調隊列來維護最佳點索引的單調性，見 query_mono()。
+可以用 query_bisect() 在下凸包上二分查詢；又因為 p_i 的 x 值單調不增，
+最佳點索引單調往前移動，也可以用 query_mono() 做單調隊列查詢。
 """
 
 from itertools import accumulate
@@ -110,27 +112,27 @@ def solve() -> None:
     B = list(map(int, input().split()))
 
     # 排序去重： O(m log m)
-    chords = [tuple(map(int, input().split())) for _ in range(m)]
-    chords.sort(key=lambda x: (x[0], -x[1]))
-    records = []
-    curr_v = 0
-    for u, v in chords:
-        if v > curr_v:
-            curr_v = v
-            records.append((u, curr_v))
-
-    # 基於值域的去重： O(n + m)
-    # max_v = [0] * (n + 1)
-    # for _ in range(m):
-    #     u, v = map(int, input().split())
-    #     max_v[u] = max(max_v[u], v)
-
+    # chords = [tuple(map(int, input().split())) for _ in range(m)]
+    # chords.sort(key=lambda x: (x[0], -x[1]))
     # records = []
     # curr_v = 0
-    # for u in range(1, n + 1):
-    #     if max_v[u] > curr_v:
-    #         curr_v = max_v[u]
+    # for u, v in chords:
+    #     if v > curr_v:
+    #         curr_v = v
     #         records.append((u, curr_v))
+
+    # 基於值域的去重： O(n + m)
+    max_v = [0] * (n + 1)
+    for _ in range(m):
+        u, v = map(int, input().split())
+        max_v[u] = max(max_v[u], v)
+
+    records = []
+    curr_v = 0
+    for u in range(1, n + 1):
+        if max_v[u] > curr_v:
+            curr_v = max_v[u]
+            records.append((u, curr_v))
 
     k = len(records)
 
@@ -145,13 +147,14 @@ def solve() -> None:
 
     f = [0] * (k + 1)
     cht = ConvexHull()
-    for r in range(1, k + 1):
-        v = Vec(-C[r], f[r - 1])  # 取反確保 v_i.x 遞增
-        cht.add(v)
+    for i in range(1, k + 1):
+        j = i - 1
+        vj = Vec(-C[j + 1], f[j])  # 取反確保候選點 x 遞增
+        cht.add(vj)
 
-        p = Vec(-D[r], 1)
-        # f[r] = cht.query_bisect(p)
-        f[r] = cht.query_mono(p)
+        p = Vec(-D[i], 1)
+        # f[i] = cht.query_bisect(p)
+        f[i] = cht.query_mono(p)
 
     print(f[k])
 
