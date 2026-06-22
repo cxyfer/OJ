@@ -107,27 +107,27 @@ def solve() -> None:
     B = list(map(int, input().split()))
 
     # 排序去重： O(m log m)
-    chords = [tuple(map(int, input().split())) for _ in range(m)]
-    chords.sort(key=lambda x: (x[0], -x[1]))
-    records = []
-    curr_v = 0
-    for u, v in chords:
-        if v > curr_v:
-            curr_v = v
-            records.append((u, curr_v))
-
-    # 基於值域的去重： O(n + m)
-    # max_v = [0] * (n + 1)
-    # for _ in range(m):
-    #     u, v = map(int, input().split())
-    #     max_v[u] = max(max_v[u], v)
-
+    # chords = [tuple(map(int, input().split())) for _ in range(m)]
+    # chords.sort(key=lambda x: (x[0], -x[1]))
     # records = []
     # curr_v = 0
-    # for u in range(1, n + 1):
-    #     if max_v[u] > curr_v:
-    #         curr_v = max_v[u]
+    # for u, v in chords:
+    #     if v > curr_v:
+    #         curr_v = v
     #         records.append((u, curr_v))
+
+    # 基於值域的去重： O(n + m)
+    max_v = [0] * (n + 1)
+    for _ in range(m):
+        u, v = map(int, input().split())
+        max_v[u] = max(max_v[u], v)
+
+    records = []
+    curr_v = 0
+    for u in range(1, n + 1):
+        if max_v[u] > curr_v:
+            curr_v = max_v[u]
+            records.append((u, curr_v))
 
     k = len(records)
 
