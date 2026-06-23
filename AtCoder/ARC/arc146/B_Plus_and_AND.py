@@ -12,9 +12,9 @@ def solve():
             if (x & tgt) == tgt:
                 return 0
             else:
-                msb = (tgt & ~x).bit_length() - 1
-                y = ((x >> msb) + 1) << msb
-                y |= tgt & ((1 << msb) - 1)
+                msb = (tgt & ~x).bit_length() - 1  # 找出最高缺失位
+                y = ((x >> msb) + 1) << msb  # 把最高缺失位變成 1
+                y |= tgt & ((1 << msb) - 1)  # 把低位整理成目標值要求的形狀
                 return y - x
 
         if sum(sorted(cost(x) for x in A)[:k]) <= m:
