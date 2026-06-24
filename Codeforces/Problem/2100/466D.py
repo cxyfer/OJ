@@ -19,7 +19,7 @@ https://codeforces.com/contest/466/problem/D
 - d = 1: 需要增加一個覆蓋數 -> 必須開啟一個新區間，有 1 種選法，即上述的 3.
 - d = -1: 需要減少一個覆蓋數 -> 必須關閉一個舊區間，有 x 種選法，即上述的 2.
 - d = 0: 覆蓋數不變，可以什麼都不做，也可以關閉一個舊的，開啟一個新的，有 x + 1 種選法，即上述的 1. 或 4.
-- d > 1 或 d < -1: 因為每個位置最多只能開啟一個區間和關閉一個區間，因此無解，直接輸出 
+- d > 1 或 d < -1: 因為每個位置最多只能開啟一個區間和關閉一個區間，因此無解，直接輸出
 
 # 方法二：動態規劃
 
@@ -44,15 +44,19 @@ https://codeforces.com/blog/entry/47764
   - 開啟區間數: j -> j (不變)
   - 覆蓋數: j + 1，因此須滿足 A[i] + j + 1 == h
   - 轉移方程: f[i][j] <- f[i-1][j]
-5. [x] (關閉一個舊區間，開啟一個新區間，注意這裡的]是和先前的[配對，而[是等待和後面的]配對) 
+5. [x] (關閉一個舊區間，開啟一個新區間，注意這裡的]是和先前的[配對，而[是等待和後面的]配對)
   - 開啟區間數: j -> j (不變)
   - 覆蓋數: j + 1，因此須滿足 A[i] + j + 1 == h
   - 轉移方程: f[i][j] <- f[i-1][j] * j  (從 j 個區間中選任意一個關閉)
+
+# 方法三：改成刷表法（筆記使用）
 """
+
 from itertools import pairwise
 from collections import defaultdict
 
 MOD = int(1e9 + 7)
+
 
 def solve1():
     n, h = map(int, input().split())
@@ -63,13 +67,13 @@ def solve1():
     if any(x < 0 for x in B):
         print(0)
         return
-    
+
     ans = 1
     for x, y in pairwise(B):
         diff = y - x
         if diff == 1:
             # 需要增加一個覆蓋數 -> 必須開啟一個新區間，有 1 種選法
-            ans = (ans * 1)
+            ans = ans * 1
         elif diff == -1:
             # 需要減少一個覆蓋數 -> 必須關閉一個舊區間
             # 有 x 個正在進行的區間，可以選任意一個關閉
@@ -83,6 +87,7 @@ def solve1():
             print(0)
             return
     print(ans)
+
 
 def solve2():
     n, h = map(int, input().split())
@@ -104,18 +109,65 @@ def solve2():
         # 2. 開啟一個新區間: f[i][j] <- f[i-1][j-1]
         j = h - x
         nf[j] = (f[j] + f[j - 1]) % MOD
-        
+
         # A[i] + j + 1 == h 的三種情況：
         # 3. 關閉一個舊區間: f[i][j] <- f[i-1][j+1] * (j + 1)
         # 4. 在該位置放置一個長度為 1 的區間: f[i][j] <- f[i-1][j]
         # 5. 關閉一個舊區間，開啟一個新區間: f[i][j] <- f[i-1][j] * j
         j = h - x - 1
         nf[j] = (f[j + 1] * (j + 1) + f[j] + f[j] * j) % MOD
-        
+
         f = nf
 
     print(f[0])
 
+
+def solve3():
+    n, h = map(int, input().split())
+    A = list(map(int, input().split()))
+    assert len(A) == n
+
+    if any(x > h for x in A):
+        print(0)
+        return
+
+    # f[i][j] 表示考慮前 i 個數字後，還有 j 個區間處於「開啟」狀態的方案數。
+    f = defaultdict(int)
+    f[0] = 1
+    for x in A:
+        nf = defaultdict(int)
+        need = h - x
+
+        for j, ways in f.items():
+            if ways == 0:
+                continue
+
+            # 1. 不操作：j 個區間通過目前位置。
+            if j == need:
+                nf[j] = (nf[j] + ways) % MOD
+
+            # 2. 開啟一個新區間：覆蓋數變成 j + 1。
+            if j + 1 == need:
+                nf[j + 1] = (nf[j + 1] + ways) % MOD
+
+            # 3. 關閉一個舊區間：j 個舊區間覆蓋目前位置，選一個結束。
+            if j == need and j > 0:
+                nf[j - 1] = (nf[j - 1] + ways * j) % MOD
+
+            # 4. 開啟並立即關閉：多一個長度為 1 的區間覆蓋目前位置。
+            if j + 1 == need:
+                nf[j] = (nf[j] + ways) % MOD
+
+            # 5. 關閉一個舊區間，同時開啟一個新區間。
+            if j + 1 == need and j > 0:
+                nf[j] = (nf[j] + ways * j) % MOD
+
+        f = nf
+
+    print(f[0])
+
+
 if __name__ == "__main__":
     # solve1()
-    solve2()
+    # solve2()
+    solve3()
