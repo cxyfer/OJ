@@ -8,6 +8,15 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
+"""
+子陣列 [l, r] 滿足條件，等同於 cnt_target - cnt_other > 0，
+這個值可以透過前綴和來維護，當 s[r] - s[l - 1] > 0 時，子陣列 [l, r] 滿足題意。
+O(n^2) 的解法是枚舉所有子陣列，可以通過 I 。
+
+進一步優化，我們能不能在枚舉右端點 r，維護有多少個滿足 l < r 且 s[l - 1] < s[r] 的左端點？
+自此可以轉換成二維偏序問題，類似求逆序對，可以使用 BIT 來維護。
+注意上述前綴和的值域是 [-n, n]，需要將其做偏移，映射到 [1, 2n + 1]。
+"""
 # @lc code=start
 class BIT:  # PURQ, 1-based
     __slots__ = ["tree"]
