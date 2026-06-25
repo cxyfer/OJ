@@ -46,7 +46,7 @@ class BIT:  # PURQ, 1-based
         return self.preSum(r) - self.preSum(l - 1)
 
 
-class Solution:
+class Solution1:
     def countMajoritySubarrays(self, nums: List[int], target: int) -> int:
         n = len(nums)
 
@@ -59,5 +59,26 @@ class Solution:
             ans += bit.query(1, s + offset - 1)
             bit.add(s + offset, 1)
         return ans
+
+
+class Solution2:
+    def countMajoritySubarrays(self, nums: List[int], target: int) -> int:
+        cnt = defaultdict(int)
+        cnt[0] = 1
+        ans = s = pre = 0
+        for x in nums:
+            if x == target:
+                pre += cnt[s]
+                s += 1
+            else:
+                pre -= cnt[s - 1]
+                s -= 1
+            ans += pre
+            cnt[s] += 1
+        return ans
+
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 
