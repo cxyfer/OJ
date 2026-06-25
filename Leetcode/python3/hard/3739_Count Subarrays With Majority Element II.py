@@ -65,15 +65,17 @@ class Solution2:
     def countMajoritySubarrays(self, nums: List[int], target: int) -> int:
         cnt = defaultdict(int)
         cnt[0] = 1
-        ans = s = pre = 0
+        # s = cnt_target - cnt_other
+        # lt = 有多少個 l 滿足 l < r 且 s[l - 1] < s[r]
+        ans = s = lt = 0
         for x in nums:
             if x == target:
-                pre += cnt[s]
+                lt += cnt[s]
                 s += 1
             else:
-                pre -= cnt[s - 1]
+                lt -= cnt[s - 1]
                 s -= 1
-            ans += pre
+            ans += lt
             cnt[s] += 1
         return ans
 
