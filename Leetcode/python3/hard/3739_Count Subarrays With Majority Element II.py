@@ -7,6 +7,7 @@
 
 # @lcpr-template-start
 from preImport import *
+
 # @lcpr-template-end
 """
 子陣列 [l, r] 滿足條件，等同於 cnt_target - cnt_other > 0，
@@ -21,6 +22,8 @@ Hint1: ||子陣列 [l, r] 滿足條件，等同於 cnt_target - cnt_other > 0，
 Hint2: ||寫成前綴和後，對於右端點 r，我們能不能維護有多少個滿足 l < r 且 s[l - 1] < s[r] 的左端點？||
 Hint3: ||這個問題是二維偏序問題，此類問題的經典是求逆序對，可以使用 BIT 來維護、或是在 Merge Sort 的過程中維護||
 """
+
+
 # @lc code=start
 class BIT:  # PURQ, 1-based
     __slots__ = ["tree"]
@@ -50,24 +53,39 @@ class Solution1:
     def countMajoritySubarrays(self, nums: List[int], target: int) -> int:
         n = len(nums)
 
+        ans = 0
+        s = n + 1  # offset 為 n + 1，起始為 0 + offset = n + 1
         bit = BIT(2 * n + 1)  # [-n, n] -> [1, 2n + 1]
-        offset = n + 1
-        bit.add(offset, 1)
-        ans = s = 0
+        bit.add(s, 1)
         for x in nums:
             s += 1 if x == target else -1
-            ans += bit.query(1, s + offset - 1)
-            bit.add(s + offset, 1)
+            ans += bit.query(1, s - 1)
+            bit.add(s, 1)
         return ans
 
 
 class Solution2:
     def countMajoritySubarrays(self, nums: List[int], target: int) -> int:
-        cnt = defaultdict(int)
-        cnt[0] = 1
+        ans = s = 0
+        sl = SortedList()
+        sl.add(0)
+        for x in nums:
+            s += 1 if x == target else -1
+            ans += sl.bisect_left(s)
+            sl.add(s)
+        return ans
+
+
+class Solution3:
+    def countMajoritySubarrays(self, nums: List[int], target: int) -> int:
+        n = len(nums)
+        cnt = [0] * (2 * n + 1)  # [-n, n] => [0, 2n]
+
         # s = cnt_target - cnt_other
+        s = n  # offset 為 n，起始為 0 + offset = n
+        cnt[s] = 1
         # lt = 有多少個 l 滿足 l < r 且 s[l - 1] < s[r]
-        ans = s = lt = 0
+        ans = lt = 0
         for x in nums:
             if x == target:
                 lt += cnt[s]
@@ -81,6 +99,10 @@ class Solution2:
 
 
 # Solution = Solution1
-Solution = Solution2
+# Solution = Solution2
+Solution = Solution3
 # @lc code=end
-
+sol = Solution()
+print(sol.countMajoritySubarrays([1,2,2,3], 2))  # 5
+print(sol.countMajoritySubarrays([1,1,1,1], 1))  # 10
+print(sol.countMajoritySubarrays([1,2,3], 4))  # 0
