@@ -62,7 +62,7 @@ class Solution2:
             cdq(left, mid)
             cdq(mid + 1, right)
 
-            # 如果左右兩側已經有序，則不需要合，且不會產生逆序對
+            # 如果左右兩側已經有序，則不需要合併，且不會產生逆序對
             if nums[idxs[mid]] <= nums[idxs[mid + 1]]:
                 return
 
