@@ -111,6 +111,8 @@ class Solution4:
                 return 0
             mid = (left + right) // 2
             res = cdq(left, mid) + cdq(mid + 1, right)
+            
+            # 使用 Merge Sort 將左右兩側合併（從大到小排列），並計算逆序對數量
             i, j = left, mid + 1
             tmp = []
             while i <= mid and j <= right:
@@ -120,6 +122,7 @@ class Solution4:
                 else:
                     tmp.append(A[j])
                     j += 1
+                    # 逆序對數量，即滿足原始陣列中 i < j 且 A[i] < A[j] 的數量（本題為由大到小）
                     res += mid - i + 1
             while i <= mid:
                 tmp.append(A[i])
