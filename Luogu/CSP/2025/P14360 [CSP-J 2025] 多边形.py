@@ -14,7 +14,9 @@ https://www.luogu.com.cn/problem/P14360
 正難則反，改成計算所有方案減去不合法的情況即可，
 在前 i - 1 個數中選若干的數的方案數為 2 ^ (i - 1)，不合法的方案數出現在 j <= x 的情況。
 """
+
 MOD = 998244353
+
 
 def solve():
     n = int(input())
@@ -22,20 +24,21 @@ def solve():
     A.sort()
     assert len(A) == n
 
-    mx = A[-1]
-    f = [1] + [0] * mx
+    mx = A[-1]  # 最大值，決定 DP 陣列大小
+    f = [1] + [0] * mx  # f[j] = 和恰好為 j 的子集數
     ans = 0
     for i, x in enumerate(A, start=1):
-        if i >= 3:
-            ans += (1 << (i - 1))
+        if i >= 3:  # 至少需要 3 根木棍
+            ans += 1 << (i - 1)  # 前 i-1 根的所有子集
             ans %= MOD
-            for j in range(x + 1):
+            for j in range(x + 1):  # 減去其餘和 ≤ x 的不合法方案
                 ans -= f[j]
                 ans %= MOD
-        for j in range(mx, x - 1, -1):
+        for j in range(mx, x - 1, -1):  # 0/1 背包，倒序更新
             f[j] += f[j - x]
             f[j] %= MOD
     print(ans)
+
 
 if __name__ == "__main__":
     solve()
