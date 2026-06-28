@@ -1,7 +1,7 @@
 def solve():
     n = int(input())
-    D = [0] + list(map(int, input().split()))
-    assert len(D) == n + 1
+    D = list(map(int, input().split()))
+    assert len(D) == n
 
     h0 = h1 = 0
     for d in D:

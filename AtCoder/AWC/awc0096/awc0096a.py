@@ -1,9 +1,9 @@
 def solve():
     n = int(input())
-    data = [map(int, input().split()) for _ in range(n)]
 
     ans = 0
-    for a, b in data:
+    for _ in range(n):
+        a, b = map(int, input().split())
         ans = max(ans, a) + b
     print(ans)
 
