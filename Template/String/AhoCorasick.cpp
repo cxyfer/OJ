@@ -1,13 +1,20 @@
+/*
+Aho-Corasick Automaton (AC 自動機)
+
+Problems:
+- https://www.luogu.com.cn/problem/P3808
+*/
+
 #include <bits/stdc++.h>
 using namespace std;
-const int ALPH = 26;
+constexpr int ALPH = 26;
 #define endl '\n'
 
 struct Node {
     array<Node*, ALPH> child;
-    Node *fail, *last;
-    int length;
-    Node() : fail(nullptr), last(nullptr), length(0) {
+    Node* fail;
+    int cnt;
+    Node() : fail(nullptr), cnt(0) {
         fill(child.begin(), child.end(), nullptr);
     }
 };
@@ -15,7 +22,6 @@ struct Node {
 class AhoCorasick {
 public:
     Node* root;
-    vector<Node*> pos;
 
     AhoCorasick() {
         root = new Node();
@@ -24,23 +30,24 @@ public:
     void insert(const string& word) {
         Node* node = root;
         for (char ch : word) {
-            int idx = ch - 'a';
-            if (node->child[idx] == nullptr) node->child[idx] = new Node();
-            node = node->child[idx];
+            int c = ch - 'a';
+            if (node->child[c] == nullptr) {
+                node->child[c] = new Node();
+            }
+            node = node->child[c];
         }
-        pos.push_back(node);
-        node->length = word.length();
+        node->cnt += 1;  // 累加，防止有相同的模式串
     }
 
     void build() {
-        root->fail = root->last = root;
+        root->fail = root;
         // BFS
         queue<Node*> q;
         for (int i = 0; i < ALPH; ++i) {
             if (root->child[i] == nullptr) {
                 root->child[i] = root;
             } else {
-                root->child[i]->fail = root->child[i]->last = root;
+                root->child[i]->fail = root;
                 q.push(root->child[i]);
             }
         }
@@ -53,35 +60,46 @@ public:
                 } else {
                     Node* v = u->child[i];
                     v->fail = u->fail->child[i];
-                    v->last = (v->fail->length > 0) ? v->fail : v->fail->last;
                     q.push(v);
                 }
             }
         }
     }
+};
 
-    void build2() {
-        root->fail = root->last = root;
-        // BFS
-        queue<Node*> q;
-        for (int i = 0; i < ALPH; ++i) {
-            if (root->child[i] != nullptr) {
-                root->child[i]->fail = root->child[i]->last = root;
-                q.push(root->child[i]);
-            }
-        }
-        while (!q.empty()) {
-            Node* u = q.front();
-            q.pop();
-            for (int i = 0; i < ALPH; ++i) {
-                Node* v = u->child[i];
-                if (v == nullptr) continue;
-                Node* fu = u->fail;
-                while (fu != root && fu->child[i] == nullptr) fu = fu->fail;
-                v->fail = (fu->child[i] != nullptr) ? fu->child[i] : root;
-                v->last = (v->fail->length > 0) ? v->fail : v->fail->last;
-                q.push(v);
-            }
+void solve() {
+    int n;
+    cin >> n;
+    vector<string> words(n);
+    for (int i = 0; i < n; ++i) cin >> words[i];
+    string t;
+    cin >> t;
+
+    AhoCorasick ac;
+    for (const auto& word : words) ac.insert(word);
+    ac.build();
+
+    int ans = 0;
+    Node* node = ac.root;
+    for (char ch : t) {
+        int idx = ch - 'a';
+        node = node->child[idx];  // 由於是 Trie 圖，直接轉移即可
+
+        // 沿著 fail 鏈向上搜集所有匹配的模式串
+        Node* temp = node;
+        while (temp != ac.root && temp->cnt != -1) {
+            ans += temp->cnt;
+            temp->cnt = -1;  // 標記為 -1，代表此節點已被統計過，避免重複計算
+            temp = temp->fail;
         }
     }
-};
+    cout << ans << endl;
+    return;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}
