@@ -67,13 +67,13 @@ public:
 void solve() {
     int n;
     cin >> n;
-    vector<string> words(n);
-    for (int i = 0; i < n; ++i) cin >> words[i];
+    vector<string> patterns(n);
+    for (auto& pattern : patterns) cin >> pattern;
     string t;
     cin >> t;
 
     AhoCorasick ac;
-    for (const auto& word : words) ac.insert(word);
+    for (const auto& pattern : patterns) ac.insert(pattern);
     ac.build();
 
     int ans = 0;

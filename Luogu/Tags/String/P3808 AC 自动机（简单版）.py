@@ -3,74 +3,87 @@ P3808 AC 自动机（简单版）
 https://www.luogu.com.cn/problem/P3808
 Python TLE, C++ AC
 """
-import sys
+
 from collections import deque
 
+# fmt: off
+import sys
 it = iter(sys.stdin.read().splitlines())
-input = lambda: next(it)
+def input():
+    return next(it)
+def print(*args, sep=' ', end='\n'):
+    sys.stdout.write(sep.join(map(str, args)) + end)
+# fmt: on
+
+ALPH = 26
+
 
 class Node:
     def __init__(self):
-        self.child = [None] * 26
-        self.fail = None  # fail pointer
+        self.child = [None] * ALPH
+        self.fail = None
         self.cnt = 0
+
 
 class AhoCorasick:
     def __init__(self):
         self.root = Node()
 
-    def insert(self, word: str):
+    def insert(self, word):
         node = self.root
-        for ch in word: 
-            idx = ord(ch) - ord('a')
-            if not node.child[idx]:
-                node.child[idx] = Node()
-            node = node.child[idx]
+        for ch in word:
+            c = ord(ch) - ord("a")
+            if node.child[c] is None:
+                node.child[c] = Node()
+            node = node.child[c]
         node.cnt += 1
 
     def build(self):
         self.root.fail = self.root
-        # BFS
+
         q = deque()
-        for v in self.root.child:
-            if v is None: continue
-            v.fail = self.root
-            q.append(v)
+        for i in range(ALPH):
+            if self.root.child[i] is None:
+                self.root.child[i] = self.root
+            else:
+                self.root.child[i].fail = self.root
+                q.append(self.root.child[i])
         while q:
             u = q.popleft()
-            for i, v in enumerate(u.child):
-                if v is None: continue
-                fu = u.fail
-                while fu != self.root and fu.child[i] is None:
-                    fu = fu.fail
-                if fu.child[i] is not None:
-                    v.fail = fu.child[i]
-                else: # 如果一路找到根節點都沒有，則 fail 指向根
-                    v.fail = self.root
-                q.append(v)
+            for i in range(ALPH):
+                if u.child[i] is None:
+                    u.child[i] = u.fail.child[i]
+                else:
+                    v = u.child[i]
+                    v.fail = u.fail.child[i]
+                    q.append(v)
+
 
 def solve():
-    n = int(input().strip())
-    words = [input().strip() for _ in range(n)]
-    t = input().strip()
+    n = int(input())
+    patterns = [input() for _ in range(n)]
+    word = input()
 
     ac = AhoCorasick()
-    for word in words:
-        ac.insert(word)
+    for pattern in patterns:
+        ac.insert(pattern)
     ac.build()
 
     ans = 0
     node = ac.root
-    for ch in t:
-        idx = ord(ch) - ord('a')
-        while node != ac.root and node.child[idx] is None:
-            node = node.fail
-        if node.child[idx] is not None:
-            node = node.child[idx]
-        if node.cnt > 0:
-            ans += node.cnt
-            node.cnt = 0
+    for ch in word:
+        # 由於是 Trie 圖，直接轉移即可
+        c = ord(ch) - ord("a")
+        node = node.child[c]
+
+        # 沿著 fail 鏈向上搜集所有匹配的模式串
+        temp = node
+        while temp is not ac.root and temp.cnt != -1:
+            ans += temp.cnt
+            temp.cnt = -1  # 標記為 -1，代表此節點已被統計過，避免重複計算
+            temp = temp.fail
     print(ans)
+
 
 if __name__ == "__main__":
     solve()
