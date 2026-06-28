@@ -69,8 +69,8 @@ void solve() {
     cin >> n;
     vector<string> patterns(n);
     for (auto& pattern : patterns) cin >> pattern;
-    string t;
-    cin >> t;
+    string word;
+    cin >> word;
 
     AhoCorasick ac;
     for (const auto& pattern : patterns) ac.insert(pattern);
@@ -78,15 +78,17 @@ void solve() {
 
     int ans = 0;
     Node* node = ac.root;
-    for (char ch : t) {
+    for (char ch : word) {
+        // 由於是 Trie 圖，直接轉移即可
         int idx = ch - 'a';
-        node = node->child[idx];  // 由於是 Trie 圖，直接轉移即可
+        node = node->child[idx];
 
         // 沿著 fail 鏈向上搜集所有匹配的模式串
         Node* temp = node;
         while (temp != ac.root && temp->cnt != -1) {
             ans += temp->cnt;
-            temp->cnt = -1;  // 標記為 -1，代表此節點已被統計過，避免重複計算
+            // 標記為 -1，代表此節點已被統計過，避免重複計算
+            temp->cnt = -1;
             temp = temp->fail;
         }
     }

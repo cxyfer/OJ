@@ -80,7 +80,8 @@ def solve():
         temp = node
         while temp is not ac.root and temp.cnt != -1:
             ans += temp.cnt
-            temp.cnt = -1  # 標記為 -1，代表此節點已被統計過，避免重複計算
+            # 標記為 -1，代表此節點已被統計過，避免重複計算
+            temp.cnt = -1
             temp = temp.fail
     print(ans)
 
