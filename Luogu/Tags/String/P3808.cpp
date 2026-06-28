@@ -27,11 +27,13 @@ public:
     void insert(const string& word) {
         Node* node = root;
         for (char ch : word) {
-            int idx = ch - 'a';
-            if (node->child[idx] == nullptr) node->child[idx] = new Node();
-            node = node->child[idx];
+            int c = ch - 'a';
+            if (node->child[c] == nullptr) {
+                node->child[c] = new Node();
+            }
+            node = node->child[c];
         }
-        node->cnt += 1;
+        node->cnt += 1;  // 累加，防止有相同的模式串
     }
 
     void build() {
@@ -78,12 +80,14 @@ void solve() {
     Node* node = ac.root;
     for (char ch : t) {
         int idx = ch - 'a';
-        while (node != ac.root && node->child[idx] == nullptr)
-            node = node->fail;
-        if (node->child[idx] != nullptr) node = node->child[idx];
-        if (node->cnt > 0) {
-            ans += node->cnt;
-            node->cnt = 0;
+        node = node->child[idx];  // 由於是 Trie 圖，直接轉移即可
+
+        // 沿著 fail 鏈向上搜集所有匹配的模式串
+        Node* temp = node;
+        while (temp != ac.root && temp->cnt != -1) {
+            ans += temp->cnt;
+            temp->cnt = -1;  // 標記為 -1，代表此節點已被統計過，避免重複計算
+            temp = temp->fail;
         }
     }
     cout << ans << endl;
@@ -94,4 +98,5 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
     solve();
+    return 0;
 }
