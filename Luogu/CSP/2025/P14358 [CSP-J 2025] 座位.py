@@ -5,7 +5,7 @@ https://www.luogu.com.cn/problem/P14358
 def solve():
     n, m = map(int, input().split())
     A = list(map(int, input().split()))
-    
+
     x = A[0]
     A.sort(reverse=True)
     i = A.index(x)
@@ -13,6 +13,7 @@ def solve():
     if c & 1:
         r = n - 1 - r
     print(c + 1, r + 1)
+
 
 if __name__ == "__main__":
     solve()
