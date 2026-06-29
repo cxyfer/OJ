@@ -1,4 +1,7 @@
 #include <bits/stdc++.h>
+
+#include <ranges>
+
 using namespace std;
 const int ALPH = 26;
 #define endl '\n'
@@ -15,21 +18,20 @@ struct Node {
 class AhoCorasick {
 public:
     Node* root;
-    vector<Node*> pos;
 
     AhoCorasick() {
         root = new Node();
     }
 
-    void insert(const string& word) {
+    Node* insert(const string& word) {
         Node* node = root;
         for (char ch : word) {
             int idx = ch - 'a';
             if (node->child[idx] == nullptr) node->child[idx] = new Node();
             node = node->child[idx];
         }
-        pos.push_back(node);
         node->length = word.length();
+        return node;
     }
 
     void build() {
@@ -38,6 +40,7 @@ public:
         queue<Node*> q;
         for (int i = 0; i < ALPH; ++i) {
             if (root->child[i] == nullptr) {
+                // 添加虛擬子節點
                 root->child[i] = root;
             } else {
                 root->child[i]->fail = root->child[i]->last = root;
@@ -48,11 +51,14 @@ public:
             Node* u = q.front();
             q.pop();
             for (int i = 0; i < ALPH; ++i) {
-                if (u->child[i] == nullptr) {
+                Node* v = u->child[i];
+                if (v == nullptr) {
+                    // 添加虛擬子節點
                     u->child[i] = u->fail->child[i];
                 } else {
-                    Node* v = u->child[i];
+                    // 失配位置
                     v->fail = u->fail->child[i];
+                    // 上一個一定是某個 word 結尾的節點
                     v->last = (v->fail->length > 0) ? v->fail : v->fail->last;
                     q.push(v);
                 }
@@ -64,30 +70,29 @@ public:
 void solve(int n) {
     vector<string> words(n);
     string t;
-    for (auto & word : words) cin >> word;
+    for (auto& word : words) cin >> word;
     cin >> t;
 
     AhoCorasick ac;
-    for (auto & word : words) ac.insert(word);
+    vector<Node*> nodes;
+    for (auto& word : words) nodes.push_back(ac.insert(word));
     ac.build();
-    
+
     Node* node = ac.root;
     for (char ch : t) {
-        int idx = ch - 'a';
-        while (node != ac.root && node->child[idx] == nullptr) node = node->fail;
-        if (node->child[idx] != nullptr) node = node->child[idx];
-        Node* v = node;
-        while (v != ac.root) {
-            v->cnt += 1;
-            v = v->last;
+        node = node->child[ch - 'a'];
+
+        // 沿著 last 鏈向上搜集所有匹配的模式串
+        Node* temp = node;
+        while (temp != ac.root) {
+            temp->cnt += 1;
+            temp = temp->last;
         }
     }
 
     int mx = 0;
     vector<string> ans;
-    for (int i = 0; i < n; ++i) {
-        Node* node = ac.pos[i];
-        string word = words[i];
+    for (auto&& [node, word] : views::zip(nodes, words)) {
         if (node->cnt > mx) {
             mx = node->cnt;
             ans = {word};
@@ -96,12 +101,13 @@ void solve(int n) {
         }
     }
     cout << mx << endl;
-    for (auto & word : ans) cout << word << endl;
+    for (auto& word : ans) cout << word << endl;
     return;
 }
 
 int main() {
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
     int n;
     while (cin >> n && n) solve(n);
     return 0;
