@@ -15,7 +15,7 @@ struct Node {
 class AhoCorasick {
 public:
     Node* root;
-    vector<Node*> pos, order;
+    vector<Node*> nodes, order;
 
     AhoCorasick() {
         root = new Node();
@@ -25,12 +25,11 @@ public:
         Node* node = root;
         for (char ch : word) {
             int idx = ch - 'a';
-            if (node->child[idx] == nullptr)
-                node->child[idx] = new Node();
+            if (node->child[idx] == nullptr) node->child[idx] = new Node();
             node = node->child[idx];
         }
-        pos.push_back(node);
         node->length = word.length();
+        nodes.push_back(node);
     }
 
     void build() {
@@ -39,6 +38,7 @@ public:
         queue<Node*> q;
         for (int i = 0; i < ALPH; ++i) {
             if (root->child[i] == nullptr) {
+                // 添加虛擬子節點
                 root->child[i] = root;
             } else {
                 root->child[i]->fail = root->child[i]->last = root;
@@ -50,11 +50,14 @@ public:
             Node* u = q.front();
             q.pop();
             for (int i = 0; i < ALPH; ++i) {
-                if (u->child[i] == nullptr) {
+                Node* v = u->child[i];
+                if (v == nullptr) {
+                    // 添加虛擬子節點
                     u->child[i] = u->fail->child[i];
                 } else {
-                    Node* v = u->child[i];
+                    // 失配位置
                     v->fail = u->fail->child[i];
+                    // 上一個一定是某個 word 結尾的節點
                     v->last = (v->fail->length > 0) ? v->fail : v->fail->last;
                     q.push(v);
                     order.push_back(v);
@@ -69,32 +72,33 @@ void solve() {
     cin >> n;
     vector<string> words(n);
     string t;
-    for (auto & word : words) cin >> word;
+    for (auto& word : words) cin >> word;
     cin >> t;
 
     AhoCorasick ac;
-    for (auto & word : words) ac.insert(word);
+    for (auto& word : words) ac.insert(word);
     ac.build();
-    
+
     Node* node = ac.root;
     for (char ch : t) {
-        int idx = ch - 'a';
-        while (node != ac.root && node->child[idx] == nullptr) node = node->fail;
-        if (node->child[idx] != nullptr) node = node->child[idx];
+        node = node->child[ch - 'a'];
         node->cnt++;
     }
 
     reverse(ac.order.begin(), ac.order.end());
-    for (auto & node : ac.order)
+    for (auto& node : ac.order) {
         node->fail->cnt += node->cnt;
+    }
 
-    for (auto & node : ac.pos)
+    for (auto& node : ac.nodes) {
         cout << node->cnt << endl;
+    }
     return;
 }
 
 int main() {
-    ios::sync_with_stdio(false); cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
     solve();
     return 0;
 }
