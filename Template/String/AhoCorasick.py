@@ -45,7 +45,7 @@ class Node:
 class AhoCorasick:
     def __init__(self):
         self.root = Node()
-        self.nodes = []  # 保留每個 word 對應的節點
+        # self.nodes = []  # 保留每個 word 對應的節點
 
     def insert(self, word: str):
         node = self.root
@@ -55,12 +55,13 @@ class AhoCorasick:
                 node.child[c] = Node()
             node = node.child[c]
         node.length = len(word)
+        # self.nodes.append(node)  # 保留每個 word 對應的節點
 
     def build(self):  # O(|Σ|N)，N 是節點數；若 |Σ|=26 視為常數，則為 O(N) = O(L)
         self.root.fail = self.root.last = self.root
         # BFS
         q = deque()
-        order = []  # 用來保存 fail tree 的拓撲順序
+        # order = []  # 用來保存 fail tree 的拓撲順序
         for i, v in enumerate(self.root.child):
             if v is None:
                 # 添加虛擬子節點
@@ -68,7 +69,7 @@ class AhoCorasick:
             else:
                 v.fail = v.last = self.root
                 q.append(v)
-                order.append(v)
+                # order.append(v)
         while q:
             u = q.popleft()
             for i, v in enumerate(u.child):
@@ -81,8 +82,8 @@ class AhoCorasick:
                     # 上一個一定是某個 word 結尾的節點
                     v.last = v.fail if v.fail.length else v.fail.last
                     q.append(v)
-                    order.append(v)
-        self.order = order
+                    # order.append(v)
+        # self.order = order
 
     def build2(self):  # 最壞 O(|Σ|N + L^2)；若 fail 回退很少，實務上接近 O(|Σ|N)
         self.root.fail = self.root.last = self.root
