@@ -16,6 +16,7 @@ Reference:
 - https://leetcode.cn/problems/minimum-number-of-valid-strings-to-form-target-ii/solutions/2917929/ac-zi-dong-ji-pythonjavacgo-by-endlessch-hcqk
 """
 
+
 class Node:
     def __init__(self):
         self.child = [None] * 26
@@ -25,26 +26,28 @@ class Node:
         # self.depth = depth
         self.length = 0  # 可以取代 is_end 和 depth
 
+
 class AhoCorasick:
     def __init__(self):
         self.root = Node()
 
     def insert(self, word: str):
         node = self.root
-        for ch in word: 
-            idx = ord(ch) - ord('a')
-            if not node.child[idx]:
-                node.child[idx] = Node()
-            node = node.child[idx]
+        for ch in word:
+            c = ord(ch) - ord("a")
+            if not node.child[c]:
+                node.child[c] = Node()
+            node = node.child[c]
         node.length = len(word)
 
-    def build(self):  # O(|Σ|)，|Σ| 是字元集大小，n 是節點數，適合較稠密的 Trie 
+    def build(self):  # O(|Σ|N)，N 是節點數；若 |Σ|=26 視為常數，則為 O(N) = O(L)
         self.root.fail = self.root.last = self.root
         # BFS
         q = deque()
         for i, v in enumerate(self.root.child):
-            if v is None:  
-                self.root.child[i] = self.root  # 添加虛擬子節點
+            if v is None:
+                # 添加虛擬子節點
+                self.root.child[i] = self.root
             else:
                 v.fail = v.last = self.root
                 q.append(v)
@@ -52,24 +55,29 @@ class AhoCorasick:
             u = q.popleft()
             for i, v in enumerate(u.child):
                 if v is None:
-                    u.child[i] = u.fail.child[i]  # 添加虛擬子節點
+                    # 添加虛擬子節點
+                    u.child[i] = u.fail.child[i]
                 else:
-                    v.fail = u.fail.child[i]  # 失配位置
-                    v.last = v.fail if v.fail.length else v.fail.last  # 上一個一定是某個 word 結尾的節點
+                    # 失配位置
+                    v.fail = u.fail.child[i]
+                    # 上一個一定是某個 word 結尾的節點
+                    v.last = v.fail if v.fail.length else v.fail.last
                     q.append(v)
 
-    def build2(self):  # O(L)，L 是單字總長度，適合較稀疏的 Trie
+    def build2(self):  # 最壞 O(|Σ|N + L^2)；若 fail 回退很少，實務上接近 O(|Σ|N)
         self.root.fail = self.root.last = self.root
         # BFS
         q = deque()
         for v in self.root.child:
-            if v is None: continue
+            if v is None:
+                continue
             v.fail = v.last = self.root
             q.append(v)
         while q:
             u = q.popleft()
             for i, v in enumerate(u.child):
-                if v is None: continue
+                if v is None:
+                    continue
                 fu = u.fail
                 while fu != self.root and fu.child[i] is None:
                     fu = fu.fail
@@ -82,9 +90,53 @@ class AhoCorasick:
 
     def traverse2(self, word: str):
         node = self.root
-        for ch in word: 
-            idx = ord(ch) - ord('a')
+        for ch in word:
+            idx = ord(ch) - ord("a")
             while node != self.root and node.child[idx] is None:
                 node = node.fail
             if node.child[idx] is not None:
                 node = node.child[idx]
+
+
+class Solution3213:
+    def minimumCost(self, target: str, words: List[str], costs: List[int]) -> int:
+        ac = AhoCorasick()
+
+        def insert(self, word: str, cost: int):
+            node = self.root
+            for ch in word:
+                c = ord(ch) - ord("a")
+                if not node.child[c]:
+                    node.child[c] = Node()
+                node = node.child[c]
+            node.length = len(word)
+            if not hasattr(node, "cost"):
+                node.cost = cost
+            else:
+                node.cost = min(node.cost, cost)  # 避免相同單字有不同 cost
+
+        ac.insert = insert.__get__(ac)  # 綁定方法到 ac 實例
+
+        for word, cost in zip(words, costs):
+            ac.insert(word, cost)
+        ac.build()
+
+        n = len(target)
+        f = [0] + [float("inf")] * n
+        node = ac.root
+        for i, ch in enumerate(target, 1):
+            node = node.child[ord(ch) - ord("a")]
+            if node.length:  # 匹配到了一個盡可能長的 words[k]
+                f[i] = min(f[i], f[i - node.length] + node.cost)
+            # 沿著 last 往上尋找，可能可以找到其餘更短，但可以使成本更小的 words[k]
+            temp = node.last
+            while temp != ac.root:
+                f[i] = min(f[i], f[i - temp.length] + temp.cost)
+                temp = temp.last
+        return f[n] if f[n] != float("inf") else -1
+
+
+sol = Solution3213()
+print(
+    sol.minimumCost("abcdef", ["abdef", "abc", "d", "def", "ef"], [100, 1, 1, 10, 5])
+)  # 7

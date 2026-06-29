@@ -38,6 +38,7 @@ public:
         queue<Node*> q;
         for (int i = 0; i < ALPH; ++i) {
             if (root->child[i] == nullptr) {
+                // 添加虛擬子節點
                 root->child[i] = root;
             } else {
                 root->child[i]->fail = root->child[i]->last = root;
@@ -48,11 +49,14 @@ public:
             Node* u = q.front();
             q.pop();
             for (int i = 0; i < ALPH; ++i) {
-                if (u->child[i] == nullptr) {
+                Node* v = u->child[i];
+                if (v == nullptr) {
+                    // 添加虛擬子節點
                     u->child[i] = u->fail->child[i];
                 } else {
-                    Node* v = u->child[i];
+                    // 失配位置
                     v->fail = u->fail->child[i];
+                    // 上一個一定是某個 word 結尾的節點
                     v->last = (v->fail->length > 0) ? v->fail : v->fail->last;
                     q.push(v);
                 }
