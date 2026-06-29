@@ -15,7 +15,6 @@ struct Node {
 class AhoCorasick {
 public:
     Node* root;
-    vector<Node*> pos;
 
     AhoCorasick() {
         root = new Node();
@@ -28,7 +27,6 @@ public:
             if (node->child[idx] == nullptr) node->child[idx] = new Node();
             node = node->child[idx];
         }
-        pos.push_back(node);
         node->length = word.length();
     }
 
