@@ -44,6 +44,7 @@ class Solution2:
         last = [-1] * 3
         for i, ch in enumerate(s):
             last[ord(ch) - ord("a")] = i
+            # 此時 [0, min(last)] 都是合法的左端點
             ans += min(last) + 1
         return ans
 
