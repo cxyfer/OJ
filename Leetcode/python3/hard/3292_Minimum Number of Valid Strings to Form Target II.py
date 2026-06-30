@@ -12,11 +12,10 @@ import random
 
 # @lcpr-template-end
 """
-1. Hash String
+1. Hash String (TODO)
 2. Aho-Corasick Automaton
+3. Z-Algorithm (TODO)
 """
-
-
 # @lc code=start
 class Node:
     __slot__ = ("child", "fail", "last", "is_end", "depth")
