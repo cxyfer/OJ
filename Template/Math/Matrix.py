@@ -4,10 +4,28 @@ class Matrix:
         self.mat = mat
 
     def __mul__(self, other):
-        assert len(self.mat[0]) == len(other.mat)
-        return Matrix([[sum(x * y for x, y in zip(row, col)) % MOD for col in zip(*other.mat)]
-                for row in self.mat])
-    
+        A, B = self.mat, other.mat
+        assert len(A[0]) == len(B)
+        # return Matrix(
+        #     [
+        #         [sum(x * y for x, y in zip(row, col)) % MOD for col in zip(*other.mat)]
+        #         for row in self.mat
+        #     ]
+        # )
+        n, p, m = len(A), len(B), len(B[0])
+        res = [[0] * m for _ in range(n)]
+        for i in range(n):
+            ri = res[i]
+            Ai = A[i]
+            for k in range(p):
+                if Ai[k] == 0:
+                    continue
+                x = Ai[k]
+                Bk = B[k]
+                for j in range(m):
+                    ri[j] = (ri[j] + x * Bk[j]) % MOD
+        return Matrix(res)
+
     def __pow__(self, k):
         assert len(self.mat) == len(self.mat[0])
         n = len(self.mat)
@@ -19,7 +37,7 @@ class Matrix:
             base *= base
             k >>= 1
         return res
-    
+
     def mul_pow(self, k, x):
         assert len(self.mat[0]) == len(x.mat)
         res = x
@@ -30,7 +48,7 @@ class Matrix:
             base *= base
             k >>= 1
         return res
-    
+
     def __getitem__(self, i):
         return self.mat[i]
 
