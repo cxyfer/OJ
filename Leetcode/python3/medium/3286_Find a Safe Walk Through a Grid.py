@@ -10,26 +10,59 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class Solution:
+"""
+1. Dijkstra
+2. 0/1 BFS
+"""
+
+
+class Solution1:
     def findSafeWalk(self, grid: List[List[int]], health: int) -> bool:
         n, m = len(grid), len(grid[0])
 
-        # BFS 找最短路徑
-        q = deque([(0, 0, grid[0][0])])
-        dist = [[float('inf')] * m for _ in range(n)]
+        # Dijkstra
+        dist = [[float("inf")] * m for _ in range(n)]
         dist[0][0] = grid[0][0]
-        while q:
-            x, y, h = q.popleft()
+        hp = [(grid[0][0], 0, 0)]
+        while hp:
+            d, x, y = heappop(hp)
             if x == n - 1 and y == m - 1:
-                if h < health:
-                    return True
-            for dx, dy in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
-                nx, ny = x + dx, y + dy
+                return d < health
+            for nx, ny in [(x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y)]:
                 if 0 <= nx < n and 0 <= ny < m:
-                    if h + grid[nx][ny] < dist[nx][ny]:
-                        dist[nx][ny] = h + grid[nx][ny]
-                        q.append((nx, ny, h + grid[nx][ny]))
+                    w = grid[nx][ny]
+                    if (nd := d + w) < dist[nx][ny]:
+                        dist[nx][ny] = nd
+                        heappush(hp, (nd, nx, ny))
         return False
+
+
+class Solution2:
+    def findSafeWalk(self, grid: List[List[int]], health: int) -> bool:
+        n, m = len(grid), len(grid[0])
+
+        # 0/1 BFS
+        dist = [[float("inf")] * m for _ in range(n)]
+        dist[0][0] = grid[0][0]
+        q = deque([(0, 0, grid[0][0])])
+        while q:
+            x, y, d = q.popleft()
+            if x == n - 1 and y == m - 1:
+                return d < health
+            for nx, ny in [(x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y)]:
+                if 0 <= nx < n and 0 <= ny < m:
+                    w = grid[nx][ny]
+                    if (nd := d + w) < dist[nx][ny]:
+                        dist[nx][ny] = nd
+                        if w == 0:
+                            q.appendleft((nx, ny, nd))
+                        else:
+                            q.append((nx, ny, nd))
+        return False
+
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 
 
