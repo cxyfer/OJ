@@ -1,4 +1,6 @@
 MOD = int(1e9 + 7)
+
+
 class Matrix:
     def __init__(self, mat):
         self.mat = mat
@@ -54,12 +56,14 @@ class Matrix:
 
     def __str__(self):
         return "\n".join(map(lambda x: " ".join(map(str, x)), self.mat))
-    
+
+
 """
     numpy version
 """
 
 import numpy as np
+
 
 def matrix_power(A: np.ndarray, n: int, mod: int):
     res = np.eye(len(A), dtype=object)
@@ -69,6 +73,7 @@ def matrix_power(A: np.ndarray, n: int, mod: int):
         A = A @ A % mod
         n >>= 1
     return res
+
 
 def matrix_power_mul(A: np.ndarray, n: int, x: np.ndarray, mod: int):
     assert len(A[0]) == len(x)
@@ -80,10 +85,11 @@ def matrix_power_mul(A: np.ndarray, n: int, x: np.ndarray, mod: int):
         n >>= 1
     return res
 
+
 if __name__ == "__main__":
     mat = Matrix([[1, 1], [1, 0]])
     x = Matrix([[1], [0]])
-    print(mat ** 10 * x)
+    print(mat**10 * x)
 
     mat = np.array([[1, 1], [1, 0]])
     x = np.array([[1], [0]])
