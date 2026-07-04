@@ -15,11 +15,7 @@ def solve():
     # @cache
     def dfs(i: int, s: int, msk: int, limit_low: bool, limit_high: bool) -> int:
         if i == n:
-            return (
-                (s == 0 and msk.bit_count() != 3 and msk & (1 << 3) == 0)
-                or (s != 0 and msk.bit_count() == 3 and msk & (1 << 3) == 0)
-                or (s != 0 and msk.bit_count() != 3 and msk & (1 << 3) > 0)
-            )
+            return ((s == 0) + (msk.bit_count() == 3) + ((msk >> 3) & 1)) == 1
 
         if not limit_low and not limit_high and memo[i][s][msk] != -1:
             return memo[i][s][msk]
