@@ -47,8 +47,7 @@ def hack():
 
     def add(i, j):
         if 0 <= i < n and 0 <= j < n:
-            g[i][j] = "1"
-
+            g[i][j] = "1"    
     for k in range(30):
         r, c = 3 * k, k
 
