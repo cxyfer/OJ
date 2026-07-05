@@ -33,8 +33,8 @@ class Solution:
             return (mx + (int(board[i][j]) if board[i][j].isdigit() else 0), cnt)
 
         mx, cnt = dfs(n - 1, n - 1)
-        return [mx, cnt] if cnt > 0 else [0, 0]  # 當 cnt % MOD == 0 時，會判斷錯誤
-        # return [mx, cnt] if mx != -inf else [0, 0]
+        # return [mx, cnt] if cnt > 0 else [0, 0]  # 當 cnt % MOD == 0 時，會判斷錯誤
+        return [mx, cnt] if mx != -inf else [0, 0]
 # @lc code=end
 
 sol = Solution()
@@ -42,37 +42,33 @@ print(sol.pathsWithMaxScore(["E111", "XXX1", "XXX1", "999S"]))  # [5, 1]
 
 
 def hack():
-    n = 100
-    g = [["X"] * n for _ in range(n)]
+    B = MOD.bit_length()
+    n = 3 * B + 1
+    grid = [["X"] * n for _ in range(n)]
 
-    def add(i, j):
-        if 0 <= i < n and 0 <= j < n:
-            g[i][j] = "1"    
-    for k in range(30):
-        r, c = 3 * k, k
-
-        add(r, c)
-        if (MOD >> k) & 1:
+    for i in range(n):
+        grid[i][n - 1] = "1"
+    
+    for b in range(B):
+        r, c = 3 * b, b
+        for i in range(r, r + 4):
+            grid[i][c] = "1"
+        for i in range(r + 2, r + 4):
+            grid[i][c + 1] = "1"
+        if (MOD >> b) & 1:
             for j in range(c, n):
-                add(r, j)
-            for i in range(r, n):
-                add(i, n - 1)
-        add(r + 1, c)
-        add(r + 2, c)
-        add(r + 2, c + 1)
-        add(r + 3, c)
-        add(r + 3, c + 1)
+                grid[r][j] = "1"
 
-    g[0][0] = "E"
-    g[n - 1][n - 1] = "S"
+    grid[0][0] = "E"
+    grid[n - 1][n - 1] = "S"
 
-    board = ["".join(row) for row in g]
-    import os
-    import json
-    os.makedirs("hacks", exist_ok=True)
-    with open("hacks/hack_1301.txt", "w") as f:
-        f.write(json.dumps(board))
+    board = ["".join(row) for row in grid]
+    # import os
+    # import json
+    # os.makedirs("hacks", exist_ok=True)
+    # with open("hacks/hack_1301.txt", "w") as f:
+    #     f.write(json.dumps(board))
     return board
 
 
-print(sol.pathsWithMaxScore(hack()))  # [197, 0]
+print(sol.pathsWithMaxScore(hack()))  # [179, 0]
