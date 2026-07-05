@@ -8,7 +8,6 @@ from operator import *
 from random import *
 from string import *
 from typing import *
-import math
 
 """
 ## Q3: Maximum Subarray
@@ -46,23 +45,28 @@ def prime_factorization(x: int) -> list[int]:
 
 class Solution:
     def divisibleGame(self, nums: list[int]) -> int:
-        Ks = set()
+        # 僅枚舉質因數
+        pfs = set()
         for x in nums:
-            Ks.update(set(prime_factorization(x)))
+            pfs.update(set(prime_factorization(x)))
 
-        if not Ks:
+        # 若沒有質因數，則所有數字都是 1
+        # 此時最大子陣列和為 -1，k = 2，答案為 -1 * 2 = -2
+        if not pfs:
             return -2 % MOD
 
         # k 固定就是 Kadane
         ans = -inf
         min_k = inf
-        for k in Ks:
+        for k in pfs:
             mx = -inf
+            """Kadane's Algorithm"""
             # f = 0
             # for x in nums:
             #     x = x if x % k == 0 else -x
             #     f = max(f + x, x)
             #     mx = max(mx, f)
+            """Prefix Sum"""
             s = mn = 0
             for x in nums:
                 x = x if x % k == 0 else -x
@@ -75,7 +79,6 @@ class Solution:
                 min_k = k
             elif mx == ans:
                 min_k = min(min_k, k)
-        # print(ans, min_k, ans * min_k)
         return ans * min_k % MOD
 
 
