@@ -33,9 +33,45 @@ class Solution:
             return (mx + (int(board[i][j]) if board[i][j].isdigit() else 0), cnt)
 
         mx, cnt = dfs(n - 1, n - 1)
-        return [mx, cnt] if cnt > 0 else [0, 0]  # 理論上應該是錯的，可以構造 cnt % MOD = 0 的情況
-        # return [mx, cnt] if mx != -inf else [0, 0]
+        # return [mx, cnt] if cnt > 0 else [0, 0]  # 當 cnt % MOD == 0 時，會判斷錯誤
+        return [mx, cnt] if mx != -inf else [0, 0]
 # @lc code=end
 
 sol = Solution()
 print(sol.pathsWithMaxScore(["E111", "XXX1", "XXX1", "999S"]))  # [5, 1]
+
+
+def hack():
+    n = 100
+    g = [["X"] * n for _ in range(n)]
+    g[0][0] = "E"
+    g[n - 1][n - 1] = "S"
+
+    def add(i, j):
+        if 0 <= i < n and 0 <= j < n:
+            g[i][j] = "1"
+
+    for k in range(30):
+        r, c = 3 * k, k
+
+        add(r, c)
+        if (MOD >> k) & 1:
+            for j in range(c, n):
+                add(r, j)
+            for i in range(r, n):
+                add(i, n - 1)
+        add(r + 1, c)
+        add(r + 2, c)
+        add(r + 2, c + 1)
+        add(r + 3, c)
+        add(r + 3, c + 1)
+    board = ["".join(row) for row in g]
+    # import os
+    # import json
+    # os.makedirs("hacks", exist_ok=True)
+    # with open("hacks/hack_1301.txt", "w") as f:
+    #     f.write(json.dumps(board))
+    return board
+
+
+print(sol.pathsWithMaxScore(hack()))  # [198, 0]
