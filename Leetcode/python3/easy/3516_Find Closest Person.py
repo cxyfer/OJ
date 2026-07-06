@@ -11,6 +11,9 @@ from preImport import *
 # @lc code=start
 class Solution:
     def findClosest(self, x: int, y: int, z: int) -> int:
-        return 0 if (d1 := abs(x - z)) == (d2 := abs(y - z)) else (1 if d1 < d2 else 2)
+        # return 0 if (d1 := abs(x - z)) == (d2 := abs(y - z)) else (1 if d1 < d2 else 2)
+        d1 = abs(x - z)
+        d2 = abs(y - z)
+        return ((d1 > d2) << 1) | (d1 < d2)
 # @lc code=end
 
