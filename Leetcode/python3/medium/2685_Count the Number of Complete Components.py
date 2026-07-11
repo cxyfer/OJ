@@ -9,27 +9,28 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
-class Solution:
+class Solution1:
     def countCompleteComponents(self, n: int, edges: List[List[int]]) -> int:
         pa = list(range(n))
-        sz = [1] * n
-        cnt = [0] * n  # number of edges
+        sz_v = [1] * n
+        sz_e = [0] * n  # number of edges
 
         def find(x):
-            while x != pa[x]:
-                x = pa[x] = pa[pa[x]]
+            while pa[x] != x:
+                pa[x] = pa[pa[x]]
+                x = pa[x]
             return x
-        
+
         for x, y in edges:
             fx, fy = find(x), find(y)
-            cnt[fx] += 1
+            sz_e[fx] += 1
             if fx == fy:
                 continue
-            if sz[fx] < sz[fy]:
+            if sz_v[fx] < sz_v[fy]:
                 fx, fy = fy, fx
             pa[fy] = fx
-            sz[fx] += sz[fy]
-            cnt[fx] += cnt[fy]
+            sz_v[fx] += sz_v[fy]
+            sz_e[fx] += sz_e[fy]
 
         ans = 0
         vis = [False] * n
@@ -37,9 +38,43 @@ class Solution:
             fx = find(x)
             if vis[fx]:
                 continue
-            if sz[fx] * (sz[fx] - 1) == cnt[fx] * 2:
-                ans += 1
             vis[fx] = True
+            if sz_v[fx] * (sz_v[fx] - 1) == sz_e[fx] << 1:
+                ans += 1
         return ans
+
+
+class Solution2:
+    def countCompleteComponents(self, n: int, edges: List[List[int]]) -> int:
+        g = [[] for _ in range(n)]
+        for u, v in edges:
+            g[u].append(v)
+            g[v].append(u)
+
+        vis = [False] * n
+
+        def dfs(u: int) -> Tuple[int, int]:
+            vis[u] = True
+            cnt_v, cnt_e = 1, len(g[u])
+            for v in g[u]:
+                if vis[v]:
+                    continue
+                sub_v, sub_e = dfs(v)
+                cnt_v += sub_v
+                cnt_e += sub_e
+            return cnt_v, cnt_e
+
+        ans = 0
+        for u in range(n):
+            if vis[u]:
+                continue
+            cnt_v, cnt_e = dfs(u)
+            if cnt_v * (cnt_v - 1) == cnt_e:
+                ans += 1
+        return ans
+
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 
