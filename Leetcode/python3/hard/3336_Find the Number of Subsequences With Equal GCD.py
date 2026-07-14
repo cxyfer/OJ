@@ -10,46 +10,55 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
+MOD = int(1e9) + 7
 
-gcdCache = [[0] * 201 for _ in range(201)]
+g = [[0] * 201 for _ in range(201)]
 for i in range(201):
-    for j in range(i, 201):
-        gcdCache[i][j] = gcdCache[j][i] = math.gcd(i, j)
-gcd = lambda x, y: gcdCache[x][y]
+    for j in range(i + 1):
+        g[i][j] = g[j][i] = g[j][i % j] if j else i
+gcd = lambda x, y: g[x][y]
 
-class Solution:
+
+class Solution1:
     def subsequencePairCount(self, nums: List[int]) -> int:
-        MOD = 10**9 + 7
         n = len(nums)
+
         @cache
-        def f(i: int, g1: int, g2: int) -> int:
+        def dfs(i: int, g1: int, g2: int) -> int:
             if i == n:
-                return 1 if g1 == g2 else 0
-            res1 = f(i + 1, g1, g2)
-            res2 = f(i + 1, gcd(g1, nums[i]), g2)
-            res3 = f(i + 1, g1, gcd(g2, nums[i]))
-            return (res1 + res2 + res3) % MOD
-        return (f(0, 0, 0) - 1) % MOD
+                return int(g1 and g2 and g1 == g2)
+            x = nums[i]
+            return (dfs(i + 1, g1, g2) + dfs(i + 1, gcd(g1, x), g2) + dfs(i + 1, g1, gcd(g2, x))) % MOD
+
+        return dfs(0, 0, 0)
+
+
+class Solution2:
+    def subsequencePairCount(self, nums: List[int]) -> int:
+        U = max(nums)
+
+        f = [[0] * (U + 1) for _ in range(U + 1)]
+        f[0][0] = 1
+        for x in nums:
+            nf = [[0] * (U + 1) for _ in range(U + 1)]
+            for g1 in range(U + 1):
+                for g2 in range(U + 1):
+                    val = f[g1][g2]
+                    if val == 0:
+                        continue
+                    # 都不放/放到A/放到B
+                    nf[g1][g2] = (nf[g1][g2] + val) % MOD
+                    nf[gcd(g1, x)][g2] = (nf[gcd(g1, x)][g2] + val) % MOD
+                    nf[g1][gcd(g2, x)] = (nf[g1][gcd(g2, x)] + val) % MOD
+            f = nf
+        return sum(f[g][g] for g in range(1, U + 1)) % MOD
+
+
+# Solution = Solution1
+Solution = Solution2
 # @lc code=end
 
 sol = Solution()
-print(sol.subsequencePairCount([1,2,3,4])) # 10
-print(sol.subsequencePairCount([10,20,30])) # 2
-print(sol.subsequencePairCount([1,1,1,1])) #50
-
-
-#
-# @lcpr case=start
-# [1,2,3,4]\n
-# @lcpr case=end
-
-# @lcpr case=start
-# [10,20,30]\n
-# @lcpr case=end
-
-# @lcpr case=start
-# [1,1,1,1]\n
-# @lcpr case=end
-
-#
-
+print(sol.subsequencePairCount([1, 2, 3, 4]))  # 10
+print(sol.subsequencePairCount([10, 20, 30]))  # 2
+print(sol.subsequencePairCount([1, 1, 1, 1]))  # 50
