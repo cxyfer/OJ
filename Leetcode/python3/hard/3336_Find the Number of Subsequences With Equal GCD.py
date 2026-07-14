@@ -62,3 +62,4 @@ sol = Solution()
 print(sol.subsequencePairCount([1, 2, 3, 4]))  # 10
 print(sol.subsequencePairCount([10, 20, 30]))  # 2
 print(sol.subsequencePairCount([1, 1, 1, 1]))  # 50
+print(sol.subsequencePairCount([1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 8, 32, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128]))  # 1000000006
