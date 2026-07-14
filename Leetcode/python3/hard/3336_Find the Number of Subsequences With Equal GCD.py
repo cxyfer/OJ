@@ -26,7 +26,8 @@ class Solution1:
         @cache
         def dfs(i: int, g1: int, g2: int) -> int:
             if i == n:
-                return int(g1 and g2 and g1 == g2)
+                # 也可以只判 g1 == g2，但這樣會多算兩邊都為空的情況，最後需要減掉 1
+                return 1 if g1 == g2 and g1 > 0 else 0
             x = nums[i]
             return (dfs(i + 1, g1, g2) + dfs(i + 1, gcd(g1, x), g2) + dfs(i + 1, g1, gcd(g2, x))) % MOD
 
@@ -54,8 +55,8 @@ class Solution2:
         return sum(f[g][g] for g in range(1, U + 1)) % MOD
 
 
-# Solution = Solution1
-Solution = Solution2
+Solution = Solution1
+# Solution = Solution2
 # @lc code=end
 
 sol = Solution()
