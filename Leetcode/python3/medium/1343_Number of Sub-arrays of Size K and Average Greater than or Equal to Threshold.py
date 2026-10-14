@@ -14,12 +14,13 @@ class Solution:
     def numOfSubarrays(self, arr: List[int], k: int, threshold: int) -> int:
         ans = cur = 0
         target = k * threshold
-        for idx, x in enumerate(arr):
+        for right, x in enumerate(arr):
             cur += x
-            if idx < k - 1:
+            left = right - k + 1
+            if left < 0:
                 continue
-            ans += cur >= target
-            cur -= arr[idx - k + 1]
+            ans += (cur >= target)
+            cur -= arr[left]
         return ans
 # @lc code=end
 
