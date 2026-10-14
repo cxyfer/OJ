@@ -10,6 +10,9 @@
 from preImport import *
 # @lcpr-template-end
 # @lc code=start
+vowels = set("aeiou")
+
+
 class Solution:
     def maxVowels(self, s: str, k: int) -> int:
         ans = have = 0
