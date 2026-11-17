@@ -12,11 +12,11 @@ from preImport import *
 # @lc code=start
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
-        tbl = dict()
-        for idx, num in enumerate(nums):
-            if target - num in tbl:
-                return [tbl[target - num], idx]
-            tbl[num] = idx
+        pos = dict()
+        for i, x in enumerate(nums):
+            if target - x in pos:
+                return [pos[target - x], i]
+            pos[x] = i
         return []
 # @lc code=end
 
