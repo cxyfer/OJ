@@ -7,37 +7,32 @@
 
 # @lcpr-template-start
 from preImport import *
-
 # @lcpr-template-end
 """
-1. Dynamic Programming
-定義 D[i] = prices[i] - prices[i-1]，則問題轉化為求 D 的最大子陣列和
+1. 枚舉右維護左，維護 prices 的前綴最小值
 
-2. 
+2. Dynamic Programming
+定義 D[i] = prices[i] - prices[i-1]，則問題轉化為求 D 的最大子陣列和 (53. Maximum Subarray)
+- 前綴和 + 枚舉右維護左的做法等同於 1. 維護 prices 的前綴最小值。
 """
-
-
 # @lc code=start
 class Solution1:
-    def maxProfit(self, prices: List[int]) -> int:
-        n = len(prices)
-        if n == 1:  # base case
-            return 0
-        D = [b - a for a, b in pairwise(prices)]
-        f = [0] * (n - 1)
-        f[0] = D[0]
-        for i in range(1, n - 1):
-            f[i] = max(D[i], f[i - 1] + D[i])
-        return max(max(f), 0)
-
-
-class Solution2:
-    def maxProfit(self, prices: List[int]) -> int:
+    def maxProfit(self, prices: list[int]) -> int:
         ans = 0
-        mn = float("inf")
+        mn = inf
         for p in prices:
             ans = max(ans, p - mn)
             mn = min(mn, p)
+        return ans
+
+
+class Solution2:
+    def maxProfit(self, prices: list[int]) -> int:
+        D = [b - a for a, b in pairwise(prices)]
+        ans = f = 0
+        for d in D:
+            f = max(f + d, d)
+            ans = max(ans, f)
         return ans
 
 

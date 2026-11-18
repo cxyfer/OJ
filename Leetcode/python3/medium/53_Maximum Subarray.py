@@ -9,17 +9,22 @@
 # @lcpr-template-start
 from preImport import *
 # @lcpr-template-end
-# @lc code=start
 """
+見筆記: https://gdst.dev/posts/LC-53/
+
 1. 前綴和 + 枚舉右維護左
 首先做前綴和 s ，如此便可以把區間和轉換為兩個前綴和的差。
 之後，對於每個固定的右端點 right ，為使 s[right] - s[left] 最大，只需要維護最小的 s[left] 即可
+
+2. 動態規劃
+定義 f[i] = max(f[i-1] + nums[i], nums[i])，即以 nums[i] 為右端點的最大子陣列和
+
+3. 分治
 """
-
-
+# @lc code=start
 class Solution1:
     def maxSubArray(self, nums: List[int]) -> int:
-        ans = float('-inf')
+        ans = float("-inf")
         s = mn = 0
         for x in nums:
             s += x
@@ -28,15 +33,10 @@ class Solution1:
         return ans
 
 
-"""
-2. 動態規劃
-"""
-
-
 class Solution2a:
     def maxSubArray(self, nums: List[int]) -> int:
         n = len(nums)
-        f = [-float('inf')] * (n + 1)
+        f = [-float("inf")] * (n + 1)
         for i, x in enumerate(nums):
             f[i + 1] = max(f[i] + x, x)
         return max(f)
@@ -44,7 +44,7 @@ class Solution2a:
 
 class Solution2b:
     def maxSubArray(self, nums: List[int]) -> int:
-        ans = -float('inf')
+        ans = -float("inf")
         f = 0
         for x in nums:
             f = max(f + x, x)
@@ -52,15 +52,13 @@ class Solution2b:
         return ans
 
 
-"""
-3. 分治
-"""
 class Node:
     def __init__(self, lSum, rSum, mSum, tot):
         self.lSum = lSum
         self.rSum = rSum
         self.mSum = mSum
         self.tot = tot
+
 
 class Solution3:
     def maxSubArray(self, nums: List[int]) -> int:
@@ -79,11 +77,11 @@ class Solution3:
 
         return query(0, len(nums) - 1).mSum
 
-# class Solution(Solution1):
-# class Solution(Solution2a):
-# class Solution(Solution2b):
-class Solution(Solution3):
-    pass
+
+# Solution = Solution1
+# Solution = Solution2a
+# Solution = Solution2b
+Solution = Solution3
 # @lc code=end
 
 
