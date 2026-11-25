@@ -84,14 +84,17 @@ class Solution3:
             m = len(g)
             if m == 0:
                 continue
-            tmp = [0] * 3
-            for i in range(m - 1, -1, -1):
-                tmp[i] = heappop(g)
-            ans = max(ans, tmp[0] - 2, min(tmp[0] - 1, tmp[1]), tmp[2])
+            # top = [0] * 3
+            # for i in range(m - 1, -1, -1):
+            #     top[i] = heappop(g)
+            top = sorted(g + [0] * (3 - m), reverse=True)
+            ans = max(ans, top[0] - 2, min(top[0] - 1, top[1]), top[2])
         return ans if ans > 0 else -1
 
 
-Solution = Solution1
+# Solution = Solution1
+# Solution = Solution2
+Solution = Solution3
 # @lc code=end
 
 sol = Solution()
